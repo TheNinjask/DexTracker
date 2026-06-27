@@ -7,9 +7,19 @@ import { el, clear, getPrefs, setPref, icon } from '../dom.js';
 const vs = {
   dexId: getPrefs().boxDex || 'Nat Dex',
   mode: getPrefs().boxMode || 'regional',
+  imgSrc: getPrefs().boxImgSrc || 'main', // 'main' = dex-native art, 'other' = swap normal<->shiny
   page: 0,
   selectedKey: null,
 };
+
+// Sprite variant for the current Main/Other artwork swap (xlsx "Main Img
+// Src"/"Other Img Src"). Each dex defines its own pair: game dexes are
+// normal/shiny, but the HOME dexes are normal/art and shiny/normal — so this is
+// read from the dex, not derived. Display only — never touches ownership.
+function spriteVariant() {
+  const d = built.dex || {};
+  return vs.imgSrc === 'other' ? (d.other_variant || 'shiny') : (d.main_variant || 'normal');
+}
 
 let built = null; // { dex, entries, hasRegional, isForm }
 let paged = null; // { pages:[[cell]], labels:[] }
@@ -128,6 +138,14 @@ function buildControls(root) {
      el('option', { value: 'national', selected: vs.mode === 'national' || null }, 'National')]);
   bar.appendChild(field('Mode', modeSel));
 
+  // Main/Other artwork swap (xlsx "Main Img Src"/"Other Img Src"): flips every
+  // sprite in the box between its normal and shiny variant. Display only.
+  const imgSel = el('select', { class: 'ctrl',
+    onchange: (e) => { vs.imgSrc = e.target.value; setPref('boxImgSrc', vs.imgSrc); refresh(root); } },
+    [el('option', { value: 'main', selected: vs.imgSrc === 'main' || null }, 'Main'),
+     el('option', { value: 'other', selected: vs.imgSrc === 'other' || null }, 'Other')]);
+  bar.appendChild(field('Sprites', imgSel));
+
   const numLabel = (built.hasRegional ? vs.mode : 'national') === 'national' ? 'Nat No.' : 'Reg No.';
   const search = el('input', { class: 'ctrl', type: 'search', placeholder: `${numLabel} or species…`,
     onkeydown: (e) => { if (e.key === 'Enter') doSearch(root, e.target.value); } });
@@ -201,7 +219,7 @@ function buildCell(root, e, i) {
     title: `#${parseInt(e.national_no, 10)} ${e.name}`,
     onclick: () => { vs.selectedKey = keyOf(e); refresh(root); },
   });
-  const img = el('img', { class: 'cell-img', loading: 'lazy', alt: e.name, src: entrySprite(e) });
+  const img = el('img', { class: 'cell-img', loading: 'lazy', alt: e.name, src: entrySprite(e, spriteVariant()) });
   img.addEventListener('error', () => img.classList.add('broken'));
   cell.appendChild(img);
   if (owned) {
@@ -223,7 +241,7 @@ function buildSidebar(root) {
   if (ntc.next) {
     const n = ntc.next;
     ntcBox.appendChild(el('div', { class: 'ntc-row', onclick: () => jumpTo(root, n) }, [
-      el('img', { class: 'ntc-img', src: entrySprite(n), alt: n.name }),
+      el('img', { class: 'ntc-img', src: entrySprite(n, spriteVariant()), alt: n.name }),
       el('div', {}, [
         el('div', { class: 'ntc-name' }, n.name),
         el('div', { class: 'muted' }, '#' + parseInt(n.national_no, 10)),
@@ -251,7 +269,7 @@ function buildDetail(root, e) {
   const o = owned ? resolveOrigin(slot.ot, slot.tid) : null;
 
   card.appendChild(el('div', { class: 'detail-head' }, [
-    el('img', { class: 'detail-img', src: entrySprite(e), alt: e.name }),
+    el('img', { class: 'detail-img', src: entrySprite(e, spriteVariant()), alt: e.name }),
     el('div', {}, [
       el('h3', {}, e.name),
       el('div', { class: 'muted' }, `Nat #${parseInt(e.national_no, 10)}` + (e.regional_no ? ` · Reg #${parseInt(e.regional_no, 10)}` : '')),

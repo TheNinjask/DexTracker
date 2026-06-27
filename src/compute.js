@@ -97,11 +97,14 @@ export function entryOwned(e) {
   return store.isOwned(entrySlot(e));
 }
 
-// Sprite URL for an entry (respects shiny variant + form code).
-export function entrySprite(e) {
-  const variant = e.shiny ? 'shiny' : 'normal';
-  const code = e.shiny ? e.formCodeShiny : e.formCode;
-  return spriteUrl(e.source, variant, e.national_no, code);
+// Sprite URL for an entry. `variant` ('normal' | 'shiny' | 'art') overrides the
+// entry's native variant for display only — this drives the box-wide Main/Other
+// artwork swap and never touches ownership or slot identity. Only the shiny
+// variant uses the shiny form code; normal and art use the base form code.
+export function entrySprite(e, variant) {
+  const v = variant || (e.shiny ? 'shiny' : 'normal');
+  const code = v === 'shiny' ? e.formCodeShiny : e.formCode;
+  return spriteUrl(e.source, v, e.national_no, code);
 }
 
 // ---- Statistics (SPEC §6) ----

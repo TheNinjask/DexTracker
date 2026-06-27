@@ -12513,7 +12513,9 @@
             "has_regional_no": true,
             "mark_code": null,
             "sprite_source": "home",
-            "source_sheet": "National Dex"
+            "source_sheet": "National Dex",
+            "main_variant": "normal",
+            "other_variant": "art"
         },
         {
             "id": "Shiny Nat Dex",
@@ -12521,7 +12523,9 @@
             "has_regional_no": true,
             "mark_code": null,
             "sprite_source": "home",
-            "source_sheet": "National Dex"
+            "source_sheet": "National Dex",
+            "main_variant": "shiny",
+            "other_variant": "normal"
         },
         {
             "id": "Nat Form Dex",
@@ -12529,7 +12533,9 @@
             "has_regional_no": false,
             "mark_code": null,
             "sprite_source": "home",
-            "source_sheet": "National - Form Dex"
+            "source_sheet": "National - Form Dex",
+            "main_variant": "normal",
+            "other_variant": "art"
         },
         {
             "id": "Shiny Nat Form Dex",
@@ -12537,7 +12543,9 @@
             "has_regional_no": false,
             "mark_code": null,
             "sprite_source": "home",
-            "source_sheet": "National - Form Dex"
+            "source_sheet": "National - Form Dex",
+            "main_variant": "shiny",
+            "other_variant": "normal"
         },
         {
             "id": "LGPE Dex",
@@ -12545,7 +12553,9 @@
             "has_regional_no": true,
             "mark_code": "LGPE",
             "sprite_source": "LGPE",
-            "source_sheet": "LGPE Dex"
+            "source_sheet": "LGPE Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "SwSh Dex",
@@ -12553,7 +12563,9 @@
             "has_regional_no": true,
             "mark_code": "SWSH",
             "sprite_source": "SWSH",
-            "source_sheet": "SwSh Dex"
+            "source_sheet": "SwSh Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "SwSh-IoA Dex",
@@ -12561,7 +12573,9 @@
             "has_regional_no": true,
             "mark_code": "SWSH",
             "sprite_source": "SWSH",
-            "source_sheet": "SwSh-IoA Dex"
+            "source_sheet": "SwSh-IoA Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "SwSh-TCT Dex",
@@ -12569,7 +12583,9 @@
             "has_regional_no": true,
             "mark_code": "SWSH",
             "sprite_source": "SWSH",
-            "source_sheet": "SwSh-TCT Dex"
+            "source_sheet": "SwSh-TCT Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "SwSh-Not In Dex",
@@ -12577,7 +12593,9 @@
             "has_regional_no": false,
             "mark_code": "SWSH",
             "sprite_source": "SWSH",
-            "source_sheet": "SwSh-Not In Dex"
+            "source_sheet": "SwSh-Not In Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "BDSP Dex",
@@ -12585,7 +12603,9 @@
             "has_regional_no": true,
             "mark_code": "BDSP",
             "sprite_source": "BDSP",
-            "source_sheet": "BDSP Dex"
+            "source_sheet": "BDSP Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "PLA Dex",
@@ -12593,7 +12613,9 @@
             "has_regional_no": true,
             "mark_code": "LA",
             "sprite_source": "LA",
-            "source_sheet": "PLA Dex"
+            "source_sheet": "PLA Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "SV Dex",
@@ -12601,7 +12623,9 @@
             "has_regional_no": true,
             "mark_code": "SV",
             "sprite_source": "SV",
-            "source_sheet": "SV Dex"
+            "source_sheet": "SV Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "SV-TTM Dex",
@@ -12609,7 +12633,9 @@
             "has_regional_no": true,
             "mark_code": "SV",
             "sprite_source": "SV",
-            "source_sheet": "SV-TTM Dex"
+            "source_sheet": "SV-TTM Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "SV-TID Dex",
@@ -12617,7 +12643,9 @@
             "has_regional_no": true,
             "mark_code": "SV",
             "sprite_source": "SV",
-            "source_sheet": "SV-TID Dex"
+            "source_sheet": "SV-TID Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "SV-Not In Dex",
@@ -12625,7 +12653,9 @@
             "has_regional_no": false,
             "mark_code": "SV",
             "sprite_source": "SV",
-            "source_sheet": "SV-Not In Dex"
+            "source_sheet": "SV-Not In Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "PLZA Dex",
@@ -12633,7 +12663,9 @@
             "has_regional_no": true,
             "mark_code": "LZA",
             "sprite_source": "LZA",
-            "source_sheet": "PLZA Dex"
+            "source_sheet": "PLZA Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "PLZA-MD Dex",
@@ -12641,7 +12673,9 @@
             "has_regional_no": true,
             "mark_code": "LZA",
             "sprite_source": "LZA",
-            "source_sheet": "PLZA-MD Dex"
+            "source_sheet": "PLZA-MD Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         },
         {
             "id": "FRLG Dex",
@@ -12649,7 +12683,9 @@
             "has_regional_no": true,
             "mark_code": null,
             "sprite_source": "FRLG",
-            "source_sheet": "FRLG Dex"
+            "source_sheet": "FRLG Dex",
+            "main_variant": "normal",
+            "other_variant": "shiny"
         }
     ],
     "dex_mappings": {
