@@ -1,6 +1,6 @@
 // Completion dashboard (SPEC §6).
 import { computeStats } from '../compute.js';
-import { el, clear, pct } from '../dom.js';
+import { el, clear, pct, icon } from '../dom.js';
 
 export function render(root) {
   clear(root);
@@ -37,7 +37,7 @@ export function render(root) {
   t2.appendChild(el('tr', {}, ['', 'Source', 'Normal', '%', 'Shiny', '%'].map((h) => el('th', {}, h))));
   s.bySource.forEach((r) => {
     t2.appendChild(el('tr', {}, [
-      el('td', {}, r.icon ? el('img', { class: 'src-icon', src: r.icon, alt: '' }) : ''),
+      el('td', {}, r.icon ? icon(r.icon, 'src-icon', r.game) : ''),
       el('td', {}, r.game),
       el('td', {}, String(r.normal)),
       el('td', { class: 'muted' }, r.normalPct + '%'),

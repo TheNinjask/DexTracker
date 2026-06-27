@@ -2,7 +2,7 @@
 import { idx, spriteUrl } from '../data.js';
 import * as store from '../store.js';
 import { resolveOrigin } from '../compute.js';
-import { el, clear } from '../dom.js';
+import { el, clear, icon } from '../dom.js';
 
 export function render(root) {
   clear(root);
@@ -18,7 +18,7 @@ export function render(root) {
     const card = el('div', { class: 'card hof-team' });
     const game = idx.gameById.get(g);
     card.appendChild(el('h3', { class: 'hof-title' }, [
-      game && game.icon_url ? el('img', { class: 'src-icon', src: game.icon_url, alt: '' }) : null,
+      game && game.icon_url ? icon(game.icon_url, 'src-icon', g) : null,
       el('span', {}, g),
     ]));
     const team = el('div', { class: 'hof-roster' });
@@ -29,7 +29,7 @@ export function render(root) {
         el('div', { class: 'hof-name' }, m.nickname || m.species),
         el('div', { class: 'muted small' }, `#${parseInt(m.national_no, 10)} · ${m.species}`),
         el('div', { class: 'muted small' }, `OT ${m.ot || '—'} / ${m.tid || '—'}`),
-        o.markUrl ? el('img', { class: 'cell-mark inline', src: o.markUrl, alt: o.markCode || '' }) : null,
+        o.markUrl ? icon(o.markUrl, 'cell-mark inline', o.markCode || '') : null,
       ]));
     });
     card.appendChild(team);

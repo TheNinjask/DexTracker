@@ -18,6 +18,16 @@ export function el(tag, attrs = {}, children = []) {
 }
 export function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
 
+// Decorative <img> (game mark / origin icon). alt is intentionally empty so a
+// failed external image shows the browser's broken-image indicator rather than
+// falling back to alt text (which would leak e.g. the mark code "RBY"). On error
+// it gets a `.broken` class so the breakage stays visible (not hidden).
+export function icon(src, className, title) {
+  const img = el('img', { class: className, src, alt: '', title: title || null });
+  img.addEventListener('error', () => img.classList.add('broken'));
+  return img;
+}
+
 // UI-pref persistence (separate from the savefile; not user content).
 const PREF_KEY = 'dextracker.ui.v1';
 export function getPrefs() {

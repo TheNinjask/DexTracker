@@ -2,7 +2,7 @@
 import { REF, idx } from '../data.js';
 import * as store from '../store.js';
 import { buildDexEntries, entrySlot, entryOwned, entrySprite, resolveOrigin } from '../compute.js';
-import { el, clear, getPrefs, setPref } from '../dom.js';
+import { el, clear, getPrefs, setPref, icon } from '../dom.js';
 
 const vs = {
   dexId: getPrefs().boxDex || 'Nat Dex',
@@ -34,7 +34,10 @@ function packSequential(list) {
 
 function paginate() {
   const { entries, isForm, hasRegional } = built;
-  const mode = hasRegional ? vs.mode : 'national';
+  // Box layout uses the dex's own numbering (regional where available, else
+  // national). The Regional/National mode toggle only affects No. search, not
+  // how the boxes are laid out.
+  const mode = hasRegional ? 'regional' : 'national';
 
   if (isForm) {
     const list = vs.onlyPresent ? entries.filter(entryOwned) : entries;
@@ -97,7 +100,7 @@ function rebuild() {
 
 function nextToCatch() {
   const { entries, isForm, hasRegional } = built;
-  const mode = hasRegional ? vs.mode : 'national';
+  const mode = hasRegional ? 'regional' : 'national';
   const list = isForm ? entries : [...entries].sort((a, b) => (numOf(a, mode) || 1e9) - (numOf(b, mode) || 1e9));
   const missing = list.filter((e) => !entryOwned(e));
   return { next: missing[0] || null, remaining: missing.length, total: entries.length };
@@ -126,7 +129,7 @@ function buildControls(root) {
   bar.appendChild(field('Dex Of', dexSel));
 
   const modeSel = el('select', { class: 'ctrl', disabled: !built.hasRegional || null,
-    onchange: (e) => { vs.mode = e.target.value; setPref('boxMode', vs.mode); vs.page = 0; refresh(root); } },
+    onchange: (e) => { vs.mode = e.target.value; setPref('boxMode', vs.mode); refresh(root); } },
     [el('option', { value: 'regional', selected: vs.mode === 'regional' || null }, 'Regional'),
      el('option', { value: 'national', selected: vs.mode === 'national' || null }, 'National')]);
   bar.appendChild(field('Mode', modeSel));
@@ -138,7 +141,8 @@ function buildControls(root) {
   ]);
   bar.appendChild(field('Filter', onlyPresent));
 
-  const search = el('input', { class: 'ctrl', type: 'search', placeholder: 'No. or species…',
+  const numLabel = (built.hasRegional ? vs.mode : 'national') === 'national' ? 'Nat No.' : 'Reg No.';
+  const search = el('input', { class: 'ctrl', type: 'search', placeholder: `${numLabel} or species…`,
     onkeydown: (e) => { if (e.key === 'Enter') doSearch(root, e.target.value); } });
   bar.appendChild(field('Search', search));
 
@@ -152,12 +156,18 @@ function field(label, control) {
 function doSearch(root, q) {
   q = (q || '').trim().toLowerCase();
   if (!q) return;
-  const { entries } = built;
-  const match = entries.find((e) =>
-    e.national_no === q.padStart(4, '0') ||
-    String(parseInt(e.national_no, 10)) === q ||
-    (e.regional_no && String(parseInt(e.regional_no, 10)) === q) ||
-    (e.name && e.name.toLowerCase().includes(q)));
+  const { entries, hasRegional } = built;
+  const mode = hasRegional ? vs.mode : 'national';
+  let match;
+  if (/^\d+$/.test(q)) {
+    // Numeric query → National No. or Regional No. depending on the mode toggle.
+    const n = parseInt(q, 10);
+    match = mode === 'national'
+      ? entries.find((e) => parseInt(e.national_no, 10) === n)
+      : entries.find((e) => e.regional_no != null && parseInt(e.regional_no, 10) === n);
+  } else {
+    match = entries.find((e) => e.name && e.name.toLowerCase().includes(q));
+  }
   if (match) jumpTo(root, match);
 }
 
@@ -213,7 +223,7 @@ function buildCell(root, e, i) {
   if (owned) {
     const slot = entrySlot(e);
     const o = resolveOrigin(slot.ot, slot.tid);
-    if (o.markUrl) cell.appendChild(el('img', { class: 'cell-mark', src: o.markUrl, alt: o.markCode || '' }));
+    if (o.markUrl) cell.appendChild(icon(o.markUrl, 'cell-mark', o.markCode || ''));
   }
   cell.appendChild(el('span', { class: 'cell-no' }, '#' + parseInt(e.national_no, 10)));
   return cell;
@@ -280,7 +290,7 @@ function buildDetail(root, e) {
   // Origin readout
   if (owned && o) {
     const orow = el('div', { class: 'origin' });
-    if (o.iconUrl) orow.appendChild(el('img', { class: 'origin-icon', src: o.iconUrl }));
+    if (o.iconUrl) orow.appendChild(icon(o.iconUrl, 'origin-icon', o.game || ''));
     orow.appendChild(el('span', {}, o.registered ? (o.game || 'N/A') : 'Unregistered OT'));
     if (o.isGo) orow.appendChild(el('span', { class: 'badge go' }, 'GO'));
     if (o.isMine === false) orow.appendChild(el('span', { class: 'badge' }, 'Traded'));
