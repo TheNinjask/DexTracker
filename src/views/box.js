@@ -7,7 +7,6 @@ import { el, clear, getPrefs, setPref, icon } from '../dom.js';
 const vs = {
   dexId: getPrefs().boxDex || 'Nat Dex',
   mode: getPrefs().boxMode || 'regional',
-  onlyPresent: !!getPrefs().boxOnlyPresent,
   page: 0,
   selectedKey: null,
 };
@@ -40,7 +39,7 @@ function paginate() {
   const mode = hasRegional ? 'regional' : 'national';
 
   if (isForm) {
-    const list = vs.onlyPresent ? entries.filter(entryOwned) : entries;
+    const list = entries;
     const order = [], groups = new Map();
     list.forEach((e) => {
       const g = e.group || 'Forms';
@@ -58,11 +57,6 @@ function paginate() {
       }
     });
     return pages.length ? { pages, labels } : packSequential([]);
-  }
-
-  if (vs.onlyPresent) {
-    const owned = entries.filter(entryOwned).sort((a, b) => (numOf(a, mode) || 1e9) - (numOf(b, mode) || 1e9));
-    return packSequential(owned);
   }
 
   const numbered = entries.filter((e) => !Number.isNaN(numOf(e, mode)));
@@ -133,13 +127,6 @@ function buildControls(root) {
     [el('option', { value: 'regional', selected: vs.mode === 'regional' || null }, 'Regional'),
      el('option', { value: 'national', selected: vs.mode === 'national' || null }, 'National')]);
   bar.appendChild(field('Mode', modeSel));
-
-  const onlyPresent = el('label', { class: 'toggle' }, [
-    el('input', { type: 'checkbox', checked: vs.onlyPresent || null,
-      onchange: (e) => { vs.onlyPresent = e.target.checked; setPref('boxOnlyPresent', vs.onlyPresent); vs.page = 0; refresh(root); } }),
-    el('span', {}, 'Only Present'),
-  ]);
-  bar.appendChild(field('Filter', onlyPresent));
 
   const numLabel = (built.hasRegional ? vs.mode : 'national') === 'national' ? 'Nat No.' : 'Reg No.';
   const search = el('input', { class: 'ctrl', type: 'search', placeholder: `${numLabel} or species…`,
