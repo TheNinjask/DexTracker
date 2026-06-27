@@ -1,6 +1,6 @@
 # DexTracker
 
-A personal Pokémon living-dex collection tracker — a PWA rebuild of `DexTrackerV2.xlsx`,
+A personal Pokémon living-dex collection tracker — a PWA rebuild of `DexTracker.xlsx`,
 built to the functional spec in [`SPEC.md`](SPEC.md).
 
 ## What it does
