@@ -1,3 +1,11 @@
+# User data & local artifacts — never commit
 **/savefile.json
 **/.ignore/
 *.xlsx
+
+# Build / tooling
+node_modules/
+dist/
+dev-dist/
+*.local
+.DS_Store
