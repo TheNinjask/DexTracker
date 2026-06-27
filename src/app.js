@@ -1,6 +1,7 @@
 // Bootstrap, navigation, savefile bar (import/export/new). SPEC §7–§10.
 import './styles.css';
 import { loadReferenceData } from './data.js';
+import { preloadIcons } from './preload.js';
 import * as store from './store.js';
 import { computeStats } from './compute.js';
 import { el, clear, getPrefs, setPref } from './dom.js';
@@ -118,6 +119,9 @@ async function main() {
   store.onChange(updateSaveStatus);
   renderTab();
   if (!had) showWelcome();
+  // Warm the shared game/type icons into the cache (paced, off the critical path)
+  // so the box grid stops bursting the image host. Fire-and-forget.
+  preloadIcons();
   // Service worker is registered automatically by vite-plugin-pwa (injectRegister: 'auto').
 }
 
