@@ -2,6 +2,7 @@
 import './styles.css';
 import { loadReferenceData } from './data.js';
 import * as store from './store.js';
+import { computeStats } from './compute.js';
 import { el, clear, getPrefs, setPref } from './dom.js';
 import * as boxView from './views/box.js';
 import * as statsView from './views/stats.js';
@@ -60,10 +61,9 @@ function buildSaveBar() {
       e.target.value = '';
     } });
 
-  const status = el('span', { id: 'save-status', class: 'save-status' });
+  const status = el('div', { id: 'save-status', class: 'save-status' });
 
-  const bar = el('div', { class: 'savebar' }, [
-    status,
+  const actions = el('div', { class: 'save-actions' }, [
     el('button', { class: 'btn', onclick: () => fileInput.click() }, 'Import'),
     el('button', { class: 'btn', onclick: doExport }, 'Export'),
     el('button', { class: 'btn', onclick: () => {
@@ -73,7 +73,8 @@ function buildSaveBar() {
     } }, 'New'),
     fileInput,
   ]);
-  return bar;
+
+  return el('div', { class: 'savebar' }, [status, actions]);
 }
 
 function doExport() {
@@ -86,13 +87,22 @@ function doExport() {
 
 function counts() {
   const s = store.state;
-  const sp = (s.species_ownership || []).length;
-  return `${sp} species · ${(s.form_ownership || []).length} forms · ${(s.ot_registry || []).length} trainers`;
+  const st = computeStats();
+  return [
+    ['species', `${st.national.owned} / ${st.national.total}`],
+    ['forms', `${st.forms.owned} / ${st.forms.total}`],
+    ['trainers', `${(s.ot_registry || []).length}`],
+  ];
 }
 
 function updateSaveStatus() {
   const node = document.getElementById('save-status');
-  if (node) node.textContent = counts();
+  if (!node) return;
+  clear(node);
+  counts().forEach(([label, value]) =>
+    node.appendChild(el('span', { class: 'stat-chip' }, [
+      el('strong', {}, value), el('span', { class: 'stat-label' }, label),
+    ])));
 }
 
 async function main() {

@@ -172,15 +172,12 @@ function keyOf(e) { return `${e.dexId}|${e.national_no}|${e.formCode}|${e.shiny}
 function buildGrid(root) {
   const wrap = el('div', { class: 'grid-wrap' });
   const page = paged.pages[vs.page] || [];
-  const ownedOnPage = page.filter((e) => e && entryOwned(e)).length;
-  const active = ownedOnPage > 0;
 
   const header = el('div', { class: 'grid-header' }, [
     el('button', { class: 'pgbtn', disabled: vs.page === 0 || null, onclick: () => { vs.page--; refresh(root); } }, '‹'),
     el('div', { class: 'grid-title' }, [
       el('span', { class: 'box-label' }, paged.labels[vs.page] || `Box ${vs.page + 1}`),
       el('span', { class: 'page-of' }, `Page ${vs.page + 1} of ${paged.pages.length}`),
-      el('span', { class: `dot ${active ? 'on' : 'off'}`, title: active ? 'Active' : 'Inactive' }, active ? 'Active' : 'Inactive'),
     ]),
     el('button', { class: 'pgbtn', disabled: vs.page >= paged.pages.length - 1 || null, onclick: () => { vs.page++; refresh(root); } }, '›'),
   ]);

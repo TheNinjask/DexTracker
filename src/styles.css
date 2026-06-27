@@ -38,8 +38,22 @@ body {
 }
 .nav-tab:hover { color: var(--text); background: var(--bg2); }
 .nav-tab.active { color: var(--text); background: var(--card); border-color: var(--border); }
-.savebar { display: flex; align-items: center; gap: 6px; }
-.save-status { color: var(--muted); font-size: 12px; margin-right: 4px; }
+/* Save-bar: status chips + action group. Both halves wrap independently via
+   flex-wrap, so the bar adapts from a single right-aligned row on desktop down
+   to stacked, full-width rows on narrow screens without fixed breakpoints. */
+.savebar {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 6px 10px; flex-wrap: wrap; margin-left: auto;
+}
+.save-status { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.stat-chip {
+  display: inline-flex; align-items: baseline; gap: 4px;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 999px;
+  padding: 2px 9px; font-size: 12px; color: var(--text); white-space: nowrap;
+}
+.stat-chip .stat-label { color: var(--muted); }
+.save-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.save-actions .btn { flex: 1 1 auto; white-space: nowrap; }
 
 /* Buttons / inputs */
 .btn {
