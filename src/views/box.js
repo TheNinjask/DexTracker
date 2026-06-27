@@ -8,6 +8,7 @@ const vs = {
   dexId: getPrefs().boxDex || 'Nat Dex',
   mode: getPrefs().boxMode || 'regional',
   imgSrc: getPrefs().boxImgSrc || 'main', // 'main' = dex-native art, 'other' = swap normal<->shiny
+  ntcTraded: getPrefs().ntcTraded || false, // "Next to catch" also lists owned-but-traded (not mine)
   page: 0,
   selectedKey: null,
 };
@@ -102,12 +103,20 @@ function rebuild() {
   if (vs.page >= paged.pages.length) vs.page = 0;
 }
 
+// The ordered list of entries still "to catch": always the unowned ones, plus —
+// when the Traded toggle is on — those owned but flagged not-mine (is_mine=false
+// via the OT+TID registry), so you can re-catch your own copy.
 function nextToCatch() {
   const { entries, isForm, hasRegional } = built;
   const mode = hasRegional ? 'regional' : 'national';
   const list = isForm ? entries : [...entries].sort((a, b) => (numOf(a, mode) || 1e9) - (numOf(b, mode) || 1e9));
-  const missing = list.filter((e) => !entryOwned(e));
-  return { next: missing[0] || null, remaining: missing.length, total: entries.length };
+  const missing = list.filter((e) => {
+    if (!entryOwned(e)) return true;
+    if (!vs.ntcTraded) return false;
+    const slot = entrySlot(e);
+    return resolveOrigin(slot.ot, slot.tid).isMine === false;
+  });
+  return { missing, total: entries.length };
 }
 
 export function render(root) {
@@ -234,12 +243,23 @@ function buildCell(root, e, i) {
 function buildSidebar(root) {
   const side = el('div', { class: 'box-sidebar' });
 
-  // Next to catch
-  const ntc = nextToCatch();
+  // Next to catch — browse every still-missing entry with ‹ ›.
+  const { missing, total } = nextToCatch();
   const ntcBox = el('div', { class: 'card ntc' });
-  ntcBox.appendChild(el('h3', {}, 'Next to catch'));
-  if (ntc.next) {
-    const n = ntc.next;
+  ntcBox.appendChild(el('div', { class: 'ntc-head' }, [
+    el('h3', {}, 'Next to catch'),
+    el('label', { class: 'toggle ntc-toggle' }, [
+      el('input', { type: 'checkbox', checked: vs.ntcTraded || null,
+        onchange: (ev) => { vs.ntcTraded = ev.target.checked; setPref('ntcTraded', vs.ntcTraded); refresh(root); } }),
+      el('span', {}, 'Include traded'),
+    ]),
+  ]));
+  if (missing.length) {
+    // Anchor the browse position to the current selection when it's one of the
+    // missing; otherwise start at the first. ‹ › jump the box to the neighbour.
+    let idx = missing.findIndex((e) => keyOf(e) === vs.selectedKey);
+    if (idx < 0) idx = 0;
+    const n = missing[idx];
     ntcBox.appendChild(el('div', { class: 'ntc-row', onclick: () => jumpTo(root, n) }, [
       el('img', { class: 'ntc-img', src: entrySprite(n, spriteVariant()), alt: n.name }),
       el('div', {}, [
@@ -247,9 +267,13 @@ function buildSidebar(root) {
         el('div', { class: 'muted' }, '#' + parseInt(n.national_no, 10)),
       ]),
     ]));
-    ntcBox.appendChild(el('div', { class: 'muted' }, `${ntc.remaining} left of ${ntc.total}`));
+    ntcBox.appendChild(el('div', { class: 'ntc-nav' }, [
+      el('button', { class: 'pgbtn', disabled: idx === 0 || null, onclick: () => jumpTo(root, missing[idx - 1]) }, '‹'),
+      el('span', { class: 'muted' }, `${idx + 1} of ${missing.length} missing · ${total} total`),
+      el('button', { class: 'pgbtn', disabled: idx >= missing.length - 1 || null, onclick: () => jumpTo(root, missing[idx + 1]) }, '›'),
+    ]));
   } else {
-    ntcBox.appendChild(el('div', { class: 'done' }, `Complete! ${ntc.total}/${ntc.total}`));
+    ntcBox.appendChild(el('div', { class: 'done' }, `Complete! ${total}/${total}`));
   }
   side.appendChild(ntcBox);
 
@@ -279,14 +303,9 @@ function buildDetail(root, e) {
 
   const otIn = el('input', { class: 'ctrl', value: slot.ot || '', placeholder: 'OT' });
   const tidIn = el('input', { class: 'ctrl', value: slot.tid || '', placeholder: 'TID' });
-  let mineIn = null;
   const form = el('div', { class: 'edit-form' }, [
     field('OT', otIn), field('TID', tidIn),
   ]);
-  if (e.slotKind === 'pergame') {
-    mineIn = el('input', { type: 'checkbox', checked: slot.is_mine || null });
-    form.appendChild(field('isMine', el('label', { class: 'toggle' }, [mineIn, el('span', {}, 'Caught by me')])));
-  }
   card.appendChild(form);
 
   // Origin readout
@@ -295,7 +314,14 @@ function buildDetail(root, e) {
     if (o.iconUrl) orow.appendChild(icon(o.iconUrl, 'origin-icon', o.game || ''));
     orow.appendChild(el('span', {}, o.registered ? (o.game || 'N/A') : 'Unregistered OT'));
     if (o.isGo) orow.appendChild(el('span', { class: 'badge go' }, 'GO'));
-    if (o.isMine === false) orow.appendChild(el('span', { class: 'badge' }, 'Traded'));
+    // isMine ("Caught by me") is derived from the OT+TID via the registry, never
+    // set per-Pokémon. Shown for every dex (HOME, Shiny HOME, Form, Shiny Form,
+    // per-game) whenever the OT is registered.
+    if (o.registered) {
+      orow.appendChild(o.isMine === false
+        ? el('span', { class: 'badge' }, 'Traded')
+        : el('span', { class: 'badge mine' }, '✓ Caught by me'));
+    }
     card.appendChild(orow);
     if (!o.registered) {
       card.appendChild(el('div', { class: 'warn' }, `OT "${slot.ot}/${slot.tid}" not in registry → origin N/A. Add it in the Registry tab.`));
@@ -307,7 +333,11 @@ function buildDetail(root, e) {
       const ot = otIn.value.trim(), tid = tidIn.value.trim();
       if (e.slotKind === 'species') store.setSpeciesSlot(e.national_no, e.shiny, ot, tid);
       else if (e.slotKind === 'form') store.setFormSlot(e.national_no, e.formCode, e.form, e.shiny, ot, tid);
-      else store.setPerGameSlot(e.dexId, e.national_no, e.regional_no, ot, tid, mineIn && mineIn.checked);
+      else {
+        // is_mine is no longer user-set — derive it from the OT+TID registry entry.
+        const reg = store.getOtEntry(ot, tid);
+        store.setPerGameSlot(e.dexId, e.national_no, e.regional_no, ot, tid, reg ? reg.is_mine !== false : true);
+      }
       maybePromptRegistry(ot, tid);
       refresh(root);
     } }, 'Save'),

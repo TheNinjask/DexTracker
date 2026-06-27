@@ -11,5 +11,9 @@
   "devDependencies": {
     "vite": "^5.4.0",
     "vite-plugin-pwa": "^0.20.5"
+  },
+  "dependencies": {
+    "peerjs": "^1.5.5",
+    "qrcode": "^1.5.4"
   }
 }
