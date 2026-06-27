@@ -139,15 +139,26 @@ url = prefix + pad3(national_no) + form_code + suffix
 
 - `pad3` zero-pads the **National No.** to a **minimum of 3 digits** (`001`, `122`, `1000`) —
   note this differs from the 4-digit `national_no` key used elsewhere.
-- `form_code` is appended for National **Form** Dex entries only (e.g. `-a` for Alolan); it is
-  empty (`""`) for base species and for every per-game dex entry.
+- `form_code` is a per-entry suffix (e.g. `-a` Alolan, `-g` Galarian, `-h` Hisuian); it is
+  empty (`""`) when absent. It comes from three places:
+  - a **base species** has none;
+  - a **National Form Dex** entry carries its form's code;
+  - a **per-game dex** entry may carry a hardcoded form code when the form that belongs to
+    *that game's* dex is a regional variant — e.g. Galarian Slowpoke in the SwSh dexes,
+    Hisuian forms in the PLA dex, Paldean forms in the SV-TID dex. (~69 such entries; codes
+    seen: `-g -h -a -c -w -p -f -s -b -t -pau`.) Stored on the `dex_mappings` entry as
+    `form_code`, with `form_code_shiny` only when the shiny sprite's code differs.
 - The `art` variant uses the form's **special** form code instead of `form_code` (they differ
-  for a few forms).
+  for a few forms). `art`/`icon` exist only on the `home` source.
 
 **Which source a dex uses.** Each dex declares its `sprite_source` (one of the codes above).
 National/Form/Shiny/FRLG dexes use `home`; per-game dexes use their game code. A regional-dex
-entry's sprite is therefore composed from its dex's source + the entry's National No. (no
-per-row URL needed).
+entry's sprite is therefore composed from its dex's source + the entry's National No. + the
+entry's `form_code` (if any) — no per-row URL needed.
+
+> Data caveat: the source workbook is internally inconsistent for one entry — PLA `0706`
+> (Hisuian Goodra) hardcodes `-h` on the shiny sprite but omits it on the normal sprite. This
+> is preserved verbatim (`form_code_shiny` only); a clean rebuild should set both.
 
 > Implementation note: the workbook generated these URLs with `IMAGE()` formulas and hardcoded
 > serebii.net / bulbagarden hosts; it also carried a half-migrated "Flat Ref Data" sheet
