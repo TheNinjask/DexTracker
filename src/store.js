@@ -226,6 +226,24 @@ export function swapHofEntries(a, b) {
   commit();
 }
 
+// ---- Switch profiles ----
+// Rows have no stable key (a profile name can span several games), so callers
+// pass the row reference itself to edit/remove.
+export function addProfile(entry) {
+  state.switch_profiles = state.switch_profiles || [];
+  state.switch_profiles.push(entry);
+  commit();
+}
+export function updateProfile(row, patch) {
+  if (!row) return;
+  Object.assign(row, patch);
+  commit();
+}
+export function removeProfile(row) {
+  state.switch_profiles = (state.switch_profiles || []).filter((x) => x !== row);
+  commit();
+}
+
 export function getOtEntry(ot, tid) { return index.ot.get(otKey(ot, tid)); }
 export function upsertOtEntry(entry) {
   const k = otKey(entry.ot, entry.tid);
