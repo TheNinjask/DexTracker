@@ -12,7 +12,14 @@ const vs = {
   ntcGo: getPrefs().ntcGo || false, // "Next to catch" also lists owned-but-from-GO
   page: 0,
   selectedKey: null,
+  query: '',  // current Search text, preserved across re-renders
 };
+
+// Active search match-set. A form dex lists many entries sharing one
+// national_no/name (e.g. Pikachu's 10 forms), so a query can have several hits;
+// the ‹ n/total › stepper walks all of them. i is the 0-based current match.
+let search = { q: null, mode: null, dex: null, i: 0, n: 0 };
+let refocusSearch = false; // restore focus/caret to the Search box after Enter
 
 // Sprite variant for the current Main/Other artwork swap (xlsx "Main Img
 // Src"/"Other Img Src"). Each dex defines its own pair: game dexes are
@@ -132,6 +139,14 @@ export function render(root) {
   main.appendChild(buildSidebar(root));
   layout.appendChild(main);
   root.appendChild(layout);
+
+  // The bar (and its Search box) is rebuilt every refresh; put focus + caret back
+  // so the user can press Enter again to cycle to the next match.
+  if (refocusSearch) {
+    const inp = root.querySelector('.controls input[type=search]');
+    if (inp) { inp.focus(); try { const n = inp.value.length; inp.setSelectionRange(n, n); } catch {} }
+    refocusSearch = false;
+  }
 }
 
 function refresh(root) { render(root); }
@@ -140,12 +155,12 @@ function buildControls(root) {
   const bar = el('div', { class: 'controls' });
 
   const dexSel = el('select', { class: 'ctrl',
-    onchange: (e) => { vs.dexId = e.target.value; setPref('boxDex', vs.dexId); vs.page = 0; vs.selectedKey = null; refresh(root); } },
+    onchange: (e) => { vs.dexId = e.target.value; setPref('boxDex', vs.dexId); vs.page = 0; vs.selectedKey = null; resetSearch(); refresh(root); } },
     REF.dexes.map((d) => el('option', { value: d.id, selected: d.id === vs.dexId || null }, d.name)));
   bar.appendChild(field('Dex Of', dexSel));
 
   const modeSel = el('select', { class: 'ctrl', disabled: !built.hasRegional || null,
-    onchange: (e) => { vs.mode = e.target.value; setPref('boxMode', vs.mode); refresh(root); } },
+    onchange: (e) => { vs.mode = e.target.value; setPref('boxMode', vs.mode); resetSearch(); refresh(root); } },
     [el('option', { value: 'regional', selected: vs.mode === 'regional' || null }, 'Regional'),
      el('option', { value: 'national', selected: vs.mode === 'national' || null }, 'National')]);
   bar.appendChild(field('Mode', modeSel));
@@ -159,33 +174,69 @@ function buildControls(root) {
   bar.appendChild(field('Sprites', imgSel));
 
   const numLabel = (built.hasRegional ? vs.mode : 'national') === 'national' ? 'Nat No.' : 'Reg No.';
-  const search = el('input', { class: 'ctrl', type: 'search', placeholder: `${numLabel} or species…`,
+  const searchInput = el('input', { class: 'ctrl', type: 'search', value: vs.query || '',
+    placeholder: `${numLabel} or species…`, title: 'Press Enter to search; use ‹ › to step through forms sharing a name/number',
+    oninput: (e) => { vs.query = e.target.value; },
     onkeydown: (e) => { if (e.key === 'Enter') doSearch(root, e.target.value); } });
-  bar.appendChild(field('Search', search));
+  const searchField = field('Search', searchInput);
+  searchField.appendChild(buildSearchNav(root));
+  bar.appendChild(searchField);
 
   return bar;
+}
+
+// ‹ n / total › stepper for walking every match of the current query. Hidden until
+// a search runs; shows "no match" when the query found nothing.
+function buildSearchNav(root) {
+  const nav = el('div', { class: 'search-nav' });
+  if (!search.q) return nav;
+  if (search.n === 0) { nav.appendChild(el('span', { class: 'muted small' }, 'no match')); return nav; }
+  const multi = search.n > 1;
+  nav.appendChild(el('button', { class: 'pgbtn tiny', title: 'Previous match', disabled: !multi || null, onclick: () => stepSearch(root, -1) }, '‹'));
+  nav.appendChild(el('span', { class: 'muted small search-info' }, `${search.i + 1} / ${search.n}`));
+  nav.appendChild(el('button', { class: 'pgbtn tiny', title: 'Next match', disabled: !multi || null, onclick: () => stepSearch(root, 1) }, '›'));
+  return nav;
 }
 
 function field(label, control) {
   return el('div', { class: 'field' }, [el('label', { class: 'field-label' }, label), control]);
 }
 
-function doSearch(root, q) {
-  q = (q || '').trim().toLowerCase();
-  if (!q) return;
-  const { entries, hasRegional } = built;
-  const mode = hasRegional ? vs.mode : 'national';
-  let match;
+// Every entry in the current dex matching `q` under the given numbering mode.
+function matchesFor(q, mode) {
+  const { entries } = built;
   if (/^\d+$/.test(q)) {
     // Numeric query → National No. or Regional No. depending on the mode toggle.
     const n = parseInt(q, 10);
-    match = mode === 'national'
-      ? entries.find((e) => parseInt(e.national_no, 10) === n)
-      : entries.find((e) => e.regional_no != null && parseInt(e.regional_no, 10) === n);
-  } else {
-    match = entries.find((e) => e.name && e.name.toLowerCase().includes(q));
+    return mode === 'national'
+      ? entries.filter((e) => parseInt(e.national_no, 10) === n)
+      : entries.filter((e) => e.regional_no != null && parseInt(e.regional_no, 10) === n);
   }
-  if (match) jumpTo(root, match);
+  return entries.filter((e) => e.name && e.name.toLowerCase().includes(q));
+}
+
+function resetSearch() { search = { q: null, mode: null, dex: null, i: 0, n: 0 }; }
+
+function doSearch(root, q) {
+  q = (q || '').trim().toLowerCase();
+  if (!q) { resetSearch(); refresh(root); return; }
+  const mode = built.hasRegional ? vs.mode : 'national';
+  const matches = matchesFor(q, mode);
+  search = { q, mode, dex: vs.dexId, i: 0, n: matches.length };
+  refocusSearch = true;
+  if (matches.length) jumpTo(root, matches[0]);
+  else refresh(root);
+}
+
+// Step the ‹ › buttons through the current match-set, wrapping around. Matches are
+// recomputed each step so they stay valid if the underlying entries changed.
+function stepSearch(root, delta) {
+  if (!search.q) return;
+  const matches = matchesFor(search.q, search.mode);
+  search.n = matches.length;
+  if (!matches.length) { refresh(root); return; }
+  search.i = (search.i + delta + matches.length) % matches.length;
+  jumpTo(root, matches[search.i]);
 }
 
 function jumpTo(root, entry) {

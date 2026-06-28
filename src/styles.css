@@ -147,6 +147,10 @@ select.ctrl { border-radius: 999px; }
 .field { display: flex; flex-direction: row; align-items: center; gap: 8px; }
 .field-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
 .field .ctrl { flex: 1; min-width: 0; }
+.search-nav { display: flex; align-items: center; gap: 6px; }
+.search-nav:empty { display: none; }
+.search-info { white-space: nowrap; font-variant-numeric: tabular-nums; min-width: 44px; text-align: center; }
+.pgbtn.tiny { width: 24px; height: 24px; font-size: 14px; box-shadow: none; }
 .box-main { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
 @media (max-width: 860px) { .box-main { grid-template-columns: 1fr; } }
 
