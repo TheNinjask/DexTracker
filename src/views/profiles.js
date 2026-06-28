@@ -1,7 +1,7 @@
 // Switch profile / save manager (SPEC §4.6 / §8). Credentials masked by default (§10.2).
 import { REF } from '../data.js';
 import * as store from '../store.js';
-import { el, clear } from '../dom.js';
+import { el, clear, dataTable } from '../dom.js';
 
 let reveal = false;
 // Row currently loaded into the form for editing (null = add mode).
@@ -29,22 +29,19 @@ export function render(root) {
     return;
   }
 
-  const table = el('table', { class: 'data-table' });
-  table.appendChild(el('tr', {}, ['Profile', 'Game', 'Email', 'Password', 'Info', ''].map((h) => el('th', {}, h))));
-  rows.forEach((p) => {
-    table.appendChild(el('tr', {}, [
-      el('td', {}, p.profile || ''),
-      el('td', {}, p.game || ''),
-      el('td', { class: 'mono' }, reveal ? (p.email || '') : mask(p.email)),
-      el('td', { class: 'mono' }, p.password ? (reveal ? p.password : '••••••••') : el('span', { class: 'muted' }, '—')),
-      el('td', { class: 'muted small' }, p.info || ''),
-      el('td', { class: 'row-actions' }, [
-        el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = p; render(root); } }, '✎'),
-        el('button', { class: 'btn tiny', title: 'Remove', onclick: () => { if (confirm(`Remove profile ${p.profile || ''}${p.game ? ' / ' + p.game : ''}?`)) { if (editing === p) editing = null; store.removeProfile(p); render(root); } } }, '✕'),
-      ]),
-    ]));
-  });
-  wrap.appendChild(table);
+  const headers = ['Profile', 'Game', 'Email', 'Password', 'Info', ''];
+  const body = rows.map((p) => [
+    p.profile || '',
+    p.game || '',
+    { c: 'mono', v: reveal ? (p.email || '') : mask(p.email) },
+    el('td', { class: 'mono' }, p.password ? (reveal ? p.password : '••••••••') : el('span', { class: 'muted' }, '—')),
+    { c: 'muted small', v: p.info || '' },
+    el('td', { class: 'row-actions' }, [
+      el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = p; render(root); } }, '✎'),
+      el('button', { class: 'btn tiny', title: 'Remove', onclick: () => { if (confirm(`Remove profile ${p.profile || ''}${p.game ? ' / ' + p.game : ''}?`)) { if (editing === p) editing = null; store.removeProfile(p); render(root); } } }, '✕'),
+    ]),
+  ]);
+  wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
   root.appendChild(wrap);
 }
 

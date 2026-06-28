@@ -2,7 +2,7 @@
 import { REF, findGame } from '../data.js';
 import { resolveOrigin } from '../compute.js';
 import * as store from '../store.js';
-import { el, clear, icon } from '../dom.js';
+import { el, clear, icon, dataTable } from '../dom.js';
 
 // Row currently loaded into the form for editing (null = add mode).
 let editing = null;
@@ -15,37 +15,38 @@ export function render(root) {
   wrap.appendChild(buildForm(root));
 
   const rows = store.state.ot_registry || [];
-  const table = el('table', { class: 'data-table' });
-  table.appendChild(el('tr', {}, ['OT', 'TID', 'Game', 'Origin', 'Mark', 'isMine', 'isGo', 'Profile', 'Description', ''].map((h) => el('th', {}, h))));
-  rows.forEach((r) => {
+  const headers = ['OT', 'TID', 'Game', 'Origin', 'Mark', 'isMine', 'isGo', 'Profile', 'Description', ''];
+  const body = rows.map((r) => {
     const o = resolveOrigin(r.ot, r.tid);
-    table.appendChild(el('tr', {}, [
-      el('td', { class: 'mono' }, r.ot),
-      el('td', { class: 'mono' }, r.tid),
+    return [
+      { c: 'mono', v: r.ot },
+      { c: 'mono', v: r.tid },
       el('td', {}, r.game || el('span', { class: 'muted' }, '—')),
       assetCell(o.iconUrl, r.icon_game),
       assetCell(o.markUrl, r.mark_game),
-      el('td', {}, r.is_mine ? '✓' : ''),
-      el('td', {}, r.is_go ? 'GO' : ''),
-      el('td', { class: 'muted small' }, r.profile || ''),
-      el('td', { class: 'muted small' }, r.description || ''),
+      r.is_mine ? '✓' : '',
+      r.is_go ? 'GO' : '',
+      { c: 'muted small', v: r.profile || '' },
+      { c: 'muted small', v: r.description || '' },
       el('td', { class: 'row-actions' }, [
         el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = r; render(root); } }, '✎'),
         el('button', { class: 'btn tiny', title: 'Remove', onclick: () => { if (confirm(`Remove ${r.ot}/${r.tid}?`)) { if (editing === r) editing = null; store.removeOtEntry(r.ot, r.tid); render(root); } } }, '✕'),
       ]),
-    ]));
+    ];
   });
-  wrap.appendChild(table);
+  wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
   root.appendChild(wrap);
 }
 
 // A table cell showing a resolved icon/mark image plus a note of which game it
 // was borrowed from when overridden.
 function assetCell(url, overrideGame) {
-  return el('td', {}, [
+  // Wrap icon + override note in one span so the card layout keeps them together
+  // (icon immediately left of "↳ game") on the value side, not spread apart.
+  return el('td', {}, el('span', { class: 'asset-val' }, [
     url ? icon(url, 'origin-icon', overrideGame || '') : el('span', { class: 'muted' }, '—'),
     overrideGame ? el('span', { class: 'muted small override-note' }, ` ↳ ${overrideGame}`) : null,
-  ]);
+  ]));
 }
 
 const GAME_LIST_ID = 'reg-game-list';

@@ -144,8 +144,9 @@ select.ctrl { border-radius: 999px; }
 
 /* Box view */
 .controls { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 14px; }
-.field { display: flex; flex-direction: column; gap: 4px; }
-.field-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.field { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+.field-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+.field .ctrl { flex: 1; min-width: 0; }
 .box-main { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
 @media (max-width: 860px) { .box-main { grid-template-columns: 1fr; } }
 
@@ -210,6 +211,36 @@ select.ctrl { border-radius: 999px; }
 .data-table th { text-align: left; color: var(--accent-deep); font-weight: 700; border-bottom: 2px solid #ffffffcc; padding: 6px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; }
 .data-table td { padding: 7px 8px; border-bottom: 1px solid var(--border-soft); vertical-align: middle; }
 .data-table tr:hover td { background: #ffffff66; }
+
+/* OT Registry / Profiles tables render as cards (one card per record, each cell a
+   label/value row). Cards flow into as many columns as the width allows. */
+.table-wrap .data-table {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 8px; align-items: start;
+}
+.table-wrap .data-table tbody { display: contents; }
+.table-wrap .data-table .data-head { display: none; }
+.table-wrap .data-table tr {
+  display: block; padding: 6px 12px;
+  background: #ffffff8c; border: 1px solid var(--border);
+  border-radius: 14px; box-shadow: var(--shadow-sm);
+}
+.table-wrap .data-table tr:hover td { background: transparent; }
+.table-wrap .data-table td {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 5px 0; border-bottom: 1px solid var(--border-soft); text-align: right;
+}
+.table-wrap .data-table tr td:last-child { border-bottom: none; }
+.table-wrap .data-table td:empty { display: none; }
+.table-wrap .data-table td[data-label]::before {
+  content: attr(data-label); flex: 0 0 auto; text-align: left;
+  color: var(--accent-deep); font-weight: 700; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .03em;
+}
+.table-wrap .data-table td.row-actions { justify-content: flex-end; }
+.table-wrap .data-table td.row-actions::before { content: none; }
+/* Keep an icon and its "↳ game" override note together on the value (right) side. */
+.asset-val { display: inline-flex; align-items: center; gap: 4px; }
 .src-icon { width: 20px; height: 20px; object-fit: contain; vertical-align: middle; }
 
 /* Stats */
@@ -258,6 +289,15 @@ select.ctrl { border-radius: 999px; }
 .row-actions { display: flex; gap: 4px; }
 .profiles-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 .add-form { background: var(--card2); }
+
+/* --- Responsive: fluid form fields on narrow screens --- */
+@media (max-width: 560px) {
+  /* Form inputs grow/shrink to fill the row instead of overflowing at fixed widths. */
+  .add-grid .ctrl { flex: 1 1 140px; min-width: 0; }
+  .add-grid .field { flex: 1 1 220px; min-width: 0; }
+  .add-grid .ctrl.wide { flex-basis: 100%; }
+  .add-grid .toggle { flex: 0 0 auto; }
+}
 
 /* Modal + savefile sync */
 .modal-overlay { position: fixed; inset: 0; background: #1d4a3a59; backdrop-filter: blur(3px); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
