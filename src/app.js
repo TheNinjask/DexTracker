@@ -65,19 +65,31 @@ function buildSaveBar() {
 
   const status = el('div', { id: 'save-status', class: 'save-status' });
 
-  const actions = el('div', { class: 'save-actions' }, [
-    el('button', { class: 'btn', onclick: () => fileInput.click() }, 'Import'),
-    el('button', { class: 'btn', onclick: doExport }, 'Export'),
-    el('button', { class: 'btn', onclick: openSyncDialog }, 'Sync'),
-    el('button', { class: 'btn', onclick: () => {
-      if (confirm('Start a new empty savefile? This replaces the data currently loaded (export first if needed).')) {
-        store.resetSave(); updateSaveStatus(); renderTab();
-      }
-    } }, 'New'),
+  // The savefile actions collapse into one popover menu so the header stays
+  // compact on phones (4 wrapping buttons used to eat half the screen). A
+  // native <details> gives the open/close behaviour without extra state.
+  const menu = el('details', { class: 'save-menu' });
+  const item = (label, fn) => el('button', { class: 'menu-item', onclick: () => { menu.open = false; fn(); } }, label);
+  menu.appendChild(el('summary', { class: 'btn save-menu-btn', title: 'Savefile' }, [
+    el('span', {}, 'Data'), el('span', { class: 'caret' }, '▾'),
+  ]));
+  menu.appendChild(el('div', { class: 'save-menu-pop' }, [
+    item('⬆︎  Import', () => fileInput.click()),
+    item('⬇︎  Export', doExport),
+    item('🔗  Sync', openSyncDialog),
+    item('✦  New', newSave),
     fileInput,
-  ]);
+  ]));
+  // Dismiss when clicking anywhere outside the menu.
+  document.addEventListener('click', (e) => { if (menu.open && !menu.contains(e.target)) menu.open = false; });
 
-  return el('div', { class: 'savebar' }, [status, actions]);
+  return el('div', { class: 'savebar' }, [status, menu]);
+}
+
+function newSave() {
+  if (confirm('Start a new empty savefile? This replaces the data currently loaded (export first if needed).')) {
+    store.resetSave(); updateSaveStatus(); renderTab();
+  }
 }
 
 function doExport() {

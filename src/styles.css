@@ -63,8 +63,26 @@ body {
   padding: 2px 10px; font-size: 12px; color: var(--text); white-space: nowrap;
 }
 .stat-chip .stat-label { color: var(--muted); }
-.save-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-.save-actions .btn { flex: 1 1 auto; white-space: nowrap; }
+/* Savefile actions collapse into one popover menu (keeps the header compact on
+   phones). A native <details> drives the open/close state. */
+.save-menu { position: relative; }
+.save-menu > summary { list-style: none; display: inline-flex; align-items: center; gap: 5px; }
+.save-menu > summary::-webkit-details-marker { display: none; }
+.save-menu .caret { display: inline-block; font-size: 11px; transition: transform .12s; }
+.save-menu[open] > summary .caret { transform: rotate(180deg); }
+.save-menu-pop {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 30;
+  display: flex; flex-direction: column; gap: 2px; min-width: 168px;
+  background: #ffffffee; backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: 14px; padding: 6px;
+  box-shadow: var(--shadow);
+}
+.menu-item {
+  background: transparent; border: none; border-radius: 10px;
+  padding: 9px 12px; text-align: left; font-size: 14px; font-weight: 600;
+  color: var(--text); cursor: pointer; white-space: nowrap;
+}
+.menu-item:hover { background: #e3f6f4; color: var(--accent-deep); }
 
 /* Buttons / inputs */
 .btn {
