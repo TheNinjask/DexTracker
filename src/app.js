@@ -5,7 +5,7 @@ import { preloadIcons } from './preload.js';
 import * as store from './store.js';
 import { computeStats } from './compute.js';
 import { el, clear, getPrefs, setPref } from './dom.js';
-import { startSend, startReceive, STATUS_TEXT, parseSyncId } from './sync.js';
+import { startHost, startJoin, STATUS_TEXT, parseSyncId } from './sync.js';
 import * as boxView from './views/box.js';
 import * as statsView from './views/stats.js';
 import * as hofView from './views/halloffame.js';
@@ -67,7 +67,8 @@ function buildSaveBar() {
 
   const actions = el('div', { class: 'save-actions' }, [
     el('button', { class: 'btn', onclick: () => fileInput.click() }, 'Import'),
-    el('button', { class: 'btn', onclick: openExportDialog }, 'Export'),
+    el('button', { class: 'btn', onclick: doExport }, 'Export'),
+    el('button', { class: 'btn', onclick: openSyncDialog }, 'Sync'),
     el('button', { class: 'btn', onclick: () => {
       if (confirm('Start a new empty savefile? This replaces the data currently loaded (export first if needed).')) {
         store.resetSave(); updateSaveStatus(); renderTab();
@@ -104,32 +105,60 @@ function modal(title, bodyNodes, onClose) {
   return { close, box };
 }
 
-function openExportDialog() {
-  const m = modal('Export savefile', [
-    el('p', { class: 'muted' }, 'Download a savefile.json, or sync it straight to another device over an encrypted peer-to-peer connection.'),
+// Sync hub: this device initiates and picks the direction. Whichever it chooses,
+// it hosts a QR/link; the opener's device automatically does the opposite.
+function openSyncDialog() {
+  const m = modal('Sync with another device', [
+    el('p', { class: 'muted' }, 'Transfer a savefile straight between devices over an encrypted peer-to-peer connection. Choose what this device does — the other device just opens the link.'),
     el('div', { class: 'modal-actions' }, [
-      el('button', { class: 'btn primary', onclick: () => { m.close(); doExport(); } }, '⬇  Download'),
-      el('button', { class: 'btn', onclick: () => { m.close(); openSendDialog(); } }, '📡  Sync to device'),
+      el('button', { class: 'btn primary', onclick: () => { m.close(); openHostDialog('send'); } }, '📤  Send this savefile'),
+      el('button', { class: 'btn', onclick: () => { m.close(); openHostDialog('receive'); } }, '📥  Receive a savefile'),
     ]),
   ]);
 }
 
-function openSendDialog() {
+// Apply a received savefile (shared by both directions of receiving), with a
+// confirm so an incoming save never silently replaces local data.
+function applyReceived(data, status, m) {
+  let obj;
+  try { obj = JSON.parse(data); }
+  catch { status.textContent = 'Received invalid data.'; return; }
+  if (confirm('Received a savefile from the other device. Import it? This replaces the data currently loaded (export first if needed).')) {
+    store.importSave(obj);
+    updateSaveStatus();
+    renderTab();
+    status.textContent = 'Imported ✓';
+    status.classList.add('ok');
+    setTimeout(m.close, 1000);
+  } else {
+    status.textContent = 'Discarded.';
+    setTimeout(m.close, 800);
+  }
+}
+
+// Host side: show the QR/link and run `role` ('send' exports this device's save,
+// 'receive' imports the opener's). The link tells the opener to do the opposite.
+function openHostDialog(role) {
+  const sending = role === 'send';
   const canvas = el('canvas', { class: 'qr-canvas', width: 240, height: 240 });
   const linkRow = el('div', { class: 'sync-link muted' }, 'Generating link…');
   const status = el('div', { class: 'sync-status muted' }, 'Starting…');
   let session = null;
-  const m = modal('Sync to device', [
-    el('p', { class: 'muted' }, 'On the other device, scan this QR code or open the link. Keep this window open until it says “Done”.'),
+  const m = modal(sending ? 'Send savefile' : 'Receive savefile', [
+    el('p', { class: 'muted' }, sending
+      ? 'On the other device, scan this QR code or open the link to pull this savefile. Keep this window open until it says “Done”.'
+      : 'On the other device, scan this QR code or open the link to push its savefile here. Keep this window open until it says “Done”.'),
     el('div', { class: 'qr-wrap' }, [canvas]),
     linkRow,
     status,
   ], () => { if (session) session.close(); });
 
-  const payload = store.exportSave();
-  session = startSend(payload, {
+  // act names what the OPENING device does: the opposite of this host.
+  const openerAct = sending ? 'recv' : 'send';
+  session = startHost(role, {
+    payload: sending ? store.exportSave() : null,
     onPeerId: (id) => {
-      const link = location.href.split('#')[0] + '#sync=' + encodeURIComponent(id);
+      const link = location.href.split('#')[0] + '#sync=' + encodeURIComponent(id) + '&act=' + openerAct;
       renderQR(canvas, link);
       clear(linkRow);
       linkRow.appendChild(el('a', { class: 'mono', href: link, target: '_blank', rel: 'noopener' }, link));
@@ -137,37 +166,33 @@ function openSendDialog() {
     onStatus: (s, err) => {
       status.textContent = STATUS_TEXT[s] || s;
       status.classList.toggle('ok', s === 'done');
-      if (err) console.warn('sync send:', err);
+      if (err) console.warn('sync host:', err);
     },
+    onData: sending ? undefined : (data) => applyReceived(data, status, m),
   });
 }
 
-function openReceiveDialog(senderId) {
+// Joiner side (opened a sync link): run `role`, the opposite of the host.
+function openJoinDialog(hostId, role) {
+  const sending = role === 'send';
+  if (sending && !confirm('Another device wants to import a savefile. Send this device\'s savefile to it?')) return;
   const status = el('div', { class: 'sync-status muted' }, 'Connecting…');
   let session = null;
-  const m = modal('Receiving savefile', [
-    el('p', { class: 'muted' }, `Receiving from device ${senderId}. Keep this window open.`),
+  const m = modal(sending ? 'Sending savefile' : 'Receiving savefile', [
+    el('p', { class: 'muted' }, sending
+      ? `Sending this device's savefile to ${hostId}. Keep this window open.`
+      : `Receiving from device ${hostId}. Keep this window open.`),
     status,
   ], () => { if (session) session.close(); });
 
-  session = startReceive(senderId, {
-    onStatus: (s, err) => { status.textContent = STATUS_TEXT[s] || s; if (err) console.warn('sync recv:', err); },
-    onData: (data) => {
-      let obj;
-      try { obj = JSON.parse(data); }
-      catch { status.textContent = 'Received invalid data.'; return; }
-      if (confirm('Received a savefile from the other device. Import it? This replaces the data currently loaded (export first if needed).')) {
-        store.importSave(obj);
-        updateSaveStatus();
-        renderTab();
-        status.textContent = 'Imported ✓';
-        status.classList.add('ok');
-        setTimeout(m.close, 1000);
-      } else {
-        status.textContent = 'Discarded.';
-        setTimeout(m.close, 800);
-      }
+  session = startJoin(hostId, role, {
+    payload: sending ? store.exportSave() : null,
+    onStatus: (s, err) => {
+      status.textContent = STATUS_TEXT[s] || s;
+      status.classList.toggle('ok', s === 'done');
+      if (err) console.warn('sync join:', err);
     },
+    onData: sending ? undefined : (data) => applyReceived(data, status, m),
   });
 }
 
@@ -214,10 +239,10 @@ async function main() {
   renderTab();
   // Opened via a sync QR/link → drop the hash (so a reload won't reconnect to a
   // dead peer) and start receiving immediately.
-  const syncId = parseSyncId();
-  if (syncId) {
+  const sync = parseSyncId();
+  if (sync) {
     history.replaceState(null, '', location.href.split('#')[0]);
-    openReceiveDialog(syncId);
+    openJoinDialog(sync.id, sync.role);
   } else if (!had) showWelcome();
   // Warm the shared game/type icons into the cache (paced, off the critical path)
   // so the box grid stops bursting the image host. Fire-and-forget.

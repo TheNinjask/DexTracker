@@ -7,53 +7,68 @@
 //
 // peerjs is heavy and only needed when the user actually syncs, so it's loaded
 // on demand via dynamic import — it never bloats the initial PWA bundle.
+//
+// The connection setup is asymmetric (one device hosts a peer id and shows the
+// QR/link; the other joins it) but the data channel is bidirectional, so either
+// device can be the one that sends the savefile. The host decides the direction
+// and encodes it in the link, so the opener automatically does the opposite.
 
-// Sender (the device that has the savefile). Opens a peer, hands its id back so
-// the UI can render a QR/link, then pushes `payload` once the other side joins.
-// Returns a controller immediately, even though the peer comes up async.
-export function startSend(payload, { onPeerId, onStatus }) {
+async function makePeer() {
+  const mod = await import('peerjs');
+  const Peer = mod.default || mod.Peer;
+  return new Peer();
+}
+
+// Drive one transfer over an open-able connection. role 'send' pushes `payload`
+// and waits for the ack; role 'receive' waits for the data, hands it to onData,
+// then acks. onComplete tears the peer down once the exchange finishes.
+function runTransfer(conn, role, { payload, onStatus, onData, onComplete }) {
+  if (role === 'send') {
+    conn.on('open', () => { conn.send(payload); onStatus('sending'); });
+    conn.on('data', (msg) => { if (String(msg) === 'ack') { onStatus('done'); onComplete(); } });
+  } else {
+    conn.on('open', () => onStatus('connected'));
+    conn.on('data', (data) => {
+      onData(String(data));
+      try { conn.send('ack'); } catch {}
+      onStatus('done');
+      onComplete();
+    });
+  }
+  conn.on('error', (e) => onStatus('error', e));
+}
+
+// Host: opens a peer, hands its id back so the UI can render a QR/link, then
+// runs the chosen `role` once the other side joins. Returns a controller
+// immediately, even though the peer comes up async.
+export function startHost(role, { payload, onPeerId, onStatus, onData }) {
   let peer = null, closed = false;
   (async () => {
-    let Peer;
-    try { const mod = await import('peerjs'); Peer = mod.default || mod.Peer; }
+    try { peer = await makePeer(); }
     catch (e) { onStatus('error', e); return; }
-    if (closed) return;
-    peer = new Peer();
+    if (closed) { peer.destroy(); return; }
     peer.on('open', (id) => { onPeerId(id); onStatus('waiting'); });
     peer.on('connection', (conn) => {
       onStatus('connected');
-      conn.on('open', () => { conn.send(payload); onStatus('sending'); });
-      conn.on('data', (msg) => {
-        if (msg === 'ack') { onStatus('done'); setTimeout(() => { if (peer) peer.destroy(); }, 600); }
-      });
-      conn.on('error', (e) => onStatus('error', e));
+      runTransfer(conn, role, { payload, onStatus, onData, onComplete: () => setTimeout(() => { if (peer) peer.destroy(); }, 600) });
     });
     peer.on('error', (e) => onStatus('error', e));
   })();
   return { close() { closed = true; if (peer) peer.destroy(); } };
 }
 
-// Receiver (the device opening the QR/link). Connects to `senderId`, waits for
-// the savefile, acks it, then tears down. `onData` gets the raw JSON string.
-export function startReceive(senderId, { onStatus, onData }) {
+// Joiner (the device opening the QR/link): connects to `hostId` and runs the
+// chosen `role` — the opposite of whatever the host is doing.
+export function startJoin(hostId, role, { payload, onStatus, onData }) {
   let peer = null, closed = false;
   (async () => {
-    let Peer;
-    try { const mod = await import('peerjs'); Peer = mod.default || mod.Peer; }
+    try { peer = await makePeer(); }
     catch (e) { onStatus('error', e); return; }
-    if (closed) return;
-    peer = new Peer();
+    if (closed) { peer.destroy(); return; }
     peer.on('open', () => {
       onStatus('connecting');
-      const conn = peer.connect(senderId, { reliable: true });
-      conn.on('open', () => onStatus('connected'));
-      conn.on('data', (data) => {
-        onData(String(data));
-        try { conn.send('ack'); } catch {}
-        onStatus('done');
-        setTimeout(() => { if (peer) peer.destroy(); }, 800);
-      });
-      conn.on('error', (e) => onStatus('error', e));
+      const conn = peer.connect(hostId, { reliable: true });
+      runTransfer(conn, role, { payload, onStatus, onData, onComplete: () => setTimeout(() => { if (peer) peer.destroy(); }, 800) });
     });
     peer.on('error', (e) => onStatus('error', e));
   })();
@@ -70,8 +85,14 @@ export const STATUS_TEXT = {
   error: 'Connection error — check both devices are online and try again.',
 };
 
-// `#sync=<peerId>` in the URL means "receive a save from this peer".
+// Parse a sync link/hash. `#sync=<peerId>` carries the host's peer id; `act`
+// names what the OPENING device should do — 'recv' (default; host is sending)
+// or 'send' (host is receiving). Returns { id, role } or null.
 export function parseSyncId() {
-  const m = (location.hash || '').match(/sync=([^&]+)/);
-  return m ? decodeURIComponent(m[1]) : null;
+  const hash = location.hash || '';
+  const m = hash.match(/sync=([^&]+)/);
+  if (!m) return null;
+  const am = hash.match(/act=([^&]+)/);
+  const role = am && am[1] === 'send' ? 'send' : 'receive';
+  return { id: decodeURIComponent(m[1]), role };
 }
