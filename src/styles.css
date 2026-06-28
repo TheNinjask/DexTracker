@@ -296,6 +296,7 @@ select.ctrl { border-radius: 999px; }
 .dev-tabs .btn.active { color: var(--accent-deep); border-color: var(--accent); }
 .dev-filter { display: flex; align-items: center; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
 .dev-filter .ctrl { flex: 1 1 200px; min-width: 0; }
+.dev-pager { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .dev-mapping-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
 /* --- Responsive: fluid form fields on narrow screens --- */

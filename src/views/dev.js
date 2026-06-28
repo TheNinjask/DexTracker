@@ -45,9 +45,29 @@ function sampleUrl(prefix, suffix) {
   return prefix + n + suffix;
 }
 
-// Cap rendered rows — the full species (1025) / forms (400) lists are too heavy to
-// mount at once. The filter box is the way to reach a specific record.
-const ROW_LIMIT = 200;
+// The full species (1025) / forms (400) lists are too heavy to mount at once, so
+// long lists are paged. The filter box narrows; the pager walks the rest.
+const PAGE_SIZE = 200;
+const pages = { species: 0, forms: 0, dexes: 0, mappings: 0, games: 0, sources: 0 };
+
+// Slice `matched` to the current page and build a pager (Showing a–b of N, Prev/Next).
+// Clamps the stored page so a narrowed filter never leaves you past the last page.
+function paginate(matched, root) {
+  const total = matched.length;
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const page = Math.min(Math.max(pages[section], 0), pageCount - 1);
+  pages[section] = page;
+  const start = page * PAGE_SIZE;
+  const rows = matched.slice(start, start + PAGE_SIZE);
+  const go = (p) => { pages[section] = p; render(root); };
+  const pager = el('div', { class: 'dev-pager' }, [
+    el('span', { class: 'muted small' }, total ? `Showing ${start + 1}–${start + rows.length} of ${total}` : '0 records'),
+    el('button', { class: 'btn tiny', disabled: page <= 0 || null, onclick: () => go(page - 1) }, '‹ Prev'),
+    el('span', { class: 'muted small' }, `Page ${page + 1} / ${pageCount}`),
+    el('button', { class: 'btn tiny', disabled: page >= pageCount - 1 || null, onclick: () => go(page + 1) }, 'Next ›'),
+  ]);
+  return { rows, pager };
+}
 
 export function render(root) {
   clear(root);
@@ -88,7 +108,7 @@ export function render(root) {
 function filterInput(root) {
   return el('input', {
     class: 'ctrl', placeholder: 'Filter…', value: filters[section],
-    oninput: (e) => { filters[section] = e.target.value; refocusSel = '.dev-filter .ctrl'; render(root); },
+    oninput: (e) => { filters[section] = e.target.value; pages[section] = 0; refocusSel = '.dev-filter .ctrl'; render(root); },
   });
 }
 
@@ -113,9 +133,9 @@ function renderSpecies(wrap, root) {
   const matched = q
     ? all.filter((s) => s.national_no.includes(q) || (s.name || '').toLowerCase().includes(q))
     : all;
-  const rows = matched.slice(0, ROW_LIMIT);
+  const { rows, pager } = paginate(matched, root);
 
-  wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), limitNote(rows.length, matched.length)]));
+  wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), pager]));
 
   const headers = ['Nat #', 'Gen', 'Name', 'Type 1', 'Type 2', ''];
   const body = rows.map((s) => [
@@ -173,9 +193,9 @@ function renderForms(wrap, root) {
   const matched = q
     ? all.filter((f) => f.national_no.includes(q) || (f.name || '').toLowerCase().includes(q) || (f.form || '').toLowerCase().includes(q))
     : all;
-  const rows = matched.slice(0, ROW_LIMIT);
+  const { rows, pager } = paginate(matched, root);
 
-  wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), limitNote(rows.length, matched.length)]));
+  wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), pager]));
 
   const headers = ['Nat #', 'Name', 'Form', 'Code', 'Group', ''];
   const body = rows.map((f) => [
@@ -329,7 +349,7 @@ function renderMappings(wrap, root) {
     mappingDex = dexes.length ? dexes[0].id : null;
   }
 
-  const picker = el('select', { class: 'ctrl', onchange: (e) => { mappingDex = e.target.value; editing.mappings = null; render(root); } },
+  const picker = el('select', { class: 'ctrl', onchange: (e) => { mappingDex = e.target.value; editing.mappings = null; pages.mappings = 0; render(root); } },
     dexes.map((d) => el('option', { value: d.id, selected: d.id === mappingDex ? '' : null }, d.id)));
   wrap.appendChild(el('div', { class: 'card dev-mapping-head' }, [
     el('span', { class: 'field-label' }, 'Dex'), picker,
@@ -347,9 +367,9 @@ function renderMappings(wrap, root) {
   const matched = q
     ? all.filter((m) => m.national_no.includes(q) || m.regional_no.includes(q) || speciesName(m.national_no).toLowerCase().includes(q))
     : all;
-  const rows = matched.slice(0, ROW_LIMIT);
+  const { rows, pager } = paginate(matched, root);
 
-  wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), limitNote(rows.length, matched.length)]));
+  wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), pager]));
 
   const headers = ['Regional #', 'Nat #', 'Species', ''];
   const body = rows.map((m) => [
@@ -402,9 +422,9 @@ function renderGames(wrap, root) {
   const q = filters.games.trim().toLowerCase();
   const all = REF.games;
   const matched = q ? all.filter((g) => (g.id || '').toLowerCase().includes(q) || (g.mark_code || '').toLowerCase().includes(q)) : all;
-  const rows = matched.slice(0, ROW_LIMIT);
+  const { rows, pager } = paginate(matched, root);
 
-  wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), limitNote(rows.length, matched.length)]));
+  wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), pager]));
 
   const headers = ['Id', 'Icon', 'Mark', 'Mark code', ''];
   const body = rows.map((g) => [
