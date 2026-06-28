@@ -196,6 +196,23 @@ export function setPerGameSlot(dexId, nat, regionalNo, ot, tid, isMine) {
   commit();
 }
 
+// ---- Hall of Fame ----
+// Rows have no stable key, so callers pass the row reference itself to edit/remove.
+export function addHofEntry(entry) {
+  state.hall_of_fame = state.hall_of_fame || [];
+  state.hall_of_fame.push(entry);
+  commit();
+}
+export function updateHofEntry(row, patch) {
+  if (!row) return;
+  Object.assign(row, patch);
+  commit();
+}
+export function removeHofEntry(row) {
+  state.hall_of_fame = (state.hall_of_fame || []).filter((x) => x !== row);
+  commit();
+}
+
 export function getOtEntry(ot, tid) { return index.ot.get(otKey(ot, tid)); }
 export function upsertOtEntry(entry) {
   const k = otKey(entry.ot, entry.tid);

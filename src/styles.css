@@ -161,7 +161,10 @@ body {
 .hof-roster { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
 .hof-mon { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 8px; text-align: center; position: relative; }
 .hof-img { width: 64px; height: 64px; object-fit: contain; }
+.hof-img.preview { width: 40px; height: 40px; vertical-align: middle; }
 .hof-name { font-weight: 600; font-size: 13px; }
+.hof-mon-actions { position: absolute; top: 4px; right: 4px; display: flex; gap: 2px; opacity: 0; transition: opacity .12s; }
+.hof-mon:hover .hof-mon-actions { opacity: 1; }
 
 /* Cooking */
 .cook-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 12px; }
