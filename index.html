@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Hosts (bulbapedia) block hotlinking via the Referer header: images
+       404/403 when loaded from the app but work when opened directly (no referer).
+       Sending no referrer mirrors that direct-open case so the sprites load. -->
+  <meta name="referrer" content="no-referrer" />
   <title>DexTracker</title>
   <meta name="description" content="Personal Pokémon living-dex collection tracker." />
   <meta name="theme-color" content="#1aa6a0" />

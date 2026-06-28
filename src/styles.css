@@ -118,6 +118,20 @@ select.ctrl { border-radius: 999px; }
 .card { background: var(--card); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: var(--shadow); }
 .card h3 { margin: 0 0 10px; font-size: 15px; }
 .muted { color: var(--muted); }
+
+/* About / credits tab */
+.about { max-width: 640px; }
+.about-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.about-brand { display: flex; align-items: center; gap: 12px; }
+.about-logo { color: var(--accent2); font-size: 38px; line-height: 1; }
+.about-head h2 { margin: 0; font-size: 20px; }
+.about-head p { margin: 2px 0 0; }
+.about-version { background: var(--grad); color: #fff; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 999px; box-shadow: var(--shadow-sm); }
+.about-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.about-item { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.about-item .btn.link { flex: 0 0 auto; }
+.about-legal { margin: 6px 4px 0; }
+
 .small { font-size: 12px; }
 .mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }
 .warn { color: #c47d12; font-size: 12px; }

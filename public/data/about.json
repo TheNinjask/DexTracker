@@ -1,0 +1,22 @@
+{
+  "tagline": "Personal Pokémon living-dex collection tracker.",
+  "credits": [
+    {
+      "name": "Serebii.net",
+      "url": "https://www.serebii.net",
+      "note": "Pokémon sprites and per-species dex reference links."
+    },
+    {
+      "name": "Bulbapedia / Bulbagarden Archives",
+      "url": "https://bulbapedia.bulbagarden.net",
+      "note": "Type, game and mark icons, plus the Pokémon HOME UI reference."
+    }
+  ],
+  "libraries": [
+    { "name": "Vite", "url": "https://vitejs.dev", "note": "Build tooling & dev server." },
+    { "name": "vite-plugin-pwa", "url": "https://vite-pwa-org.netlify.app", "note": "Service worker / offline support." },
+    { "name": "PeerJS", "url": "https://peerjs.com", "note": "WebRTC peer-to-peer savefile sync." },
+    { "name": "node-qrcode", "url": "https://github.com/soldair/node-qrcode", "note": "QR codes for the sync links." }
+  ],
+  "legal": "Pokémon and Pokémon character names are trademarks of Nintendo, Game Freak and The Pokémon Company. This is an unofficial, fan-made tool with no affiliation or endorsement."
+}

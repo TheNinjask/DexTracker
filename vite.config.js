@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
@@ -5,8 +6,15 @@ import { VitePWA } from 'vite-plugin-pwa';
 // (the deploy workflow derives it from the repo name) or for a custom domain set '/'.
 const base = process.env.BASE_PATH || '/DexTracker/';
 
+// Single source of truth for the app version: package.json. Injected as a global
+// constant so the About tab badge stays in sync with one bump.
+const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'));
+
 export default defineConfig({
   base,
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
   build: {
     outDir: 'dist',
     target: 'es2020',

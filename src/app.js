@@ -12,6 +12,7 @@ import * as hofView from './views/halloffame.js';
 import * as profilesView from './views/profiles.js';
 import * as registryView from './views/registry.js';
 import * as cookingView from './views/cooking.js';
+import * as aboutView from './views/about.js';
 
 const TABS = [
   { id: 'box', label: 'Box View', render: boxView.render },
@@ -20,6 +21,7 @@ const TABS = [
   { id: 'hof', label: 'Hall of Fame', render: hofView.render },
   { id: 'profiles', label: 'Profiles', render: profilesView.render },
   { id: 'cooking', label: 'Cooking', render: cookingView.render },
+  { id: 'about', label: 'About', render: aboutView.render },
 ];
 
 let current = getPrefs().tab || 'box';
