@@ -40,10 +40,12 @@ function buildChrome() {
   clear(app);
 
   const header = el('header', { class: 'app-header' }, [
-    el('div', { class: 'brand' }, [el('span', { class: 'logo' }, '◓'), el('span', {}, 'DexTracker')]),
+    el('div', { class: 'header-top' }, [
+      el('div', { class: 'brand' }, [el('span', { class: 'logo' }, '◓'), el('span', {}, 'DexTracker')]),
+      buildSaveBar(),
+    ]),
     el('nav', { class: 'nav' }, TABS.map((t) =>
       el('button', { class: 'nav-tab', dataset: { tab: t.id }, onclick: () => go(t.id) }, t.label))),
-    buildSaveBar(),
   ]);
   app.appendChild(header);
   app.appendChild(el('main', { id: 'content' }));

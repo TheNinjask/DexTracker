@@ -32,19 +32,27 @@ body {
 /* Header / nav */
 .app-header {
   position: sticky; top: 0; z-index: 20;
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  padding: 10px 14px; margin-bottom: 16px;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 8px 14px 0; margin-bottom: 16px;
   background: #ffffffbf; backdrop-filter: blur(12px);
   border: 1px solid var(--border); border-radius: 0 0 18px 18px;
   box-shadow: var(--shadow);
 }
-.brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; letter-spacing: .01em; }
+.header-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; letter-spacing: .01em; flex: 0 0 auto; }
 .brand .logo { color: var(--accent2); font-size: 24px; line-height: 1; }
-.nav { display: flex; gap: 2px; flex-wrap: wrap; flex: 1; }
+/* Tabs live on their own row and scroll sideways instead of wrapping, so the
+   header height stays fixed no matter how many tabs or how narrow the screen. */
+.nav {
+  display: flex; gap: 2px; flex-wrap: nowrap;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; border-top: 1px solid var(--border-soft);
+}
+.nav::-webkit-scrollbar { display: none; }
 .nav-tab {
-  background: transparent; color: var(--muted); border: none;
-  border-bottom: 3px solid transparent; margin-bottom: -2px;
-  padding: 7px 12px 8px; cursor: pointer; font-size: 14px; font-weight: 600;
+  flex: 0 0 auto; background: transparent; color: var(--muted); border: none;
+  border-bottom: 3px solid transparent;
+  padding: 9px 13px 10px; cursor: pointer; font-size: 14px; font-weight: 600; white-space: nowrap;
   transition: color .12s, border-color .12s;
 }
 .nav-tab:hover { color: var(--accent-deep); }
@@ -57,6 +65,8 @@ body {
   gap: 6px 10px; flex-wrap: wrap; margin-left: auto;
 }
 .save-status { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+/* On phones the top row is just brand + Data menu; counts stay in the Stats tab. */
+@media (max-width: 560px) { .save-status { display: none; } }
 .stat-chip {
   display: inline-flex; align-items: baseline; gap: 4px;
   background: #ffffffcc; border: 1px solid var(--border); border-radius: 999px;
