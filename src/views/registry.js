@@ -48,6 +48,15 @@ function assetCell(url, overrideGame) {
   ]);
 }
 
+const GAME_LIST_ID = 'reg-game-list';
+
+// Free-text game field with autocomplete for known games. Unlike the icon/mark
+// overrides (which must borrow a known reference game), the recorded origin can
+// be anything — e.g. "Event" or "???" — so this must not be a closed dropdown.
+function gameInput(value) {
+  return el('input', { class: 'ctrl', placeholder: 'Game', value: value || '', list: GAME_LIST_ID });
+}
+
 function gameOptions(selected, placeholder) {
   return el('select', { class: 'ctrl' }, [
     el('option', { value: '' }, placeholder),
@@ -63,7 +72,7 @@ function buildForm(root) {
   const p = editing || {};
   const ot = el('input', { class: 'ctrl', placeholder: 'OT', value: p.ot || '' });
   const tid = el('input', { class: 'ctrl', placeholder: 'TID', value: p.tid || '' });
-  const game = gameOptions(p.game, '— game —');
+  const game = gameInput(p.game);
   const mine = el('input', { type: 'checkbox', checked: p.is_mine ? '' : null });
   const go = el('input', { type: 'checkbox', checked: p.is_go ? '' : null });
   const profile = el('input', { class: 'ctrl', placeholder: 'Profile', value: p.profile && p.profile !== 'N/A' ? p.profile : '' });
@@ -87,7 +96,7 @@ function buildForm(root) {
   const save = el('button', { class: 'btn primary', onclick: () => {
     if (!ot.value.trim() || !tid.value.trim()) { alert('OT and TID are required.'); return; }
     store.upsertOtEntry({
-      ot: ot.value.trim(), tid: tid.value.trim(), game: game.value,
+      ot: ot.value.trim(), tid: tid.value.trim(), game: game.value.trim(),
       is_mine: mine.checked, is_go: go.checked,
       profile: profile.value.trim() || 'N/A', description: desc.value.trim(),
       icon_game: iconGame.value || '', mark_game: markGame.value || '',
@@ -97,6 +106,7 @@ function buildForm(root) {
   } }, editing ? 'Save changes' : 'Save');
 
   const card = el('div', { class: 'card add-form' }, [
+    el('datalist', { id: GAME_LIST_ID }, REF.games.map((g) => el('option', { value: g.id }))),
     el('h3', {}, editing ? `Edit ${p.ot}/${p.tid}` : 'Add / update trainer'),
     el('div', { class: 'add-grid' }, [
       ot, tid, game,
