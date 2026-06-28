@@ -45,11 +45,27 @@ export default defineConfig({
         navigateFallback: `${base}index.html`,
         runtimeCaching: [
           {
-            // External sprite hosts (serebii / bulbagarden) — cache-first, lazy.
+            // Bulbagarden (behind Cloudflare) 403s on bursts. Loaded in CORS mode
+            // by icon(), so responses carry a real status — cache ONLY 200 so a
+            // 403 is never stored and replayed. (Caching status 0 here is what
+            // poisoned the old cache: an opaque 403 was indistinguishable from a
+            // good image.) Cache name bumped to abandon any poisoned entries.
+            urlPattern: ({ url }) => url.hostname === 'archives.bulbagarden.net',
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'sprite-images-bulba-v2',
+              expiration: { maxEntries: 6000, maxAgeSeconds: 60 * 60 * 24 * 60 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          {
+            // Other external sprite hosts (serebii, etc.) — no CORS, so responses
+            // are opaque (status 0). These hosts don't 403 on bursts, so opaque
+            // caching is safe here.
             urlPattern: ({ url }) => url.origin !== self.location.origin,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'sprite-images',
+              cacheName: 'sprite-images-v2',
               expiration: { maxEntries: 6000, maxAgeSeconds: 60 * 60 * 24 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },

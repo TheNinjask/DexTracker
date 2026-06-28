@@ -52,21 +52,63 @@ export function dataTable(headers, rows) {
 // failed external image shows the browser's broken-image indicator rather than
 // falling back to alt text (which would leak e.g. the mark code "RBY").
 //
-// The external host rate-limits bursts (a box page mounts ~30 marks at once), so
-// on error we re-request the same URL a few times with backoff: transient
-// 403/429s clear, and once it loads the service worker caches it for good. Only
-// after exhausting retries do we mark it `.broken`.
+// Cloudflare (in front of archives.bulbagarden.net) returns 403 when too many
+// images are requested at once — a box page mounts dozens of marks, which trips
+// it. We defend on two fronts:
+//   1. A small concurrency gate (MAX_CONCURRENT below) so we never fire the
+//      burst that triggers the 403 in the first place.
+//   2. crossorigin on the Bulbagarden host so the response is a real CORS
+//      response (visible status), not an opaque one. That matters because the
+//      service worker can only avoid caching a 403 if it can *see* it's a 403 —
+//      opaque responses report status 0, indistinguishable from a good image,
+//      so a single 403 used to get cached and replayed forever.
+// On error we still retry the same URL a few times with backoff; now that 403s
+// aren't cached, those retries actually reach the network. Only after exhausting
+// retries do we mark it `.broken`.
+const MAX_CONCURRENT = 6;
+let active = 0;
+const waiting = [];
+function pumpImages() {
+  while (active < MAX_CONCURRENT && waiting.length) {
+    active++;
+    waiting.shift()();
+  }
+}
+
 export function icon(src, className, title, retries = 3) {
-  const img = el('img', { class: className, src, alt: '', title: title || null });
+  // Bulbagarden sends `Access-Control-Allow-Origin: *`, so we can load it in CORS
+  // mode for visible statuses. Serebii has no CORS header — requesting it with
+  // crossorigin would fail outright, so it stays a plain (opaque) image.
+  const cors = /(^|\.)archives\.bulbagarden\.net$/i.test(hostOf(src));
+  // NB: no loading="lazy" here — a deferred lazy image fires neither load nor
+  // error, which would hold a concurrency slot forever and stall the whole queue.
+  // The gate below is what limits the burst instead.
+  const img = el('img', {
+    class: className, alt: '', title: title || null,
+    decoding: 'async',
+    crossorigin: cors ? 'anonymous' : null,
+  });
+
   let attempt = 0;
+  let settled = false;
+  const release = () => { if (settled) return; settled = true; active = Math.max(0, active - 1); pumpImages(); };
+  img.addEventListener('load', release);
   img.addEventListener('error', () => {
     if (attempt++ < retries) {
       setTimeout(() => { img.removeAttribute('src'); img.src = src; }, 600 * attempt);
     } else {
       img.classList.add('broken');
+      release(); // free the slot even when it never loads, so the queue drains
     }
   });
+
+  waiting.push(() => { img.src = src; });
+  pumpImages();
   return img;
+}
+
+function hostOf(url) {
+  try { return new URL(url, location.href).hostname; } catch { return ''; }
 }
 
 // UI-pref persistence (separate from the savefile; not user content).
