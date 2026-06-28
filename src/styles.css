@@ -165,6 +165,8 @@ body {
 .hof-name { font-weight: 600; font-size: 13px; }
 .hof-mon-actions { position: absolute; top: 4px; right: 4px; display: flex; gap: 2px; opacity: 0; transition: opacity .12s; }
 .hof-mon:hover .hof-mon-actions { opacity: 1; }
+.hof-team-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.hof-team-head .hof-title { margin: 0; display: flex; align-items: center; gap: 8px; }
 
 /* Cooking */
 .cook-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 12px; }

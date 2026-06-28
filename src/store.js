@@ -86,7 +86,10 @@ function normalize(obj) {
     form_ownership: obj.form_ownership || [],
     per_game_ownership: obj.per_game_ownership || {},
     ot_registry: obj.ot_registry || [],
-    hall_of_fame: obj.hall_of_fame || [],
+    // A HoF "team" is one champion run. Legacy rows had no team_id, so distinct
+    // runs of the same game collapsed together — group those by game so they keep
+    // their old appearance, while new rows carry a unique team_id.
+    hall_of_fame: (obj.hall_of_fame || []).map((r) => (r.team_id ? r : { ...r, team_id: `g:${r.game || 'Unknown'}` })),
     switch_profiles: obj.switch_profiles || [],
     cooking_recipes: obj.cooking_recipes || [],
     ui: obj.ui || {},
@@ -210,6 +213,16 @@ export function updateHofEntry(row, patch) {
 }
 export function removeHofEntry(row) {
   state.hall_of_fame = (state.hall_of_fame || []).filter((x) => x !== row);
+  commit();
+}
+// Swap two rows' positions in the flat list. Teams are derived by grouping that
+// list in order, so swapping two same-team members reorders them within the team
+// without disturbing other teams.
+export function swapHofEntries(a, b) {
+  const arr = state.hall_of_fame || [];
+  const ia = arr.indexOf(a), ib = arr.indexOf(b);
+  if (ia < 0 || ib < 0 || ia === ib) return;
+  [arr[ia], arr[ib]] = [arr[ib], arr[ia]];
   commit();
 }
 
