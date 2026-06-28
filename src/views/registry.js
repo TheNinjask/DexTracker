@@ -1,56 +1,117 @@
 // OT registry editor (SPEC §4.4). The join table turning (OT,TID) into origin metadata.
-import { REF } from '../data.js';
+import { REF, findGame } from '../data.js';
+import { resolveOrigin } from '../compute.js';
 import * as store from '../store.js';
-import { el, clear } from '../dom.js';
+import { el, clear, icon } from '../dom.js';
+
+// Row currently loaded into the form for editing (null = add mode).
+let editing = null;
 
 export function render(root) {
   clear(root);
   const wrap = el('div', { class: 'registry' });
-  wrap.appendChild(el('p', { class: 'muted' }, 'Every distinct trainer/source you\'ve caught from. A catch whose OT+TID isn\'t here shows origin N/A.'));
+  wrap.appendChild(el('p', { class: 'muted' }, 'Every distinct trainer/source you\'ve caught from. A catch whose OT+TID isn\'t here shows origin N/A. The Origin icon and Mark default to the chosen game — override either by borrowing another game\'s.'));
 
-  wrap.appendChild(buildAddForm(root));
+  wrap.appendChild(buildForm(root));
 
   const rows = store.state.ot_registry || [];
   const table = el('table', { class: 'data-table' });
-  table.appendChild(el('tr', {}, ['OT', 'TID', 'Game', 'isMine', 'isGo', 'Profile', 'Description', ''].map((h) => el('th', {}, h))));
+  table.appendChild(el('tr', {}, ['OT', 'TID', 'Game', 'Origin', 'Mark', 'isMine', 'isGo', 'Profile', 'Description', ''].map((h) => el('th', {}, h))));
   rows.forEach((r) => {
+    const o = resolveOrigin(r.ot, r.tid);
     table.appendChild(el('tr', {}, [
       el('td', { class: 'mono' }, r.ot),
       el('td', { class: 'mono' }, r.tid),
       el('td', {}, r.game || el('span', { class: 'muted' }, '—')),
+      assetCell(o.iconUrl, r.icon_game),
+      assetCell(o.markUrl, r.mark_game),
       el('td', {}, r.is_mine ? '✓' : ''),
       el('td', {}, r.is_go ? 'GO' : ''),
       el('td', { class: 'muted small' }, r.profile || ''),
       el('td', { class: 'muted small' }, r.description || ''),
-      el('td', {}, el('button', { class: 'btn tiny', onclick: () => { if (confirm(`Remove ${r.ot}/${r.tid}?`)) { store.removeOtEntry(r.ot, r.tid); render(root); } } }, '✕')),
+      el('td', { class: 'row-actions' }, [
+        el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = r; render(root); } }, '✎'),
+        el('button', { class: 'btn tiny', title: 'Remove', onclick: () => { if (confirm(`Remove ${r.ot}/${r.tid}?`)) { if (editing === r) editing = null; store.removeOtEntry(r.ot, r.tid); render(root); } } }, '✕'),
+      ]),
     ]));
   });
   wrap.appendChild(table);
   root.appendChild(wrap);
 }
 
-function buildAddForm(root) {
-  const ot = el('input', { class: 'ctrl', placeholder: 'OT' });
-  const tid = el('input', { class: 'ctrl', placeholder: 'TID' });
-  const game = el('select', { class: 'ctrl' }, [el('option', { value: '' }, '— game —'),
-    ...REF.games.map((g) => el('option', { value: g.id }, g.id))]);
-  const mine = el('input', { type: 'checkbox' });
-  const go = el('input', { type: 'checkbox' });
-  const profile = el('input', { class: 'ctrl', placeholder: 'Profile' });
-  const desc = el('input', { class: 'ctrl wide', placeholder: 'Description' });
+// A table cell showing a resolved icon/mark image plus a note of which game it
+// was borrowed from when overridden.
+function assetCell(url, overrideGame) {
+  return el('td', {}, [
+    url ? icon(url, 'origin-icon', overrideGame || '') : el('span', { class: 'muted' }, '—'),
+    overrideGame ? el('span', { class: 'muted small override-note' }, ` ↳ ${overrideGame}`) : null,
+  ]);
+}
+
+function gameOptions(selected, placeholder) {
+  return el('select', { class: 'ctrl' }, [
+    el('option', { value: '' }, placeholder),
+    ...REF.games.map((g) => el('option', { value: g.id, selected: g.id === selected ? '' : null }, g.id)),
+  ]);
+}
+
+function labeled(text, control) {
+  return el('label', { class: 'field' }, [el('span', { class: 'field-label' }, text), control]);
+}
+
+function buildForm(root) {
+  const p = editing || {};
+  const ot = el('input', { class: 'ctrl', placeholder: 'OT', value: p.ot || '' });
+  const tid = el('input', { class: 'ctrl', placeholder: 'TID', value: p.tid || '' });
+  const game = gameOptions(p.game, '— game —');
+  const mine = el('input', { type: 'checkbox', checked: p.is_mine ? '' : null });
+  const go = el('input', { type: 'checkbox', checked: p.is_go ? '' : null });
+  const profile = el('input', { class: 'ctrl', placeholder: 'Profile', value: p.profile && p.profile !== 'N/A' ? p.profile : '' });
+  const desc = el('input', { class: 'ctrl wide', placeholder: 'Description', value: p.description || '' });
+  const iconGame = gameOptions(p.icon_game, '— origin: from game —');
+  const markGame = gameOptions(p.mark_game, '— mark: from game —');
+
+  // Live preview of the effective origin icon + mark for the current selections.
+  const preview = el('span', { class: 'origin-preview' });
+  const refresh = () => {
+    clear(preview);
+    const g = findGame(game.value);
+    const ig = (iconGame.value && findGame(iconGame.value)) || g;
+    const mg = (markGame.value && findGame(markGame.value)) || g;
+    preview.appendChild(el('span', { class: 'muted small' }, 'Effective: '));
+    preview.appendChild(ig && ig.icon_url ? icon(ig.icon_url, 'origin-icon', ig.id) : el('span', { class: 'muted small' }, 'no icon '));
+    preview.appendChild(mg && mg.mark_url ? icon(mg.mark_url, 'origin-icon', mg.id) : el('span', { class: 'muted small' }, ' no mark'));
+  };
+  [game, iconGame, markGame].forEach((s) => s.addEventListener('change', refresh));
+
+  const save = el('button', { class: 'btn primary', onclick: () => {
+    if (!ot.value.trim() || !tid.value.trim()) { alert('OT and TID are required.'); return; }
+    store.upsertOtEntry({
+      ot: ot.value.trim(), tid: tid.value.trim(), game: game.value,
+      is_mine: mine.checked, is_go: go.checked,
+      profile: profile.value.trim() || 'N/A', description: desc.value.trim(),
+      icon_game: iconGame.value || '', mark_game: markGame.value || '',
+    });
+    editing = null;
+    render(root);
+  } }, editing ? 'Save changes' : 'Save');
+
   const card = el('div', { class: 'card add-form' }, [
-    el('h3', {}, 'Add / update trainer'),
-    el('div', { class: 'add-grid' }, [ot, tid, game,
+    el('h3', {}, editing ? `Edit ${p.ot}/${p.tid}` : 'Add / update trainer'),
+    el('div', { class: 'add-grid' }, [
+      ot, tid, game,
       el('label', { class: 'toggle' }, [mine, el('span', {}, 'isMine')]),
       el('label', { class: 'toggle' }, [go, el('span', {}, 'isGo')]),
       profile, desc,
-      el('button', { class: 'btn primary', onclick: () => {
-        if (!ot.value.trim() || !tid.value.trim()) { alert('OT and TID are required.'); return; }
-        store.upsertOtEntry({ ot: ot.value.trim(), tid: tid.value.trim(), game: game.value,
-          is_mine: mine.checked, is_go: go.checked, profile: profile.value.trim() || 'N/A', description: desc.value.trim() });
-        render(root);
-      } }, 'Save'),
+      labeled('Origin icon', iconGame), labeled('Origin mark', markGame),
+    ]),
+    el('div', { class: 'form-foot' }, [
+      preview,
+      el('span', { class: 'spacer' }),
+      editing ? el('button', { class: 'btn', onclick: () => { editing = null; render(root); } }, 'Cancel') : null,
+      save,
     ]),
   ]);
+  refresh();
   return card;
 }

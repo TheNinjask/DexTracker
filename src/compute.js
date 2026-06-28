@@ -8,12 +8,20 @@ export function resolveOrigin(ot, tid) {
   const reg = store.getOtEntry(ot, tid);
   if (!reg) return { game: null, gameId: null, iconUrl: null, markUrl: null, markCode: null, isMine: null, isGo: null, description: null, registered: false };
   const game = findGame(reg.game);
+  // Per-entry overrides: the origin icon and mark can each be borrowed from a
+  // different reference game (reg.icon_game / reg.mark_game), defaulting to the
+  // entry's own game. This lets entries whose game has no icon/mark (e.g.
+  // "Event") display a chosen game's assets without changing the recorded origin.
+  const iconSrc = (reg.icon_game && findGame(reg.icon_game)) || game;
+  const markSrc = (reg.mark_game && findGame(reg.mark_game)) || game;
   return {
     game: reg.game,
     gameId: reg.game,
-    iconUrl: game ? game.icon_url : null,
-    markUrl: game ? game.mark_url : null,
-    markCode: game ? game.mark_code : null,
+    iconUrl: iconSrc ? iconSrc.icon_url : null,
+    markUrl: markSrc ? markSrc.mark_url : null,
+    markCode: markSrc ? markSrc.mark_code : null,
+    iconGame: reg.icon_game || null,
+    markGame: reg.mark_game || null,
     isMine: reg.is_mine,
     isGo: reg.is_go,
     profile: reg.profile,

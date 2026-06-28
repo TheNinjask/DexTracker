@@ -181,6 +181,11 @@ body {
 
 /* Registry / forms */
 .add-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.form-foot { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.form-foot .spacer { flex: 1; }
+.origin-preview { display: inline-flex; align-items: center; gap: 4px; }
+.override-note { white-space: nowrap; }
+.row-actions { display: flex; gap: 4px; }
 .profiles-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 
 /* Modal + savefile sync */
