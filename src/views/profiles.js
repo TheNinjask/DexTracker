@@ -1,5 +1,5 @@
 // Switch profile / save manager (SPEC §4.6 / §8). Credentials masked by default (§10.2).
-import { REF } from '../data.js';
+import { gamesAlpha } from '../data.js';
 import * as store from '../store.js';
 import { el, clear, dataTable } from '../dom.js';
 
@@ -69,7 +69,7 @@ function buildForm(root) {
   } }, editing ? 'Save changes' : 'Add profile');
 
   const card = el('div', { class: 'card add-form' }, [
-    el('datalist', { id: GAME_LIST_ID }, REF.games.map((g) => el('option', { value: g.id }))),
+    el('datalist', { id: GAME_LIST_ID }, gamesAlpha().map((g) => el('option', { value: g.id }))),
     el('h3', {}, editing ? `Edit ${p.profile || ''}${p.game ? ' / ' + p.game : ''}` : 'Add profile'),
     el('div', { class: 'add-grid' }, [
       profile, game, email, password, info,

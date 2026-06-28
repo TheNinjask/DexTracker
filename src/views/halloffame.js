@@ -1,6 +1,6 @@
 // Hall of Fame — champion teams grouped by run (SPEC §4.5 / §8).
 // Each team is one champion run; the same game can have several distinct teams.
-import { REF, spriteUrl, speciesName, findGame } from '../data.js';
+import { REF, spriteUrl, speciesName, findGame, gamesAlpha } from '../data.js';
 import * as store from '../store.js';
 import { resolveOrigin } from '../compute.js';
 import { el, clear, icon } from '../dom.js';
@@ -171,7 +171,7 @@ function buildForm(root) {
     : 'Add champion team';
 
   const card = el('div', { class: 'card add-form' }, [
-    el('datalist', { id: GAME_LIST_ID }, REF.games.map((g) => el('option', { value: g.id }))),
+    el('datalist', { id: GAME_LIST_ID }, gamesAlpha().map((g) => el('option', { value: g.id }))),
     el('h3', {}, heading),
     el('div', { class: 'add-grid' }, [
       game, nat, formSel, nickname, ot, tid,

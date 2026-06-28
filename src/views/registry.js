@@ -1,5 +1,5 @@
 // OT registry editor (SPEC §4.4). The join table turning (OT,TID) into origin metadata.
-import { REF, findGame } from '../data.js';
+import { findGame, gamesAlpha } from '../data.js';
 import { resolveOrigin } from '../compute.js';
 import * as store from '../store.js';
 import { el, clear, icon, dataTable } from '../dom.js';
@@ -61,7 +61,7 @@ function gameInput(value) {
 function gameOptions(selected, placeholder) {
   return el('select', { class: 'ctrl' }, [
     el('option', { value: '' }, placeholder),
-    ...REF.games.map((g) => el('option', { value: g.id, selected: g.id === selected ? '' : null }, g.id)),
+    ...gamesAlpha().map((g) => el('option', { value: g.id, selected: g.id === selected ? '' : null }, g.id)),
   ]);
 }
 
@@ -107,7 +107,7 @@ function buildForm(root) {
   } }, editing ? 'Save changes' : 'Save');
 
   const card = el('div', { class: 'card add-form' }, [
-    el('datalist', { id: GAME_LIST_ID }, REF.games.map((g) => el('option', { value: g.id }))),
+    el('datalist', { id: GAME_LIST_ID }, gamesAlpha().map((g) => el('option', { value: g.id }))),
     el('h3', {}, editing ? `Edit ${p.ot}/${p.tid}` : 'Add / update trainer'),
     el('div', { class: 'add-grid' }, [
       ot, tid, game,

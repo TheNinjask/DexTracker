@@ -30,6 +30,14 @@ export function findGame(id) {
   return idx.gameById.get(id) || idx.gameByIdLower.get(String(id).toLowerCase()) || null;
 }
 
+// Games sorted alphabetically by id, for the game pickers in the OT Registry,
+// Hall of Fame and Profiles. Returns a copy so the canonical REF.games order
+// (used elsewhere, e.g. stats) is left untouched.
+export function gamesAlpha() {
+  return [...REF.games].sort((a, b) =>
+    String(a.id).localeCompare(String(b.id), undefined, { sensitivity: 'base' }));
+}
+
 export async function loadReferenceData() {
   // Static seed data lives in public/ → served at <base>/data/. BASE_URL is '/' in dev
   // and '/<repo>/' in the GitHub Pages build.
