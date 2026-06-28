@@ -10,7 +10,7 @@ let editing = null;
 export function render(root) {
   clear(root);
   const wrap = el('div', { class: 'registry' });
-  wrap.appendChild(el('p', { class: 'muted' }, 'Every distinct trainer/source you\'ve caught from. A catch whose OT+TID isn\'t here shows origin N/A. The Origin icon and Mark default to the chosen game — override either by borrowing another game\'s.'));
+  //wrap.appendChild(el('p', { class: 'muted' }, 'Every distinct trainer/source you\'ve caught from. A catch whose OT+TID isn\'t here shows origin N/A. The Origin icon and Mark default to the chosen game — override either by borrowing another game\'s.'));
 
   wrap.appendChild(buildForm(root));
 
