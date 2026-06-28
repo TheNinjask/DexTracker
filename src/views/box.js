@@ -226,19 +226,18 @@ function buildCell(root, e, i) {
   if (!e) return el('div', { class: 'cell empty' }, el('span', { class: 'cell-pos' }, i + 1));
   const owned = entryOwned(e);
   const selected = vs.selectedKey === keyOf(e);
+  // Resolve origin up front so GO-sourced catches can tint the cell blue.
+  const o = owned ? resolveOrigin(entrySlot(e).ot, entrySlot(e).tid) : null;
+  const fromGo = owned && o && o.isGo === true;
   const cell = el('div', {
-    class: `cell ${owned ? 'owned' : 'missing'} ${selected ? 'selected' : ''}`,
+    class: `cell ${owned ? 'owned' : 'missing'} ${fromGo ? 'from-go' : ''} ${selected ? 'selected' : ''}`,
     title: `#${parseInt(e.national_no, 10)} ${e.name}`,
     onclick: () => { vs.selectedKey = keyOf(e); refresh(root); },
   });
   const img = el('img', { class: 'cell-img', loading: 'lazy', alt: e.name, src: entrySprite(e, spriteVariant()) });
   img.addEventListener('error', () => img.classList.add('broken'));
   cell.appendChild(img);
-  if (owned) {
-    const slot = entrySlot(e);
-    const o = resolveOrigin(slot.ot, slot.tid);
-    if (o.markUrl) cell.appendChild(icon(o.markUrl, 'cell-mark', o.markCode || ''));
-  }
+  if (owned && o && o.markUrl) cell.appendChild(icon(o.markUrl, 'cell-mark', o.markCode || ''));
   cell.appendChild(el('span', { class: 'cell-no' }, '#' + parseInt(e.national_no, 10)));
   return cell;
 }

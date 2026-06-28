@@ -113,6 +113,7 @@ body {
 }
 .cell.empty { cursor: default; background: #161d28; }
 .cell.owned { background: linear-gradient(160deg, #234c38, #1d3b2e); border-color: #3aa06a55; }
+.cell.owned.from-go { background: linear-gradient(160deg, #234a6e, #1c3147); border-color: #3a78a055; }
 .cell.missing .cell-img { filter: grayscale(1) brightness(.5); opacity: .45; }
 .cell.selected { outline: 2px solid var(--accent); }
 .cell-img { width: 78%; height: 78%; object-fit: contain; image-rendering: -webkit-optimize-contrast; }
