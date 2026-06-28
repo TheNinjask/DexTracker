@@ -290,6 +290,14 @@ select.ctrl { border-radius: 999px; }
 .profiles-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 .add-form { background: var(--card2); }
 
+/* --- Dev / reference-data editor --- */
+.dev-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.dev-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+.dev-tabs .btn.active { color: var(--accent-deep); border-color: var(--accent); }
+.dev-filter { display: flex; align-items: center; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+.dev-filter .ctrl { flex: 1 1 200px; min-width: 0; }
+.dev-mapping-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
 /* --- Responsive: fluid form fields on narrow screens --- */
 @media (max-width: 560px) {
   /* Form inputs grow/shrink to fill the row instead of overflowing at fixed widths. */

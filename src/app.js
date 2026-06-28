@@ -4,7 +4,7 @@ import { loadReferenceData } from './data.js';
 import { preloadIcons } from './preload.js';
 import * as store from './store.js';
 import { computeStats } from './compute.js';
-import { el, clear, getPrefs, setPref } from './dom.js';
+import { el, clear, getPrefs, setPref, downloadJson } from './dom.js';
 import { startHost, startJoin, STATUS_TEXT, parseSyncId } from './sync.js';
 import * as boxView from './views/box.js';
 import * as statsView from './views/stats.js';
@@ -13,6 +13,7 @@ import * as profilesView from './views/profiles.js';
 import * as registryView from './views/registry.js';
 import * as cookingView from './views/cooking.js';
 import * as aboutView from './views/about.js';
+import * as devView from './views/dev.js';
 
 const TABS = [
   { id: 'box', label: 'Box View', render: boxView.render },
@@ -22,13 +23,21 @@ const TABS = [
   { id: 'profiles', label: 'Profiles', render: profilesView.render },
   { id: 'cooking', label: 'Cooking', render: cookingView.render },
   { id: 'about', label: 'About', render: aboutView.render },
+  // Reference-data editor: only present when the savefile opts into dev mode.
+  { id: 'dev', label: 'Dev', render: devView.render, dev: true },
 ];
+
+// The Dev tab is gated on the loaded savefile's meta.dev_mode flag.
+function devOn() { return !!(store.state.meta && store.state.meta.dev_mode); }
+function visibleTabs() { return TABS.filter((t) => !t.dev || devOn()); }
 
 let current = getPrefs().tab || 'box';
 const content = () => document.getElementById('content');
 
 function renderTab() {
-  const tab = TABS.find((t) => t.id === current) || TABS[0];
+  const tabs = visibleTabs();
+  const tab = tabs.find((t) => t.id === current) || tabs[0];
+  current = tab.id;
   document.querySelectorAll('.nav-tab').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab.id));
   const c = clear(content());
   try { tab.render(c); }
@@ -46,11 +55,25 @@ function buildChrome() {
       el('div', { class: 'brand' }, [el('span', { class: 'logo' }, '◓'), el('span', {}, 'DexTracker')]),
       buildSaveBar(),
     ]),
-    el('nav', { class: 'nav' }, TABS.map((t) =>
-      el('button', { class: 'nav-tab', dataset: { tab: t.id }, onclick: () => go(t.id) }, t.label))),
+    el('nav', { class: 'nav', id: 'nav' }, navButtons()),
   ]);
   app.appendChild(header);
   app.appendChild(el('main', { id: 'content' }));
+}
+
+function navButtons() {
+  return visibleTabs().map((t) =>
+    el('button', { class: 'nav-tab' + (t.id === current ? ' active' : ''), dataset: { tab: t.id }, onclick: () => go(t.id) }, t.label));
+}
+
+// Rebuild the nav buttons (e.g. when dev_mode toggles via a savefile import/new).
+// If the active tab is no longer visible, fall back to Box View.
+function refreshNav() {
+  const nav = document.getElementById('nav');
+  if (!nav) return;
+  clear(nav);
+  navButtons().forEach((b) => nav.appendChild(b));
+  if (!visibleTabs().some((t) => t.id === current)) go('box');
 }
 
 function buildSaveBar() {
@@ -97,11 +120,7 @@ function newSave() {
 }
 
 function doExport() {
-  const blob = new Blob([store.exportSave()], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = el('a', { href: url, download: 'savefile.json' });
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  downloadJson('savefile.json', store.exportSave());
 }
 
 // ---- Modal + savefile sync (SPEC: portable user data) ----
@@ -251,7 +270,8 @@ async function main() {
   }
   const had = store.load();
   updateSaveStatus();
-  store.onChange(updateSaveStatus);
+  refreshNav(); // savefile is loaded now → reflect its dev_mode in the nav
+  store.onChange(() => { updateSaveStatus(); refreshNav(); });
   renderTab();
   // Opened via a sync QR/link → drop the hash (so a reload won't reconnect to a
   // dead peer) and start receiving immediately.

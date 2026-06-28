@@ -126,3 +126,13 @@ export function pct(part, total) {
   if (!total) return '0%';
   return (Math.round((part / total) * 1000) / 10) + '%';
 }
+
+// Trigger a client-side download of a text/JSON document (savefile export, dev
+// reference-data export). Revokes the object URL after the click settles.
+export function downloadJson(filename, text) {
+  const blob = new Blob([text], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = el('a', { href: url, download: filename });
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
