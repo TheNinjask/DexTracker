@@ -1,13 +1,13 @@
 // Derived/computed logic (SPEC §5). All recomputed from user data + seed data.
 
-import { REF, idx, spriteUrl, speciesName } from './data.js';
+import { REF, idx, spriteUrl, speciesName, findGame } from './data.js';
 import * as store from './store.js';
 
 // Resolve a slot's (OT,TID) to rich origin metadata via the OT registry + Game Ref.
 export function resolveOrigin(ot, tid) {
   const reg = store.getOtEntry(ot, tid);
   if (!reg) return { game: null, gameId: null, iconUrl: null, markUrl: null, markCode: null, isMine: null, isGo: null, description: null, registered: false };
-  const game = idx.gameById.get(reg.game) || null;
+  const game = findGame(reg.game);
   return {
     game: reg.game,
     gameId: reg.game,
@@ -159,7 +159,7 @@ function bySource() {
   });
   const total = REF.species.length;
   return [...rows.values()]
-    .map((r) => ({ ...r, icon: idx.gameById.get(r.game)?.icon_url || null,
+    .map((r) => ({ ...r, icon: findGame(r.game)?.icon_url || null,
                    normalPct: Math.round((r.normal / total) * 1000) / 10,
                    shinyPct: Math.round((r.shiny / total) * 1000) / 10 }))
     .sort((a, b) => (b.normal + b.shiny) - (a.normal + a.shiny));

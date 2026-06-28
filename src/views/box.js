@@ -9,6 +9,7 @@ const vs = {
   mode: getPrefs().boxMode || 'regional',
   imgSrc: getPrefs().boxImgSrc || 'main', // 'main' = dex-native art, 'other' = swap normal<->shiny
   ntcTraded: getPrefs().ntcTraded || false, // "Next to catch" also lists owned-but-traded (not mine)
+  ntcGo: getPrefs().ntcGo || false, // "Next to catch" also lists owned-but-from-GO
   page: 0,
   selectedKey: null,
 };
@@ -105,16 +106,18 @@ function rebuild() {
 
 // The ordered list of entries still "to catch": always the unowned ones, plus —
 // when the Traded toggle is on — those owned but flagged not-mine (is_mine=false
-// via the OT+TID registry), so you can re-catch your own copy.
+// via the OT+TID registry), and — when the GO toggle is on — those owned but
+// flagged as originating in Pokémon GO, so you can re-catch a "real" copy.
 function nextToCatch() {
   const { entries, isForm, hasRegional } = built;
   const mode = hasRegional ? 'regional' : 'national';
   const list = isForm ? entries : [...entries].sort((a, b) => (numOf(a, mode) || 1e9) - (numOf(b, mode) || 1e9));
   const missing = list.filter((e) => {
     if (!entryOwned(e)) return true;
-    if (!vs.ntcTraded) return false;
+    if (!vs.ntcTraded && !vs.ntcGo) return false;
     const slot = entrySlot(e);
-    return resolveOrigin(slot.ot, slot.tid).isMine === false;
+    const o = resolveOrigin(slot.ot, slot.tid);
+    return (vs.ntcTraded && o.isMine === false) || (vs.ntcGo && o.isGo === true);
   });
   return { missing, total: entries.length };
 }
@@ -252,6 +255,11 @@ function buildSidebar(root) {
       el('input', { type: 'checkbox', checked: vs.ntcTraded || null,
         onchange: (ev) => { vs.ntcTraded = ev.target.checked; setPref('ntcTraded', vs.ntcTraded); refresh(root); } }),
       el('span', {}, 'Include traded'),
+    ]),
+    el('label', { class: 'toggle ntc-toggle' }, [
+      el('input', { type: 'checkbox', checked: vs.ntcGo || null,
+        onchange: (ev) => { vs.ntcGo = ev.target.checked; setPref('ntcGo', vs.ntcGo); refresh(root); } }),
+      el('span', {}, 'Include from GO'),
     ]),
   ]));
   if (missing.length) {

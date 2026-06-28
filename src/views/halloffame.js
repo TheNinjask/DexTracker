@@ -1,5 +1,5 @@
 // Hall of Fame — champion teams grouped by game (SPEC §4.5 / §8).
-import { idx, spriteUrl } from '../data.js';
+import { idx, spriteUrl, findGame } from '../data.js';
 import * as store from '../store.js';
 import { resolveOrigin } from '../compute.js';
 import { el, clear, icon } from '../dom.js';
@@ -16,7 +16,7 @@ export function render(root) {
 
   order.forEach((g) => {
     const card = el('div', { class: 'card hof-team' });
-    const game = idx.gameById.get(g);
+    const game = findGame(g);
     card.appendChild(el('h3', { class: 'hof-title' }, [
       game && game.icon_url ? icon(game.icon_url, 'src-icon', g) : null,
       el('span', {}, g),

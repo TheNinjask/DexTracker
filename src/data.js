@@ -18,9 +18,17 @@ export const idx = {
   speciesByNat: new Map(), // "0001" -> species
   typeByName: new Map(),
   gameById: new Map(),
+  gameByIdLower: new Map(), // case-insensitive fallback for registry game names
   dexById: new Map(),
   berryById: new Map(),
 };
+
+// Resolve a game by id, tolerating case differences between user-entered
+// registry game names (e.g. "Home/GO") and reference ids ("Home/Go").
+export function findGame(id) {
+  if (id == null) return null;
+  return idx.gameById.get(id) || idx.gameByIdLower.get(String(id).toLowerCase()) || null;
+}
 
 export async function loadReferenceData() {
   // Static seed data lives in public/ → served at <base>/data/. BASE_URL is '/' in dev
@@ -40,7 +48,7 @@ export async function loadReferenceData() {
 
   REF.species.forEach((s) => idx.speciesByNat.set(s.national_no, s));
   REF.types.forEach((t) => idx.typeByName.set(t.name, t));
-  REF.games.forEach((g) => idx.gameById.set(g.id, g));
+  REF.games.forEach((g) => { idx.gameById.set(g.id, g); idx.gameByIdLower.set(String(g.id).toLowerCase(), g); });
   REF.dexes.forEach((d) => idx.dexById.set(d.id, d));
   REF.berries.forEach((b) => idx.berryById.set(b.id, b));
   return REF;
