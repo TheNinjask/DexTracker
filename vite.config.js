@@ -20,8 +20,8 @@ export default defineConfig({
         name: 'DexTracker',
         short_name: 'DexTracker',
         description: 'Personal Pokémon living-dex collection tracker.',
-        theme_color: '#1b2330',
-        background_color: '#1b2330',
+        theme_color: '#1aa6a0',
+        background_color: '#dcefa0',
         display: 'standalone',
         icons: [
           { src: 'icons/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
