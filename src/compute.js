@@ -39,6 +39,11 @@ export function buildDexEntries(dexId) {
   // National / Shiny National dex -> species master
   if (dexId === 'Nat Dex' || dexId === 'Shiny Nat Dex') {
     const shiny = dexId === 'Shiny Nat Dex';
+    // The xlsx Home / Shiny Home dexes flagged species that also have alternate
+    // forms (tracked in the Nat / Shiny Form Dex respectively). Mirror that by
+    // tagging each species with how many forms share its National No.
+    const formCounts = new Map();
+    REF.forms.forEach((f) => formCounts.set(f.national_no, (formCounts.get(f.national_no) || 0) + 1));
     const entries = REF.species.map((s) => ({
       national_no: s.national_no,
       regional_no: s.national_no,
@@ -51,6 +56,7 @@ export function buildDexEntries(dexId) {
       dexId,
       type1: s.type1, type2: s.type2,
       serebii_link: s.serebii_link,
+      formCount: formCounts.get(s.national_no) || 0,
     }));
     return { dex, entries, hasRegional: true, isForm: false };
   }

@@ -250,6 +250,20 @@ function jumpTo(root, entry) {
 
 function keyOf(e) { return `${e.dexId}|${e.national_no}|${e.formCode}|${e.shiny}|${e.form || ''}`; }
 
+// Jump from a species (Home / Shiny Home) entry to its alternate forms: switch to
+// the matching Form Dex (shiny→Shiny) and search by National No. so the first form
+// is selected. Same flag the xlsx surfaced on the Home dexes.
+function goToForms(root, e) {
+  vs.dexId = e.shiny ? 'Shiny Nat Form Dex' : 'Nat Form Dex';
+  setPref('boxDex', vs.dexId);
+  vs.page = 0;
+  vs.selectedKey = null;
+  resetSearch();
+  rebuild(); // build the Form Dex entry set before searching it
+  vs.query = String(parseInt(e.national_no, 10));
+  doSearch(root, vs.query);
+}
+
 function buildGrid(root) {
   const wrap = el('div', { class: 'grid-wrap' });
   const page = paged.pages[vs.page] || [];
@@ -289,6 +303,15 @@ function buildCell(root, e, i) {
   img.addEventListener('error', () => img.classList.add('broken'));
   cell.appendChild(img);
   if (owned && o && o.markUrl) cell.appendChild(icon(o.markUrl, 'cell-mark', o.markCode || ''));
+  // "Has forms" flag on the species (Home / Shiny Home) dexes — mirrors the xlsx,
+  // pointing at the matching Nat / Shiny Form Dex. Click jumps straight there.
+  if (e.formCount > 0) {
+    cell.appendChild(el('button', {
+      class: 'cell-forms',
+      title: `${e.formCount} alternate form${e.formCount > 1 ? 's' : ''} — view in the ${e.shiny ? 'Shiny ' : ''}Form Dex`,
+      onclick: (ev) => { ev.stopPropagation(); goToForms(root, e); },
+    }, '⁂'));
+  }
   cell.appendChild(el('span', { class: 'cell-no' }, '#' + parseInt(e.national_no, 10)));
   return cell;
 }
@@ -405,6 +428,8 @@ function buildDetail(root, e) {
       else store.setPerGameSlot(e.dexId, e.national_no, e.regional_no, '', '', false);
       refresh(root);
     } }, 'Clear') : null,
+    e.formCount > 0 ? el('button', { class: 'btn', title: `View this species' ${e.formCount} alternate form${e.formCount > 1 ? 's' : ''}`,
+      onclick: () => goToForms(root, e) }, `Forms (${e.formCount}) →`) : null,
     e.serebii_link ? el('a', { class: 'btn link', href: e.serebii_link, target: '_blank', rel: 'noopener' }, 'Serebii ↗') : null,
   ]));
   return card;
