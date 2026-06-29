@@ -20,6 +20,16 @@ const FLAV_COLOR = { sweet: '#e06aa8', spicy: '#e0614b', sour: '#e0a91e', bitter
 const RADAR_ORDER = ['spicy', 'sour', 'fresh', 'bitter', 'sweet'];
 const MAX_BERRIES = 8;
 let slots = new Array(MAX_BERRIES).fill(null); // berry ids; duplicates allowed
+// Picker sort: null keeps the canonical REF.berries order; otherwise a flavour
+// key sorts the list by that flavour's value, strongest first.
+let sortBy = null;
+
+// Berries in the order the picker should show them. Sorting copies the array
+// (never mutates REF) and is stable, so equal-flavour berries keep canonical order.
+function sortedBerries() {
+  if (!sortBy) return REF.berries;
+  return [...REF.berries].sort((a, b) => (b[sortBy] || 0) - (a[sortBy] || 0));
+}
 
 const berryCount = (id) => slots.reduce((n, x) => n + (x === id ? 1 : 0), 0);
 const filledCount = () => slots.reduce((n, x) => n + (x ? 1 : 0), 0);
@@ -81,12 +91,13 @@ function buildBuilder(root) {
 // −/＋ stepper that adds/removes it from the recipe (cap MAX_BERRIES).
 function buildPicker(root, t) {
   const filled = filledCount();
-  const list = el('div', { class: 'berry-list' }, REF.berries.map((b) => berryRow(root, b, filled)));
+  const list = el('div', { class: 'berry-list' }, sortedBerries().map((b) => berryRow(root, b, filled)));
   return el('div', { class: 'cook-build' }, [
     el('div', { class: 'picker-head' }, [
       el('span', { class: 'picker-title' }, 'All Berries'),
       el('span', { class: 'picker-count' + (filled >= MAX_BERRIES ? ' full' : '') }, `${filled} / ${MAX_BERRIES}`),
     ]),
+    buildSort(root),
     list,
     el('div', { class: 'cook-actions' }, [
       el('button', { class: 'btn', disabled: filled ? null : true, onclick: () => { slots = new Array(MAX_BERRIES).fill(null); render(root); } }, 'Clear'),
@@ -98,6 +109,19 @@ function buildPicker(root, t) {
         render(root);
       } }, '＋ Make recipe'),
     ]),
+  ]);
+}
+
+// Sort row: a "Default" chip (canonical order) plus one chip per flavour. The
+// active chip is highlighted; clicking it again falls back to Default. Re-renders
+// through rerender() so the list scroll position is preserved.
+function buildSort(root) {
+  const pick = (key) => () => { sortBy = sortBy === key ? null : key; rerender(root); };
+  return el('div', { class: 'picker-sort' }, [
+    el('span', { class: 'picker-sort-label' }, 'Sort'),
+    el('button', { class: 'sort-chip' + (sortBy ? '' : ' on'), onclick: () => { sortBy = null; rerender(root); } }, 'Default'),
+    ...FLAVORS.map((f) =>
+      el('button', { class: `sort-chip flav-${f}` + (sortBy === f ? ' on' : ''), title: `Sort by ${FLAV_LABEL[f]}`, onclick: pick(f) }, FLAV_LABEL[f])),
   ]);
 }
 
