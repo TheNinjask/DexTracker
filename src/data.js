@@ -212,6 +212,16 @@ export function exportReferenceData() {
   return out;
 }
 
+// Berry sprite URL. The source workbook composed berry images as
+//   IMAGE(CONCAT("https://serebii.net/itemdex/sprites/za/th/", id, ".png"))
+// where id is the space-stripped lowercase berry name — exactly our berry id
+// (e.g. "cheriberry", "hypercheriberry"). Serebii has no CORS header, so these
+// load as plain (opaque) images via icon() (see dom.js).
+const BERRY_SPRITE_BASE = 'https://serebii.net/itemdex/sprites/za/th/';
+export function berrySpriteUrl(id) {
+  return id ? `${BERRY_SPRITE_BASE}${id}.png` : '';
+}
+
 export function speciesName(nat) {
   const s = idx.speciesByNat.get(nat);
   return s ? s.name : '???';

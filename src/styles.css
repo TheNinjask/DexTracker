@@ -268,21 +268,85 @@ select.ctrl { border-radius: 999px; }
 .hof-team-head .hof-title { margin: 0; display: flex; align-items: center; gap: 8px; }
 
 /* Cooking */
-.cook-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 12px; }
-.cook-slot { display: flex; flex-direction: column; gap: 3px; }
-.cook-slot .ctrl { width: 100%; min-width: 0; }
+/* Two equal columns (table | graph) while each can still hold the berry table's
+   ~425px hard floor — the width at which the longest names ellipsize but the row
+   still doesn't overflow. Below that the graph drops to a full-width row
+   underneath so the table never grows a horizontal scrollbar. The floor (not the
+   ~470px comfortable width) is used so the split survives the band where names
+   merely ellipsize, instead of stacking eagerly. */
+.cook-maker { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 425px), 1fr)); gap: 16px; align-items: start; }
+.cook-build { min-width: 0; }
+/* "All Berries" picker list (game-style) */
+.picker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.picker-title { font-weight: 800; color: var(--accent-deep); font-size: 14px; text-transform: uppercase; letter-spacing: .03em; }
+.picker-count { font-size: 12px; font-weight: 700; color: var(--muted); background: #ffffff8c; border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px; }
+.picker-count.full { color: #fff; background: var(--accent); border-color: var(--accent); }
+.berry-list { max-height: 460px; overflow-y: auto; border: 1px solid var(--border); border-radius: 14px; background: #ffffff80; padding: 4px; margin-bottom: 12px; }
+.blist-row { display: grid; grid-template-columns: auto minmax(90px, 1.4fr) auto auto; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 10px; border-bottom: 1px solid var(--border-soft); }
+.blist-row:last-child { border-bottom: 0; }
+.blist-row.picked { background: #e3f6f4; }
+.blist-berry { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.blist-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.blist-flavs { display: flex; gap: 3px; }
+.blist-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.blist-stat { font-size: 10px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.blist-step { display: flex; align-items: center; gap: 4px; }
+.blist-count { min-width: 16px; text-align: center; font-weight: 800; color: #c2ccc8; font-variant-numeric: tabular-nums; }
+.blist-count.on { color: var(--accent-deep); }
+.flav-pill.zero { background: #e7ece9; color: #a7b3ae; }
+@media (max-width: 540px) {
+  .blist-row { grid-template-columns: auto 1fr; row-gap: 6px; }
+  .blist-flavs { grid-column: 1 / -1; }
+  .blist-meta { grid-column: 1 / -1; flex-direction: row; gap: 10px; align-items: flex-start; }
+}
 .cook-totals { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .cook-totals.small .chip { font-size: 11px; }
 .chip { display: inline-flex; gap: 6px; background: #ffffffb3; border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; }
 .chip-k { color: var(--muted); text-transform: capitalize; }
+/* Flavour accent colours — aligned to the in-game Flavor Profile wheel. */
 .flav-sweet { border-color: #e06aa8; } .flav-spicy { border-color: #e0614b; }
-.flav-sour { border-color: #e0c84b; } .flav-bitter { border-color: #6ad07a; }
-.flav-fresh { border-color: #5ab0ff; }
+.flav-sour { border-color: #e0a91e; } .flav-bitter { border-color: #6a7bd0; }
+.flav-fresh { border-color: #3fbf8f; }
+.flav-cell { text-align: center; width: 52px; }
+.flav-pill { display: inline-block; min-width: 26px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; color: #fff; }
+.flav-pill.flav-sweet { background: #e06aa8; border: 0; }
+.flav-pill.flav-spicy { background: #e0614b; border: 0; }
+.flav-pill.flav-sour { background: #e0a91e; border: 0; }
+.flav-pill.flav-bitter { background: #6a7bd0; border: 0; }
+.flav-pill.flav-fresh { background: #3fbf8f; border: 0; }
 .cook-actions { display: flex; gap: 8px; }
+
+/* "Your Order" summary ticket (game-style) */
+.cook-order { background: #ffffffd9; border: 1px solid var(--border); border-radius: 16px; padding: 12px; box-shadow: var(--shadow-sm); }
+.order-head { font-weight: 800; color: var(--accent-deep); font-size: 16px; letter-spacing: .01em; margin-bottom: 8px; }
+.order-berries { display: flex; flex-wrap: wrap; gap: 4px; min-height: 36px; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border-soft); }
+.order-berries .berry-img { width: 30px; height: 30px; }
+.radar-wrap { display: flex; justify-content: center; padding: 4px 0 2px; }
+.radar { width: 100%; max-width: 230px; height: auto; overflow: visible; }
+.radar-ring { fill: none; stroke: #14655822; stroke-width: 1; }
+.radar-spoke { stroke: #14655822; stroke-width: 1; }
+.radar-area { fill: #1aa6a033; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+.radar-flav { font-size: 11px; font-weight: 700; }
+.radar-num { font-size: 12px; font-weight: 800; fill: var(--text); }
+.order-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+.order-stat { background: #ffffff8c; border: 1px solid var(--border); border-radius: 12px; padding: 6px 8px; text-align: center; }
+.order-stat-label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.order-stat-val { display: block; font-size: 18px; font-weight: 800; color: var(--accent-deep); }
+.order-score { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border-soft); }
+.order-score-row { display: flex; flex-direction: column; }
+.order-score-label { font-size: 10px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.order-score-val { font-size: 22px; font-weight: 800; color: var(--accent-deep); line-height: 1; }
+.order-stars { font-size: 16px; letter-spacing: 1px; }
+.order-stars .star { color: #d6dbd9; }
+.order-stars .star.on { color: var(--accent2); }
 .recipe { background: #ffffff8c; border: 1px solid var(--border); border-radius: 14px; padding: 10px; margin-bottom: 8px; }
 .recipe-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
 .recipe-berries { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
-.berry-tag { background: #ffffffcc; border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; font-size: 11px; }
+.berry-tag { display: inline-flex; align-items: center; gap: 4px; background: #ffffffcc; border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px 1px 3px; font-size: 11px; }
+.berry-img { width: 32px; height: 32px; object-fit: contain; image-rendering: -webkit-optimize-contrast; }
+.berry-img.tiny { width: 18px; height: 18px; }
+.berry-img.broken { visibility: hidden; }
+.berry-cell { width: 40px; text-align: center; }
 
 /* Registry / forms */
 .add-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
