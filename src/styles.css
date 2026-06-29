@@ -268,14 +268,25 @@ select.ctrl { border-radius: 999px; }
 .hof-team-head .hof-title { margin: 0; display: flex; align-items: center; gap: 8px; }
 
 /* Cooking */
-/* Two equal columns (table | graph) while each can still hold the berry table's
-   ~425px hard floor — the width at which the longest names ellipsize but the row
-   still doesn't overflow. Below that the graph drops to a full-width row
-   underneath so the table never grows a horizontal scrollbar. The floor (not the
-   ~470px comfortable width) is used so the split survives the band where names
-   merely ellipsize, instead of stacking eagerly. */
-.cook-maker { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 425px), 1fr)); gap: 16px; align-items: start; }
+/* Table | graph layout. Side-by-side (50/50) only while the window is wide enough
+   that each half clears the berry table's ~473px no-scroll width (the full
+   "Hyper Cheri Berry" row, sprite + name included). With 52px of page+card
+   padding and the 16px gap that needs a ~1014px viewport, so the split is capped
+   at 1015px. Below that there isn't room for the table beside the graph, so
+   instead of stacking them (which would force a scroll-down) only one panel shows
+   at a time and the toggle flips between table and graph. The toggle is hidden in
+   the wide layout, where both are already visible. */
+.cook-maker { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
 .cook-build { min-width: 0; }
+.cook-build-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cook-build-head h3 { margin: 0; }
+.cook-graph-toggle { display: none; }
+@media (max-width: 1015px) {
+  .cook-maker { grid-template-columns: 1fr; }
+  .cook-graph-toggle { display: inline-flex; }
+  .cook-maker.show-graph .cook-build { display: none; }
+  .cook-maker:not(.show-graph) .cook-order { display: none; }
+}
 /* "All Berries" picker list (game-style) */
 .picker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .picker-title { font-weight: 800; color: var(--accent-deep); font-size: 14px; text-transform: uppercase; letter-spacing: .03em; }

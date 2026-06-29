@@ -23,6 +23,10 @@ let slots = new Array(MAX_BERRIES).fill(null); // berry ids; duplicates allowed
 // Picker sort: null keeps the canonical REF.berries order; otherwise a flavour
 // key sorts the list by that flavour's value, strongest first.
 let sortBy = null;
+// Narrow-screen panel toggle: when the window is too narrow for table+graph
+// side-by-side (CSS < 760px), only one shows at a time. false = table, true =
+// graph. Ignored by the wide layout, where both panels are visible.
+let showGraph = false;
 
 // Berries in the order the picker should show them. Sorting copies the array
 // (never mutates REF) and is stable, so equal-flavour berries keep canonical order.
@@ -75,10 +79,17 @@ function totalsOf(berryIds) {
 
 function buildBuilder(root) {
   const card = el('div', { class: 'card' });
-  card.appendChild(el('h3', {}, 'Recipe builder'));
+  card.appendChild(el('div', { class: 'cook-build-head' }, [
+    el('h3', {}, 'Recipe builder'),
+    el('button', {
+      class: 'btn tiny cook-graph-toggle',
+      title: showGraph ? 'Show the berry table' : 'Show the flavour graph',
+      onclick: () => { showGraph = !showGraph; rerender(root); },
+    }, showGraph ? '◧ Show table' : '◨ Show graph'),
+  ]));
   const t = totalsOf(slots);
 
-  const maker = el('div', { class: 'cook-maker' });
+  const maker = el('div', { class: 'cook-maker' + (showGraph ? ' show-graph' : '') });
   maker.appendChild(buildPicker(root, t));
   maker.appendChild(buildOrder(t));
   card.appendChild(maker);
