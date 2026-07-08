@@ -2,7 +2,7 @@
 name: Bug report
 about: Report a bug to help improve DexTracker
 title: "[Bug Report] "
-labels: bug
+labels: bug, technical
 assignees: ''
 
 ---
