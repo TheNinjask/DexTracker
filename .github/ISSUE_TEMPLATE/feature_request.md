@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for DexTracker
 title: "[Feature Request]"
-labels: enhancement
+labels: enhancement, non-technical
 assignees: ''
 
 ---
