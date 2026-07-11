@@ -8,7 +8,8 @@ let starFilter = null; // 1-5, or null = any
 let typeFilter = null; // type name, or null = any
 let selectedSpecies = []; // species codes, e.g. "767", "666-g"
 let speciesQuery = '';
-let refocusQuery = false; // restore focus/caret to the search box after a re-render
+let page = 0;
+const PAGE_SIZE = 20;
 
 // forms.json has no per-(nat, form_code) index of its own — build one lazily,
 // once REF.forms is loaded.
@@ -41,7 +42,13 @@ function speciesInfo(code) {
     const s = idx.speciesByNat.get(natPad);
     if (s) name = s.name;
   }
-  return { code, natNo: parseInt(nat, 10), name, sprite: spriteUrl('LZA', 'box', nat, formCode) };
+  return {
+    code, natNo: parseInt(nat, 10), name,
+    sprite: spriteUrl('LZA', 'box', nat, formCode),
+    // Failsafe: some forms have no dedicated LZA box icon — fall back to the
+    // base species' sprite rather than showing a broken/hidden image.
+    fallbackSprite: formCode ? spriteUrl('LZA', 'box', nat, '') : null,
+  };
 }
 
 let universeCache = null;
@@ -79,6 +86,7 @@ function toggleSpecies(root, code) {
   const i = selectedSpecies.indexOf(code);
   if (i >= 0) selectedSpecies.splice(i, 1);
   else selectedSpecies.push(code);
+  page = 0;
   render(root);
 }
 
@@ -88,12 +96,6 @@ export function render(root) {
   wrap.appendChild(buildFilters(root));
   wrap.appendChild(buildResults(root));
   root.appendChild(wrap);
-
-  if (refocusQuery) {
-    const inp = root.querySelector('.hwz-species-input');
-    if (inp) { inp.focus(); try { const n = inp.value.length; inp.setSelectionRange(n, n); } catch {} }
-    refocusQuery = false;
-  }
 }
 
 function buildFilters(root) {
@@ -114,7 +116,7 @@ function buildStarPicker(root) {
     row.appendChild(el('button', {
       class: `hwz-star-btn ${on ? 'on' : ''}`,
       title: `${n} star${n > 1 ? 's' : ''}`,
-      onclick: () => { starFilter = starFilter === n ? null : n; render(root); },
+      onclick: () => { starFilter = starFilter === n ? null : n; page = 0; render(root); },
     }, '★'));
   }
   return el('div', { class: 'hwz-block' }, [el('span', { class: 'field-label' }, 'Stars'), row]);
@@ -127,7 +129,7 @@ function buildTypePicker(root) {
     row.appendChild(el('button', {
       class: `hwz-type-btn ${on ? 'on' : ''}`,
       title: t.name,
-      onclick: () => { typeFilter = on ? null : t.name; render(root); },
+      onclick: () => { typeFilter = on ? null : t.name; page = 0; render(root); },
     }, icon(t.icon_url, 'hwz-type-img', t.name)));
   });
   return el('div', { class: 'hwz-block' }, [el('span', { class: 'field-label' }, 'Type'), row]);
@@ -136,19 +138,18 @@ function buildTypePicker(root) {
 function buildSpeciesPicker(root) {
   const wrap = el('div', { class: 'hwz-block' });
   wrap.appendChild(el('span', { class: 'field-label' }, 'Pokémon'));
+  const poolHost = el('div', {});
   wrap.appendChild(el('input', {
     class: 'ctrl wide hwz-species-input', type: 'search', value: speciesQuery,
     placeholder: 'Dex No. or species name…',
-    oninput: (e) => { speciesQuery = e.target.value; refocusQuery = true; render(root); },
+    // Only the candidate pool depends on the query — refresh just that container
+    // in place instead of a full render(), so the star/type pickers and the
+    // "Selected" chips don't get torn down (and their icons re-fetched) on every
+    // keystroke, and the input never loses focus.
+    oninput: (e) => { speciesQuery = e.target.value; fillSpeciesPool(root, poolHost); },
   }));
-
-  const candidates = candidatesFor(speciesQuery);
-  if (candidates.length) {
-    wrap.appendChild(el('div', { class: 'hwz-species-pool' },
-      candidates.map((s) => speciesButton(root, s))));
-  } else if (speciesQuery.trim()) {
-    wrap.appendChild(el('p', { class: 'muted small' }, 'No matches.'));
-  }
+  wrap.appendChild(poolHost);
+  fillSpeciesPool(root, poolHost);
 
   if (selectedSpecies.length) {
     wrap.appendChild(el('div', { class: 'hwz-selected-head small' }, `Selected (${selectedSpecies.length}) — click to remove`));
@@ -158,31 +159,48 @@ function buildSpeciesPicker(root) {
   return wrap;
 }
 
+function fillSpeciesPool(root, host) {
+  clear(host);
+  const candidates = candidatesFor(speciesQuery);
+  if (candidates.length) {
+    host.appendChild(el('div', { class: 'hwz-species-pool' },
+      candidates.map((s) => speciesButton(root, s))));
+  } else if (speciesQuery.trim()) {
+    host.appendChild(el('p', { class: 'muted small' }, 'No matches.'));
+  }
+}
+
 function speciesButton(root, s) {
   const on = selectedSpecies.includes(s.code);
   return el('button', {
     class: `hwz-species-btn ${on ? 'on' : ''}`,
     title: s.name,
     onclick: () => toggleSpecies(root, s.code),
-  }, [icon(s.sprite, 'hwz-species-img', s.name), el('span', { class: 'hwz-species-name' }, s.name)]);
+  }, [icon(s.sprite, 'hwz-species-img', s.name, 0, s.fallbackSprite), el('span', { class: 'hwz-species-name' }, s.name)]);
 }
 
 function buildResults(root) {
   const card = el('div', { class: 'card' });
-  const hasFilter = starFilter != null || typeFilter != null || selectedSpecies.length > 0;
-  if (!hasFilter) {
-    card.appendChild(el('h3', {}, 'Zones'));
-    card.appendChild(el('p', { class: 'muted' }, 'Pick a star rating, type, and/or Pokémon above to search zones.'));
-    return card;
-  }
-
   const matches = HYPERSPACE.zones.filter(zoneMatches);
-  card.appendChild(el('h3', {}, `Zones (${matches.length})`));
+  const totalPages = Math.max(1, Math.ceil(matches.length / PAGE_SIZE));
+  if (page >= totalPages) page = totalPages - 1;
+  if (page < 0) page = 0;
+
+  card.appendChild(el('div', { class: 'hwz-results-head' }, [
+    el('h3', {}, `Zones (${matches.length})`),
+    totalPages > 1 ? el('div', { class: 'dev-pager' }, [
+      el('button', { class: 'pgbtn tiny', disabled: page === 0 || null, onclick: () => { page--; render(root); } }, '‹'),
+      el('span', { class: 'muted small' }, `Page ${page + 1} of ${totalPages}`),
+      el('button', { class: 'pgbtn tiny', disabled: page >= totalPages - 1 || null, onclick: () => { page++; render(root); } }, '›'),
+    ]) : null,
+  ]));
+
   if (!matches.length) {
     card.appendChild(el('p', { class: 'muted' }, 'No zones match those filters.'));
     return card;
   }
-  card.appendChild(el('div', { class: 'hwz-zones' }, matches.map((z) => zoneCard(z))));
+  const pageItems = matches.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  card.appendChild(el('div', { class: 'hwz-zones' }, pageItems.map((z) => zoneCard(z))));
   return card;
 }
 
@@ -196,7 +214,7 @@ function zoneCard(z) {
   const species = el('div', { class: 'hwz-zone-species' },
     [...new Set(z.species)].map((c) => {
       const s = speciesInfo(c);
-      return icon(s.sprite, 'hwz-zone-species-img', s.name);
+      return icon(s.sprite, 'hwz-zone-species-img', s.name, 0, s.fallbackSprite);
     }));
   return el('div', { class: 'hwz-zone-card' }, [head, species]);
 }

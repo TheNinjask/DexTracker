@@ -75,7 +75,10 @@ function pumpImages() {
   }
 }
 
-export function icon(src, className, title, retries = 3) {
+// `fallbackSrc`, if given, is tried once `src` exhausts its retries — e.g. a
+// Pokémon form sprite that doesn't exist falling back to the base species'.
+// Only after the fallback also fails does the image get marked `.broken`.
+export function icon(src, className, title, retries = 3, fallbackSrc = null) {
   // Bulbagarden sends `Access-Control-Allow-Origin: *`, so we can load it in CORS
   // mode for visible statuses. Serebii has no CORS header — requesting it with
   // crossorigin would fail outright, so it stays a plain (opaque) image.
@@ -90,19 +93,26 @@ export function icon(src, className, title, retries = 3) {
   });
 
   let attempt = 0;
+  let usingFallback = false;
   let settled = false;
   const release = () => { if (settled) return; settled = true; active = Math.max(0, active - 1); pumpImages(); };
+  const currentSrc = () => (usingFallback ? fallbackSrc : src);
   img.addEventListener('load', release);
   img.addEventListener('error', () => {
     if (attempt++ < retries) {
-      setTimeout(() => { img.removeAttribute('src'); img.src = src; }, 600 * attempt);
+      setTimeout(() => { img.removeAttribute('src'); img.src = currentSrc(); }, 600 * attempt);
+    } else if (fallbackSrc && !usingFallback && fallbackSrc !== src) {
+      usingFallback = true;
+      attempt = 0;
+      img.removeAttribute('src');
+      img.src = currentSrc();
     } else {
       img.classList.add('broken');
       release(); // free the slot even when it never loads, so the queue drains
     }
   });
 
-  waiting.push(() => { img.src = src; });
+  waiting.push(() => { img.src = currentSrc(); });
   pumpImages();
   return img;
 }

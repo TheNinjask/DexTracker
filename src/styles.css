@@ -310,16 +310,15 @@ select.ctrl { border-radius: 999px; }
 }
 .hwz-star-btn:hover { transform: scale(1.08); }
 .hwz-star-btn.on { color: var(--accent2); }
-.hwz-types { display: flex; flex-wrap: wrap; gap: 8px; }
+.hwz-types { display: flex; flex-wrap: wrap; gap: 10px; }
 .hwz-type-btn {
-  width: 40px; height: 40px; padding: 6px; box-sizing: border-box;
-  background: #fff; border: 2px solid transparent; border-radius: 12px; cursor: pointer;
-  box-shadow: var(--shadow-sm); transition: box-shadow .12s, border-color .12s, transform .04s;
+  width: 52px; height: 52px; padding: 0; background: none; border: none; border-radius: 10px;
+  cursor: pointer; transition: box-shadow .12s, transform .04s;
 }
-.hwz-type-btn:hover { box-shadow: var(--shadow); }
-.hwz-type-btn:active { transform: translateY(1px); }
-.hwz-type-btn.on { border-color: var(--accent); }
-.hwz-type-img { width: 100%; height: 100%; object-fit: contain; }
+.hwz-type-btn:hover { transform: scale(1.06); }
+.hwz-type-btn:active { transform: scale(0.98); }
+.hwz-type-btn.on { box-shadow: 0 0 0 3px var(--accent); }
+.hwz-type-img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
 .hwz-species-pool { display: flex; flex-wrap: wrap; gap: 8px; max-height: 260px; overflow-y: auto; padding: 2px; }
 .hwz-species-btn {
   display: flex; flex-direction: column; align-items: center; gap: 2px; width: 64px;
@@ -333,7 +332,12 @@ select.ctrl { border-radius: 999px; }
 .hwz-species-name { font-size: 10px; font-weight: 600; text-align: center; line-height: 1.2;
   overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .hwz-selected-head { color: var(--muted); margin-bottom: -2px; }
+.hwz-results-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.hwz-results-head h3 { margin: 0; }
 .hwz-zones { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+/* Failed sprites (missing box icon for some forms) fall back to the browser's
+   broken-image glyph unless hidden — same fix box.js/cooking.js use. */
+.hwz-type-img.broken, .hwz-species-img.broken, .hwz-zone-type-img.broken, .hwz-zone-species-img.broken { visibility: hidden; }
 .hwz-zone-card { background: #ffffff8c; border: 1px solid var(--border); border-radius: 14px; padding: 10px; }
 .hwz-zone-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
 .hwz-zone-type-img { width: 22px; height: 22px; object-fit: contain; }
