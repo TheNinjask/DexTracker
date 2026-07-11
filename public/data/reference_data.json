@@ -24278,11 +24278,11 @@
     "image_sources": {
         "home": {
             "normal": {
-                "prefix": "https://www.serebii.net/pokemonhome/pokemon/80/",
+                "prefix": "https://www.serebii.net/pokemonhome/pokemon/",
                 "suffix": ".png"
             },
             "shiny": {
-                "prefix": "https://www.serebii.net/Shiny/home/80/",
+                "prefix": "https://www.serebii.net/Shiny/home/",
                 "suffix": ".png"
             },
             "art": {
