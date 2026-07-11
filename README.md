@@ -63,3 +63,12 @@ defaults to `/DexTracker/`. For a custom domain or a different repo name, overri
 `BASE_PATH` (or edit the default in `vite.config.js`).
 
 The app is offline-capable (service worker) and installable (web manifest).
+
+## Reporting an issue
+
+Found a bug or have an idea? [Open an issue](https://github.com/TheNinjask/DexTracker/issues/new/choose)
+and pick a template:
+
+- **Bug report** — something's broken; include repro steps and the app version (see the
+  About tab).
+- **Feature request** — something you'd like DexTracker to do.
