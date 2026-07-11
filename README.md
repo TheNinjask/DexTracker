@@ -14,8 +14,9 @@ built to the functional spec in [`SPEC.md`](SPEC.md).
 
 ## Data model
 
-- **Reference data** (`docs/data/reference_data.json`) is app-managed seed data shipped with
-  the app: species, forms, types, games, dex mappings, sprite-source templates, berries.
+- **Reference data** is app-managed seed data shipped with the app, split into two files:
+  `public/data/reference_data.json` (species, forms, types, games, dex mappings, sprite-source
+  templates) and `public/data/cooking_data.json` (the Z-A cooking berry pantry).
 - **Savefile** is *your* data (ownership, OT registry, Hall of Fame, profiles, recipes). It is
   **never bundled**. The app keeps it in this browser's `localStorage` and lets you
   **Import** / **Export** a `savefile.json`, or start a **New** empty one. `savefile.json` is
@@ -34,7 +35,7 @@ index.html              app entry (Vite)
 src/                    app source (modules + styles)
   app.js  data.js  store.js  compute.js  dom.js  views/*
 public/                static assets copied verbatim
-  data/reference_data.json   icons/*
+  data/reference_data.json  data/cooking_data.json  icons/*
 vite.config.js          base path + PWA config
 .github/workflows/deploy.yml  CI build + Pages deploy
 ```
