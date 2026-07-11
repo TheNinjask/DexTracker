@@ -82,30 +82,148 @@ function zoneMatches(z) {
   return true;
 }
 
-function toggleSpecies(root, code) {
+// --- Persistent picker nodes ---------------------------------------------
+// Star/type/species buttons are built once and kept in module-level caches,
+// then simply moved/re-classed on later renders instead of being recreated.
+// A click only ever changes *state* (which star/type/species is selected),
+// never *which images exist* — so nothing here needs to touch the network
+// again after its first successful load. Only the results card (whose actual
+// zone content changes) gets rebuilt on each interaction.
+let starRowEl = null;
+let typeRowEl = null;
+let speciesInputEl = null;
+let poolHost = null;
+let selectedHost = null;
+let resultsHost = null;
+
+const typeButtonCache = new Map(); // type name -> <button>
+const poolButtonCache = new Map(); // species code -> <button> (search-pool context)
+const selectedButtonCache = new Map(); // species code -> <button> (Selected-chips context)
+
+function ensureStarRow() {
+  if (starRowEl) return starRowEl;
+  starRowEl = el('div', { class: 'hwz-stars' });
+  for (let n = 1; n <= 5; n++) {
+    const btn = el('button', { class: 'hwz-star-btn', title: `${n} star${n > 1 ? 's' : ''}` }, '★');
+    btn.addEventListener('click', () => {
+      starFilter = starFilter === n ? null : n;
+      page = 0;
+      refreshStarOn();
+      renderResults();
+    });
+    btn.dataset.n = String(n);
+    starRowEl.appendChild(btn);
+  }
+  refreshStarOn();
+  return starRowEl;
+}
+
+function refreshStarOn() {
+  if (!starRowEl) return;
+  [...starRowEl.children].forEach((btn) => {
+    const n = Number(btn.dataset.n);
+    btn.classList.toggle('on', starFilter != null && n <= starFilter);
+  });
+}
+
+function typeButton(t) {
+  let btn = typeButtonCache.get(t.name);
+  if (btn) return btn;
+  btn = el('button', { class: 'hwz-type-btn', title: t.name }, icon(t.icon_url, 'hwz-type-img', t.name));
+  btn.addEventListener('click', () => {
+    typeFilter = typeFilter === t.name ? null : t.name;
+    page = 0;
+    refreshTypeOn();
+    renderResults();
+  });
+  typeButtonCache.set(t.name, btn);
+  return btn;
+}
+
+function refreshTypeOn() {
+  typeButtonCache.forEach((btn, name) => btn.classList.toggle('on', typeFilter === name));
+}
+
+function ensureTypeRow() {
+  if (typeRowEl) return typeRowEl;
+  typeRowEl = el('div', { class: 'hwz-types' });
+  zoneTypes().forEach((t) => typeRowEl.appendChild(typeButton(t)));
+  return typeRowEl;
+}
+
+function speciesButton(cache, s) {
+  let btn = cache.get(s.code);
+  if (btn) return btn;
+  btn = el('button', { class: 'hwz-species-btn', title: s.name }, [
+    icon(s.sprite, 'hwz-species-img', s.name, 0, s.fallbackSprite),
+    el('span', { class: 'hwz-species-name' }, s.name),
+  ]);
+  btn.addEventListener('click', () => toggleSpecies(s.code));
+  cache.set(s.code, btn);
+  return btn;
+}
+
+function toggleSpecies(code) {
   const i = selectedSpecies.indexOf(code);
   if (i >= 0) selectedSpecies.splice(i, 1);
   else selectedSpecies.push(code);
   page = 0;
-  render(root);
+  refreshPool();
+  refreshSelected();
+  renderResults();
 }
 
-// Kept across renders so pagination can refresh just the results card without
-// tearing down (and re-fetching) the filters card's images — page turns don't
-// change star/type/species selections, so nothing in there needs to reload.
-let resultsHost = null;
-// Zone cards let you click their star/type/species onto the filters above —
-// they need a full render(root) for that (filters change, not just results),
-// so the mounted root is kept around rather than threaded through every
-// buildResults()/zoneCard() call.
-let mountedRoot = null;
+function refreshPool() {
+  clear(poolHost);
+  const candidates = candidatesFor(speciesQuery);
+  if (candidates.length) {
+    candidates.forEach((s) => {
+      const btn = speciesButton(poolButtonCache, s);
+      btn.classList.toggle('on', selectedSpecies.includes(s.code));
+      poolHost.appendChild(btn);
+    });
+  } else if (speciesQuery.trim()) {
+    poolHost.appendChild(el('p', { class: 'muted small' }, 'No matches.'));
+  }
+}
+
+function refreshSelected() {
+  clear(selectedHost);
+  if (!selectedSpecies.length) return;
+  selectedHost.appendChild(el('div', { class: 'hwz-selected-head small' }, `Selected (${selectedSpecies.length}) — click to remove`));
+  const row = el('div', { class: 'hwz-species-pool' });
+  selectedSpecies.forEach((code) => {
+    const btn = speciesButton(selectedButtonCache, speciesInfo(code));
+    btn.classList.add('on');
+    row.appendChild(btn);
+  });
+  selectedHost.appendChild(row);
+}
+
+function ensureSpeciesPicker() {
+  if (speciesInputEl) return;
+  speciesInputEl = el('input', {
+    class: 'ctrl wide hwz-species-input', type: 'search', value: speciesQuery,
+    placeholder: 'Dex No. or species name…',
+  });
+  speciesInputEl.addEventListener('input', (e) => {
+    speciesQuery = e.target.value;
+    refreshPool();
+  });
+  poolHost = el('div', { class: 'hwz-species-pool' });
+  selectedHost = el('div', {});
+  refreshPool();
+  refreshSelected();
+}
+
+// --- Render ----------------------------------------------------------------
 
 export function render(root) {
-  mountedRoot = root;
   clear(root);
   const wrap = el('div', { class: 'hwz' });
-  wrap.appendChild(buildFilters(root));
-  resultsHost = el('div', {});
+  wrap.appendChild(buildFiltersCard());
+  if (!resultsHost) resultsHost = el('div', {});
+  clear(resultsHost);
   resultsHost.appendChild(buildResults());
   wrap.appendChild(resultsHost);
   root.appendChild(wrap);
@@ -116,85 +234,18 @@ function renderResults() {
   resultsHost.appendChild(buildResults());
 }
 
-function buildFilters(root) {
+function buildFiltersCard() {
   const card = el('div', { class: 'card' });
   card.appendChild(el('h3', {}, 'Hyperspace Wild Zone Searcher'));
   card.appendChild(el('p', { class: 'muted small' },
     'Pick what you know about the portal — star rating, type, Pokémon you’ve seen — to narrow down the zone.'));
-  card.appendChild(buildStarPicker(root));
-  card.appendChild(buildTypePicker(root));
-  card.appendChild(buildSpeciesPicker(root));
+  card.appendChild(el('div', { class: 'hwz-block' }, [el('span', { class: 'field-label' }, 'Stars'), ensureStarRow()]));
+  card.appendChild(el('div', { class: 'hwz-block' }, [el('span', { class: 'field-label' }, 'Type'), ensureTypeRow()]));
+  ensureSpeciesPicker();
+  card.appendChild(el('div', { class: 'hwz-block' }, [
+    el('span', { class: 'field-label' }, 'Pokémon'), speciesInputEl, poolHost, selectedHost,
+  ]));
   return card;
-}
-
-function buildStarPicker(root) {
-  const row = el('div', { class: 'hwz-stars' });
-  for (let n = 1; n <= 5; n++) {
-    const on = starFilter != null && n <= starFilter;
-    row.appendChild(el('button', {
-      class: `hwz-star-btn ${on ? 'on' : ''}`,
-      title: `${n} star${n > 1 ? 's' : ''}`,
-      onclick: () => { starFilter = starFilter === n ? null : n; page = 0; render(root); },
-    }, '★'));
-  }
-  return el('div', { class: 'hwz-block' }, [el('span', { class: 'field-label' }, 'Stars'), row]);
-}
-
-function buildTypePicker(root) {
-  const row = el('div', { class: 'hwz-types' });
-  zoneTypes().forEach((t) => {
-    const on = typeFilter === t.name;
-    row.appendChild(el('button', {
-      class: `hwz-type-btn ${on ? 'on' : ''}`,
-      title: t.name,
-      onclick: () => { typeFilter = on ? null : t.name; page = 0; render(root); },
-    }, icon(t.icon_url, 'hwz-type-img', t.name)));
-  });
-  return el('div', { class: 'hwz-block' }, [el('span', { class: 'field-label' }, 'Type'), row]);
-}
-
-function buildSpeciesPicker(root) {
-  const wrap = el('div', { class: 'hwz-block' });
-  wrap.appendChild(el('span', { class: 'field-label' }, 'Pokémon'));
-  const poolHost = el('div', {});
-  wrap.appendChild(el('input', {
-    class: 'ctrl wide hwz-species-input', type: 'search', value: speciesQuery,
-    placeholder: 'Dex No. or species name…',
-    // Only the candidate pool depends on the query — refresh just that container
-    // in place instead of a full render(), so the star/type pickers and the
-    // "Selected" chips don't get torn down (and their icons re-fetched) on every
-    // keystroke, and the input never loses focus.
-    oninput: (e) => { speciesQuery = e.target.value; fillSpeciesPool(root, poolHost); },
-  }));
-  wrap.appendChild(poolHost);
-  fillSpeciesPool(root, poolHost);
-
-  if (selectedSpecies.length) {
-    wrap.appendChild(el('div', { class: 'hwz-selected-head small' }, `Selected (${selectedSpecies.length}) — click to remove`));
-    wrap.appendChild(el('div', { class: 'hwz-species-pool' },
-      selectedSpecies.map((c) => speciesButton(root, speciesInfo(c)))));
-  }
-  return wrap;
-}
-
-function fillSpeciesPool(root, host) {
-  clear(host);
-  const candidates = candidatesFor(speciesQuery);
-  if (candidates.length) {
-    host.appendChild(el('div', { class: 'hwz-species-pool' },
-      candidates.map((s) => speciesButton(root, s))));
-  } else if (speciesQuery.trim()) {
-    host.appendChild(el('p', { class: 'muted small' }, 'No matches.'));
-  }
-}
-
-function speciesButton(root, s) {
-  const on = selectedSpecies.includes(s.code);
-  return el('button', {
-    class: `hwz-species-btn ${on ? 'on' : ''}`,
-    title: s.name,
-    onclick: () => toggleSpecies(root, s.code),
-  }, [icon(s.sprite, 'hwz-species-img', s.name, 0, s.fallbackSprite), el('span', { class: 'hwz-species-name' }, s.name)]);
 }
 
 function buildResults() {
@@ -228,7 +279,7 @@ function zoneCard(z) {
     el('button', {
       class: 'hwz-zone-type-btn',
       title: `Filter by ${z.type}`,
-      onclick: () => { typeFilter = typeFilter === z.type ? null : z.type; page = 0; render(mountedRoot); },
+      onclick: () => { typeFilter = typeFilter === z.type ? null : z.type; page = 0; refreshTypeOn(); renderResults(); },
     }, [
       t ? icon(t.icon_url, 'hwz-zone-type-img', z.type) : null,
       el('span', { class: 'hwz-zone-type-name' }, z.type),
@@ -236,7 +287,7 @@ function zoneCard(z) {
     el('button', {
       class: 'hwz-zone-star-btn',
       title: `Filter by ${z.star} star${z.star > 1 ? 's' : ''}`,
-      onclick: () => { starFilter = starFilter === z.star ? null : z.star; page = 0; render(mountedRoot); },
+      onclick: () => { starFilter = starFilter === z.star ? null : z.star; page = 0; refreshStarOn(); renderResults(); },
     }, el('span', { class: 'hwz-zone-stars' }, starGlyphs(z.star))),
   ]);
   const species = el('div', { class: 'hwz-zone-species' },
@@ -245,7 +296,7 @@ function zoneCard(z) {
       return el('button', {
         class: 'hwz-zone-species-btn',
         title: `Filter by ${s.name}`,
-        onclick: () => toggleSpecies(mountedRoot, c),
+        onclick: () => toggleSpecies(c),
       }, icon(s.sprite, 'hwz-zone-species-img', s.name, 0, s.fallbackSprite));
     }));
   return el('div', { class: 'hwz-zone-card' }, [head, species]);
