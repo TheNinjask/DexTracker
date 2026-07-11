@@ -11,8 +11,6 @@ function emit() { listeners.forEach((fn) => fn(state)); }
 export function emptySave() {
   return {
     meta: {
-      source: 'DexTracker PWA',
-      description: 'Portable user data for DexTracker (SPEC §10).',
       schema_version: SCHEMA_VERSION,
     },
     species_ownership: [],

@@ -278,6 +278,92 @@ select.ctrl { border-radius: 999px; }
 .hof-team-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
 .hof-team-head .hof-title { margin: 0; display: flex; align-items: center; gap: 8px; }
 
+/* Tools (game/tool picker + breadcrumbs) */
+.tool-pick-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+.tool-pick {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  width: 100px; padding: 0; background: none; border: none; cursor: pointer;
+}
+.tool-pick-box {
+  width: 96px; height: 96px; padding: 7px; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; border-radius: 14px; overflow: hidden;
+  box-shadow: var(--shadow-sm); transition: box-shadow .12s, transform .04s;
+}
+.tool-pick:hover .tool-pick-box { box-shadow: var(--shadow); }
+.tool-pick:active .tool-pick-box { transform: translateY(1px); }
+.tool-pick-img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
+.tool-pick-label { font-size: 13px; font-weight: 600; text-align: center; color: var(--text); }
+.tool-crumbs { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; font-size: 13px; }
+.crumb-btn { background: none; border: none; padding: 0; color: var(--accent-deep); font-weight: 600; font-size: 13px; cursor: pointer; }
+.crumb-btn:hover { text-decoration: underline; }
+.crumb-sep { color: var(--muted); }
+.crumb-current { color: var(--muted); }
+.tool-view-body { margin-top: 4px; }
+
+/* Hyperspace Wild Zone Searcher */
+.hwz-block { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.hwz-stars { display: flex; gap: 4px; }
+.hwz-star-btn {
+  background: none; border: none; padding: 0; font-size: 26px; line-height: 1;
+  color: #d6dbd9; cursor: pointer; transition: color .1s, transform .04s;
+}
+.hwz-star-btn:hover { transform: scale(1.08); }
+.hwz-star-btn.on { color: var(--accent2); }
+.hwz-types { display: flex; flex-wrap: wrap; gap: 10px; }
+.hwz-type-btn {
+  width: 52px; height: 52px; padding: 0; background: none; border: none; border-radius: 10px;
+  cursor: pointer; transition: box-shadow .12s, transform .04s;
+}
+.hwz-type-btn:hover { transform: scale(1.06); }
+.hwz-type-btn:active { transform: scale(0.98); }
+.hwz-type-btn.on { box-shadow: 0 0 0 3px var(--accent); }
+.hwz-type-img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+.hwz-species-pool { display: flex; flex-wrap: wrap; gap: 8px; max-height: 260px; overflow-y: auto; padding: 2px; }
+.hwz-species-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; width: 64px;
+  background: #ffffff8c; border: 2px solid transparent; border-radius: 12px;
+  padding: 4px 2px 5px; cursor: pointer; box-shadow: var(--shadow-sm);
+  transition: box-shadow .12s, border-color .12s, background .12s;
+}
+.hwz-species-btn:hover { box-shadow: var(--shadow); }
+.hwz-species-btn.on { border-color: var(--accent); background: #e3f6f4; }
+.hwz-species-img { width: 40px; height: 40px; object-fit: contain; }
+.hwz-species-name { font-size: 10px; font-weight: 600; text-align: center; line-height: 1.2;
+  overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.hwz-selected-head { color: var(--muted); margin-bottom: -2px; }
+.hwz-results-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.hwz-results-head h3 { margin: 0; }
+.hwz-zones { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+/* Failed sprites (missing box icon for some forms) fall back to the browser's
+   broken-image glyph unless hidden — same fix box.js/cooking.js use. */
+.hwz-type-img.broken, .hwz-species-img.broken, .hwz-zone-type-img.broken, .hwz-zone-species-img.broken { visibility: hidden; }
+.hwz-zone-card { background: #ffffff8c; border: 1px solid var(--border); border-radius: 14px; padding: 10px; }
+.hwz-zone-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+/* Zone cards double as filter shortcuts — clicking a zone's type, star, or a
+   species icon applies that value to the filters above (SPEC: tap-to-filter). */
+.hwz-zone-type-btn {
+  display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0;
+  background: none; border: none; border-radius: 8px; padding: 3px 4px; margin: -3px -4px;
+  cursor: pointer; transition: background .12s;
+}
+.hwz-zone-type-btn:hover { background: #00000010; }
+.hwz-zone-type-img { width: 22px; height: 22px; object-fit: contain; flex: none; }
+.hwz-zone-type-name { font-weight: 700; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hwz-zone-star-btn {
+  background: none; border: none; border-radius: 8px; padding: 3px 4px; margin: -3px -4px;
+  cursor: pointer; transition: background .12s;
+}
+.hwz-zone-star-btn:hover { background: #00000010; }
+.hwz-zone-stars { color: var(--accent2); font-size: 13px; letter-spacing: 1px; }
+.hwz-zone-species { display: flex; flex-wrap: wrap; gap: 4px; }
+.hwz-zone-species-btn {
+  background: none; border: 2px solid transparent; border-radius: 8px; padding: 1px;
+  cursor: pointer; line-height: 0; transition: border-color .12s, background .12s;
+}
+.hwz-zone-species-btn:hover { background: #00000010; }
+.hwz-zone-species-img { width: 28px; height: 28px; object-fit: contain; }
+
 /* Cooking */
 /* Table | graph layout. Side-by-side (50/50) only while the window is wide enough
    that each half clears the berry table's ~473px no-scroll width (the full

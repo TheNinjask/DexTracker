@@ -11,10 +11,6 @@ export const REF = {
   dexMappings: {},
   imageSources: {},
   berries: [],
-  // Exact source text of the berries array, preserved so the dev export can splice
-  // it back verbatim (see exportReferenceData). Without this, JSON.parse→stringify
-  // collapses berry float literals like 0.0 to 0, noising up the committed diff.
-  rawBerries: null,
 };
 
 // Indexes
@@ -26,6 +22,21 @@ export const idx = {
   dexById: new Map(),
   berryById: new Map(),
 };
+
+// Tools (Tools tab): a per-game hub of small utilities, e.g. Legends Z-A's Donut
+// Maker. Independent of REF.games (the dex/OT-origin game list) since a tool's
+// "game" is just a grouping label, not a dex/origin source — kept in its own
+// reference file (tools_data.json) and its own indexes.
+export const TOOLS = { games: [], tools: [] };
+export const toolIdx = {
+  gameById: new Map(),
+  toolById: new Map(),
+};
+
+// Hyperspace Wild Zone data (Legends Z-A's "Searcher" tool): each zone is a
+// {type, star, species[]} portal pool. Its own file/singleton since it's
+// specific to that one tool, not general dex/species reference data.
+export const HYPERSPACE = { zones: [] };
 
 // Resolve a game by id, tolerating case differences between user-entered
 // registry game names (e.g. "Home/GO") and reference ids ("Home/Go").
@@ -61,14 +72,23 @@ export function rebuildIndexes() {
 
 export async function loadReferenceData() {
   // Static seed data lives in public/ → served at <base>/data/. BASE_URL is '/' in dev
-  // and '/<repo>/' in the GitHub Pages build.
-  const res = await fetch(`${import.meta.env.BASE_URL}data/reference_data.json`);
-  if (!res.ok) throw new Error('Failed to load reference_data.json: ' + res.status);
-  const text = await res.text();
-  const data = JSON.parse(text);
-  // berries is the last top-level key; capture its raw value text for lossless export.
-  const bm = text.replace(/\r\n/g, '\n').match(/\n {4}"berries": ([\s\S]*)\n\}\s*$/);
-  REF.rawBerries = bm ? bm[1] : null;
+  // and '/<repo>/' in the GitHub Pages build. Cooking (berry) and Tools data each ship
+  // as their own file since they're separate domains from the dex/species reference data.
+  const base = import.meta.env.BASE_URL;
+  const [refRes, cookingRes, toolsRes, hyperspaceRes] = await Promise.all([
+    fetch(`${base}data/reference_data.json`),
+    fetch(`${base}data/cooking_data.json`),
+    fetch(`${base}data/tools_data.json`),
+    fetch(`${base}data/hyperspace_wild_zone.json`),
+  ]);
+  if (!refRes.ok) throw new Error('Failed to load reference_data.json: ' + refRes.status);
+  if (!cookingRes.ok) throw new Error('Failed to load cooking_data.json: ' + cookingRes.status);
+  if (!toolsRes.ok) throw new Error('Failed to load tools_data.json: ' + toolsRes.status);
+  if (!hyperspaceRes.ok) throw new Error('Failed to load hyperspace_wild_zone.json: ' + hyperspaceRes.status);
+  const data = await refRes.json();
+  const cooking = await cookingRes.json();
+  const tools = await toolsRes.json();
+  const hyperspace = await hyperspaceRes.json();
   REF.meta = data.meta;
   REF.species = data.species || [];
   REF.forms = data.forms || [];
@@ -77,7 +97,14 @@ export async function loadReferenceData() {
   REF.dexes = data.dexes || [];
   REF.dexMappings = data.dex_mappings || {};
   REF.imageSources = data.image_sources || {};
-  REF.berries = data.berries || [];
+  REF.berries = cooking.berries || [];
+  TOOLS.games = tools.games || [];
+  TOOLS.tools = tools.tools || [];
+  toolIdx.gameById.clear();
+  toolIdx.toolById.clear();
+  TOOLS.games.forEach((g) => toolIdx.gameById.set(g.id, g));
+  TOOLS.tools.forEach((t) => toolIdx.toolById.set(t.id, t));
+  HYPERSPACE.zones = hyperspace.zones || [];
 
   rebuildIndexes();
   return REF;
@@ -192,12 +219,10 @@ export function removeImageVariant(sourceName, variant) {
 
 // Serialize the full reference dataset back to the on-disk shape (4-space indent,
 // original top-level key order) so a committed diff only shows the edited records.
-// berries is spliced back from its preserved raw text to avoid float reformatting
-// (0.0 → 0); this tool never edits berries, so the raw value is always current.
-const BERRIES_PLACEHOLDER = '__RAW_BERRIES_PLACEHOLDER__';
+// Cooking (berry) data lives in its own file (cooking_data.json) and isn't
+// editable here, so it's excluded.
 export function exportReferenceData() {
-  const useRaw = REF.rawBerries != null;
-  let out = JSON.stringify({
+  return JSON.stringify({
     meta: REF.meta,
     species: REF.species,
     forms: REF.forms,
@@ -206,10 +231,7 @@ export function exportReferenceData() {
     dexes: REF.dexes,
     dex_mappings: REF.dexMappings,
     image_sources: REF.imageSources,
-    berries: useRaw ? BERRIES_PLACEHOLDER : REF.berries,
   }, null, 4);
-  if (useRaw) out = out.replace(`"${BERRIES_PLACEHOLDER}"`, REF.rawBerries);
-  return out;
 }
 
 // Berry sprite URL. The source workbook composed berry images as
