@@ -24296,7 +24296,7 @@
         },
         "LA": {
             "normal": {
-                "prefix": "https://serebii.net/legendsarceus/pokemon/small/",
+                "prefix": "https://serebii.net/legendsarceus/pokemon/",
                 "suffix": ".png"
             },
             "shiny": {
@@ -24306,7 +24306,7 @@
         },
         "SWSH": {
             "normal": {
-                "prefix": "https://serebii.net/swordshield/pokemon/small/",
+                "prefix": "https://serebii.net/swordshield/pokemon/",
                 "suffix": ".png"
             },
             "shiny": {
@@ -24316,7 +24316,7 @@
         },
         "BDSP": {
             "normal": {
-                "prefix": "https://serebii.net/swordshield/pokemon/small/",
+                "prefix": "https://serebii.net/swordshield/pokemon/",
                 "suffix": ".png"
             },
             "shiny": {
@@ -24326,7 +24326,7 @@
         },
         "SV": {
             "normal": {
-                "prefix": "https://serebii.net/scarletviolet/pokemon/new/small/",
+                "prefix": "https://serebii.net/scarletviolet/pokemon/new/",
                 "suffix": ".png"
             },
             "shiny": {
