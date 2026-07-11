@@ -278,6 +278,29 @@ select.ctrl { border-radius: 999px; }
 .hof-team-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
 .hof-team-head .hof-title { margin: 0; display: flex; align-items: center; gap: 8px; }
 
+/* Tools (game/tool picker + breadcrumbs) */
+.tool-pick-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+.tool-pick {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  width: 100px; padding: 0; background: none; border: none; cursor: pointer;
+}
+.tool-pick-box {
+  width: 96px; height: 96px; padding: 7px; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; border-radius: 14px; overflow: hidden;
+  box-shadow: var(--shadow-sm); transition: box-shadow .12s, transform .04s;
+}
+.tool-pick:hover .tool-pick-box { box-shadow: var(--shadow); }
+.tool-pick:active .tool-pick-box { transform: translateY(1px); }
+.tool-pick-img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
+.tool-pick-label { font-size: 13px; font-weight: 600; text-align: center; color: var(--text); }
+.tool-crumbs { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; font-size: 13px; }
+.crumb-btn { background: none; border: none; padding: 0; color: var(--accent-deep); font-weight: 600; font-size: 13px; cursor: pointer; }
+.crumb-btn:hover { text-decoration: underline; }
+.crumb-sep { color: var(--muted); }
+.crumb-current { color: var(--muted); }
+.tool-view-body { margin-top: 4px; }
+
 /* Cooking */
 /* Table | graph layout. Side-by-side (50/50) only while the window is wide enough
    that each half clears the berry table's ~473px no-scroll width (the full

@@ -10,13 +10,16 @@ built to the functional spec in [`SPEC.md`](SPEC.md).
   Record catches by entering OT/TID — ownership, origin, marks and stats recompute live.
 - **Stats** — National/Shiny/Form completion, per-game dex %, and a by-origin breakdown.
 - **OT Registry** — the (OT, TID) → origin game / isMine / isGo lookup that resolves origins.
-- **Hall of Fame**, **Switch Profiles** (credentials masked), and the **Z-A Cooking** planner.
+- **Hall of Fame** and **Switch Profiles** (credentials masked).
+- **Tools** — a per-game hub of small utilities; currently just Legends Z-A's **Donut Maker**
+  (Z-A's berry-cooking planner).
 
 ## Data model
 
-- **Reference data** is app-managed seed data shipped with the app, split into two files:
+- **Reference data** is app-managed seed data shipped with the app, split into three files:
   `public/data/reference_data.json` (species, forms, types, games, dex mappings, sprite-source
-  templates) and `public/data/cooking_data.json` (the Z-A cooking berry pantry).
+  templates), `public/data/cooking_data.json` (the Z-A cooking berry pantry), and
+  `public/data/tools_data.json` (the Tools tab's game/tool listing).
 - **Savefile** is *your* data (ownership, OT registry, Hall of Fame, profiles, recipes). It is
   **never bundled**. The app keeps it in this browser's `localStorage` and lets you
   **Import** / **Export** a `savefile.json`, or start a **New** empty one. `savefile.json` is
@@ -35,7 +38,7 @@ index.html              app entry (Vite)
 src/                    app source (modules + styles)
   app.js  data.js  store.js  compute.js  dom.js  views/*
 public/                static assets copied verbatim
-  data/reference_data.json  data/cooking_data.json  icons/*
+  data/reference_data.json  data/cooking_data.json  data/tools_data.json  icons/*
 vite.config.js          base path + PWA config
 .github/workflows/deploy.yml  CI build + Pages deploy
 ```
