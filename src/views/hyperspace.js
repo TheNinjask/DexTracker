@@ -151,26 +151,44 @@ function ensureTypeRow() {
   return typeRowEl;
 }
 
-function speciesButton(cache, s) {
+function speciesButton(cache, s, onClick) {
   let btn = cache.get(s.code);
   if (btn) return btn;
   btn = el('button', { class: 'hwz-species-btn', title: s.name }, [
     icon(s.sprite, 'hwz-species-img', s.name, 0, s.fallbackSprite),
     el('span', { class: 'hwz-species-name' }, s.name),
   ]);
-  btn.addEventListener('click', () => toggleSpecies(s.code));
+  btn.addEventListener('click', () => onClick(s.code));
   cache.set(s.code, btn);
   return btn;
 }
 
-function toggleSpecies(code) {
-  const i = selectedSpecies.indexOf(code);
-  if (i >= 0) selectedSpecies.splice(i, 1);
-  else selectedSpecies.push(code);
+function addSpecies(code) {
+  if (!selectedSpecies.includes(code)) selectedSpecies.push(code);
   page = 0;
   refreshPool();
   refreshSelected();
   renderResults();
+}
+
+function removeSpecies(code) {
+  const i = selectedSpecies.indexOf(code);
+  if (i < 0) return;
+  selectedSpecies.splice(i, 1);
+  page = 0;
+  refreshPool();
+  refreshSelected();
+  renderResults();
+}
+
+// Search-pool click: selecting a not-yet-picked Pokémon adds it and clears
+// the search box (so the next search starts fresh); clicking an
+// already-selected one in the pool still removes it, same as before.
+function selectFromPool(code) {
+  if (selectedSpecies.includes(code)) { removeSpecies(code); return; }
+  speciesQuery = '';
+  speciesInputEl.value = '';
+  addSpecies(code);
 }
 
 function refreshPool() {
@@ -178,7 +196,7 @@ function refreshPool() {
   const candidates = candidatesFor(speciesQuery);
   if (candidates.length) {
     candidates.forEach((s) => {
-      const btn = speciesButton(poolButtonCache, s);
+      const btn = speciesButton(poolButtonCache, s, selectFromPool);
       btn.classList.toggle('on', selectedSpecies.includes(s.code));
       poolHost.appendChild(btn);
     });
@@ -193,7 +211,7 @@ function refreshSelected() {
   selectedHost.appendChild(el('div', { class: 'hwz-selected-head small' }, `Selected (${selectedSpecies.length}) — click to remove`));
   const row = el('div', { class: 'hwz-species-pool' });
   selectedSpecies.forEach((code) => {
-    const btn = speciesButton(selectedButtonCache, speciesInfo(code));
+    const btn = speciesButton(selectedButtonCache, speciesInfo(code), removeSpecies);
     btn.classList.add('on');
     row.appendChild(btn);
   });
@@ -279,7 +297,8 @@ function zoneCard(z) {
     el('button', {
       class: 'hwz-zone-type-btn',
       title: `Filter by ${z.type}`,
-      onclick: () => { typeFilter = typeFilter === z.type ? null : z.type; page = 0; refreshTypeOn(); renderResults(); },
+      // Zone-card picks only ever add to the filters, never remove them.
+      onclick: () => { typeFilter = z.type; page = 0; refreshTypeOn(); renderResults(); },
     }, [
       t ? icon(t.icon_url, 'hwz-zone-type-img', z.type) : null,
       el('span', { class: 'hwz-zone-type-name' }, z.type),
@@ -287,7 +306,7 @@ function zoneCard(z) {
     el('button', {
       class: 'hwz-zone-star-btn',
       title: `Filter by ${z.star} star${z.star > 1 ? 's' : ''}`,
-      onclick: () => { starFilter = starFilter === z.star ? null : z.star; page = 0; refreshStarOn(); renderResults(); },
+      onclick: () => { starFilter = z.star; page = 0; refreshStarOn(); renderResults(); },
     }, el('span', { class: 'hwz-zone-stars' }, starGlyphs(z.star))),
   ]);
   const species = el('div', { class: 'hwz-zone-species' },
@@ -296,7 +315,7 @@ function zoneCard(z) {
       return el('button', {
         class: 'hwz-zone-species-btn',
         title: `Filter by ${s.name}`,
-        onclick: () => toggleSpecies(c),
+        onclick: () => addSpecies(c),
       }, icon(s.sprite, 'hwz-zone-species-img', s.name, 0, s.fallbackSprite));
     }));
   return el('div', { class: 'hwz-zone-card' }, [head, species]);
