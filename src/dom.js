@@ -91,13 +91,17 @@ export function icon(src, className, title, retries = 3, fallbackSrc = null) {
     decoding: 'async',
     crossorigin: cors ? 'anonymous' : null,
   });
+  // Hidden until it actually loads, so the browser's native "broken image"
+  // glyph never flashes while queued or mid-retry — only a real failure
+  // (via .broken, below) leaves it hidden for good.
+  img.style.visibility = 'hidden';
 
   let attempt = 0;
   let usingFallback = false;
   let settled = false;
   const release = () => { if (settled) return; settled = true; active = Math.max(0, active - 1); pumpImages(); };
   const currentSrc = () => (usingFallback ? fallbackSrc : src);
-  img.addEventListener('load', release);
+  img.addEventListener('load', () => { img.style.visibility = ''; release(); });
   img.addEventListener('error', () => {
     if (attempt++ < retries) {
       setTimeout(() => { img.removeAttribute('src'); img.src = currentSrc(); }, 600 * attempt);
