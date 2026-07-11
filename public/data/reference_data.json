@@ -12509,7 +12509,7 @@
     "dexes": [
         {
             "id": "Nat Dex",
-            "name": "Home",
+            "name": "National Dex",
             "has_regional_no": true,
             "mark_code": null,
             "sprite_source": "home",
@@ -12519,7 +12519,7 @@
         },
         {
             "id": "Shiny Nat Dex",
-            "name": "Home Shiny",
+            "name": "Shiny National Dex",
             "has_regional_no": true,
             "mark_code": null,
             "sprite_source": "home",
@@ -12529,7 +12529,7 @@
         },
         {
             "id": "Nat Form Dex",
-            "name": "Nat Form Dex",
+            "name": "National Form Dex",
             "has_regional_no": false,
             "mark_code": null,
             "sprite_source": "home",
@@ -12539,7 +12539,7 @@
         },
         {
             "id": "Shiny Nat Form Dex",
-            "name": "Shiny Nat Form Dex",
+            "name": "Shiny National Form Dex",
             "has_regional_no": false,
             "mark_code": null,
             "sprite_source": "home",
@@ -24351,6 +24351,10 @@
             },
             "shiny": {
                 "prefix": "https://serebii.net/Shiny/ZA/",
+                "suffix": ".png"
+            },
+            "box": {
+                "prefix": "https://www.serebii.net/legendsz-a/pokemon/icons/",
                 "suffix": ".png"
             }
         },
