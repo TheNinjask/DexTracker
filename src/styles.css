@@ -301,6 +301,47 @@ select.ctrl { border-radius: 999px; }
 .crumb-current { color: var(--muted); }
 .tool-view-body { margin-top: 4px; }
 
+/* Hyperspace Wild Zone Searcher */
+.hwz-block { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.hwz-stars { display: flex; gap: 4px; }
+.hwz-star-btn {
+  background: none; border: none; padding: 0; font-size: 26px; line-height: 1;
+  color: #d6dbd9; cursor: pointer; transition: color .1s, transform .04s;
+}
+.hwz-star-btn:hover { transform: scale(1.08); }
+.hwz-star-btn.on { color: var(--accent2); }
+.hwz-types { display: flex; flex-wrap: wrap; gap: 8px; }
+.hwz-type-btn {
+  width: 40px; height: 40px; padding: 6px; box-sizing: border-box;
+  background: #fff; border: 2px solid transparent; border-radius: 12px; cursor: pointer;
+  box-shadow: var(--shadow-sm); transition: box-shadow .12s, border-color .12s, transform .04s;
+}
+.hwz-type-btn:hover { box-shadow: var(--shadow); }
+.hwz-type-btn:active { transform: translateY(1px); }
+.hwz-type-btn.on { border-color: var(--accent); }
+.hwz-type-img { width: 100%; height: 100%; object-fit: contain; }
+.hwz-species-pool { display: flex; flex-wrap: wrap; gap: 8px; max-height: 260px; overflow-y: auto; padding: 2px; }
+.hwz-species-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; width: 64px;
+  background: #ffffff8c; border: 2px solid transparent; border-radius: 12px;
+  padding: 4px 2px 5px; cursor: pointer; box-shadow: var(--shadow-sm);
+  transition: box-shadow .12s, border-color .12s, background .12s;
+}
+.hwz-species-btn:hover { box-shadow: var(--shadow); }
+.hwz-species-btn.on { border-color: var(--accent); background: #e3f6f4; }
+.hwz-species-img { width: 40px; height: 40px; object-fit: contain; }
+.hwz-species-name { font-size: 10px; font-weight: 600; text-align: center; line-height: 1.2;
+  overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.hwz-selected-head { color: var(--muted); margin-bottom: -2px; }
+.hwz-zones { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.hwz-zone-card { background: #ffffff8c; border: 1px solid var(--border); border-radius: 14px; padding: 10px; }
+.hwz-zone-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.hwz-zone-type-img { width: 22px; height: 22px; object-fit: contain; }
+.hwz-zone-type-name { font-weight: 700; font-size: 13px; flex: 1; }
+.hwz-zone-stars { color: var(--accent2); font-size: 13px; letter-spacing: 1px; }
+.hwz-zone-species { display: flex; flex-wrap: wrap; gap: 4px; }
+.hwz-zone-species-img { width: 28px; height: 28px; object-fit: contain; }
+
 /* Cooking */
 /* Table | graph layout. Side-by-side (50/50) only while the window is wide enough
    that each half clears the berry table's ~473px no-scroll width (the full

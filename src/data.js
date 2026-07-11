@@ -33,6 +33,11 @@ export const toolIdx = {
   toolById: new Map(),
 };
 
+// Hyperspace Wild Zone data (Legends Z-A's "Searcher" tool): each zone is a
+// {type, star, species[]} portal pool. Its own file/singleton since it's
+// specific to that one tool, not general dex/species reference data.
+export const HYPERSPACE = { zones: [] };
+
 // Resolve a game by id, tolerating case differences between user-entered
 // registry game names (e.g. "Home/GO") and reference ids ("Home/Go").
 export function findGame(id) {
@@ -70,17 +75,20 @@ export async function loadReferenceData() {
   // and '/<repo>/' in the GitHub Pages build. Cooking (berry) and Tools data each ship
   // as their own file since they're separate domains from the dex/species reference data.
   const base = import.meta.env.BASE_URL;
-  const [refRes, cookingRes, toolsRes] = await Promise.all([
+  const [refRes, cookingRes, toolsRes, hyperspaceRes] = await Promise.all([
     fetch(`${base}data/reference_data.json`),
     fetch(`${base}data/cooking_data.json`),
     fetch(`${base}data/tools_data.json`),
+    fetch(`${base}data/hyperspace_wild_zone.json`),
   ]);
   if (!refRes.ok) throw new Error('Failed to load reference_data.json: ' + refRes.status);
   if (!cookingRes.ok) throw new Error('Failed to load cooking_data.json: ' + cookingRes.status);
   if (!toolsRes.ok) throw new Error('Failed to load tools_data.json: ' + toolsRes.status);
+  if (!hyperspaceRes.ok) throw new Error('Failed to load hyperspace_wild_zone.json: ' + hyperspaceRes.status);
   const data = await refRes.json();
   const cooking = await cookingRes.json();
   const tools = await toolsRes.json();
+  const hyperspace = await hyperspaceRes.json();
   REF.meta = data.meta;
   REF.species = data.species || [];
   REF.forms = data.forms || [];
@@ -96,6 +104,7 @@ export async function loadReferenceData() {
   toolIdx.toolById.clear();
   TOOLS.games.forEach((g) => toolIdx.gameById.set(g.id, g));
   TOOLS.tools.forEach((t) => toolIdx.toolById.set(t.id, t));
+  HYPERSPACE.zones = hyperspace.zones || [];
 
   rebuildIndexes();
   return REF;

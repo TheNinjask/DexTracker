@@ -4,9 +4,10 @@
 import { TOOLS, toolIdx } from '../data.js';
 import { el, clear, icon } from '../dom.js';
 import * as cookingView from './cooking.js';
+import * as hyperspaceView from './hyperspace.js';
 
 // Maps a tool's `view` key (tools_data.json) to its renderer.
-const TOOL_VIEWS = { cooking: cookingView.render };
+const TOOL_VIEWS = { cooking: cookingView.render, hyperspace: hyperspaceView.render };
 
 let gameId = null;
 let toolId = null;
