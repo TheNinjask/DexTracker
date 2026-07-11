@@ -340,10 +340,28 @@ select.ctrl { border-radius: 999px; }
 .hwz-type-img.broken, .hwz-species-img.broken, .hwz-zone-type-img.broken, .hwz-zone-species-img.broken { visibility: hidden; }
 .hwz-zone-card { background: #ffffff8c; border: 1px solid var(--border); border-radius: 14px; padding: 10px; }
 .hwz-zone-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-.hwz-zone-type-img { width: 22px; height: 22px; object-fit: contain; }
-.hwz-zone-type-name { font-weight: 700; font-size: 13px; flex: 1; }
+/* Zone cards double as filter shortcuts — clicking a zone's type, star, or a
+   species icon applies that value to the filters above (SPEC: tap-to-filter). */
+.hwz-zone-type-btn {
+  display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0;
+  background: none; border: none; border-radius: 8px; padding: 3px 4px; margin: -3px -4px;
+  cursor: pointer; transition: background .12s;
+}
+.hwz-zone-type-btn:hover { background: #00000010; }
+.hwz-zone-type-img { width: 22px; height: 22px; object-fit: contain; flex: none; }
+.hwz-zone-type-name { font-weight: 700; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hwz-zone-star-btn {
+  background: none; border: none; border-radius: 8px; padding: 3px 4px; margin: -3px -4px;
+  cursor: pointer; transition: background .12s;
+}
+.hwz-zone-star-btn:hover { background: #00000010; }
 .hwz-zone-stars { color: var(--accent2); font-size: 13px; letter-spacing: 1px; }
 .hwz-zone-species { display: flex; flex-wrap: wrap; gap: 4px; }
+.hwz-zone-species-btn {
+  background: none; border: 2px solid transparent; border-radius: 8px; padding: 1px;
+  cursor: pointer; line-height: 0; transition: border-color .12s, background .12s;
+}
+.hwz-zone-species-btn:hover { background: #00000010; }
 .hwz-zone-species-img { width: 28px; height: 28px; object-fit: contain; }
 
 /* Cooking */

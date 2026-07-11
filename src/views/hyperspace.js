@@ -94,8 +94,14 @@ function toggleSpecies(root, code) {
 // tearing down (and re-fetching) the filters card's images — page turns don't
 // change star/type/species selections, so nothing in there needs to reload.
 let resultsHost = null;
+// Zone cards let you click their star/type/species onto the filters above —
+// they need a full render(root) for that (filters change, not just results),
+// so the mounted root is kept around rather than threaded through every
+// buildResults()/zoneCard() call.
+let mountedRoot = null;
 
 export function render(root) {
+  mountedRoot = root;
   clear(root);
   const wrap = el('div', { class: 'hwz' });
   wrap.appendChild(buildFilters(root));
@@ -219,14 +225,28 @@ function buildResults() {
 function zoneCard(z) {
   const t = idx.typeByName.get(z.type);
   const head = el('div', { class: 'hwz-zone-head' }, [
-    t ? icon(t.icon_url, 'hwz-zone-type-img', z.type) : null,
-    el('span', { class: 'hwz-zone-type-name' }, z.type),
-    el('span', { class: 'hwz-zone-stars' }, starGlyphs(z.star)),
+    el('button', {
+      class: 'hwz-zone-type-btn',
+      title: `Filter by ${z.type}`,
+      onclick: () => { typeFilter = typeFilter === z.type ? null : z.type; page = 0; render(mountedRoot); },
+    }, [
+      t ? icon(t.icon_url, 'hwz-zone-type-img', z.type) : null,
+      el('span', { class: 'hwz-zone-type-name' }, z.type),
+    ]),
+    el('button', {
+      class: 'hwz-zone-star-btn',
+      title: `Filter by ${z.star} star${z.star > 1 ? 's' : ''}`,
+      onclick: () => { starFilter = starFilter === z.star ? null : z.star; page = 0; render(mountedRoot); },
+    }, el('span', { class: 'hwz-zone-stars' }, starGlyphs(z.star))),
   ]);
   const species = el('div', { class: 'hwz-zone-species' },
     [...new Set(z.species)].map((c) => {
       const s = speciesInfo(c);
-      return icon(s.sprite, 'hwz-zone-species-img', s.name, 0, s.fallbackSprite);
+      return el('button', {
+        class: 'hwz-zone-species-btn',
+        title: `Filter by ${s.name}`,
+        onclick: () => toggleSpecies(mountedRoot, c),
+      }, icon(s.sprite, 'hwz-zone-species-img', s.name, 0, s.fallbackSprite));
     }));
   return el('div', { class: 'hwz-zone-card' }, [head, species]);
 }
