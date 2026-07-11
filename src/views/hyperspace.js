@@ -90,12 +90,24 @@ function toggleSpecies(root, code) {
   render(root);
 }
 
+// Kept across renders so pagination can refresh just the results card without
+// tearing down (and re-fetching) the filters card's images — page turns don't
+// change star/type/species selections, so nothing in there needs to reload.
+let resultsHost = null;
+
 export function render(root) {
   clear(root);
   const wrap = el('div', { class: 'hwz' });
   wrap.appendChild(buildFilters(root));
-  wrap.appendChild(buildResults(root));
+  resultsHost = el('div', {});
+  resultsHost.appendChild(buildResults());
+  wrap.appendChild(resultsHost);
   root.appendChild(wrap);
+}
+
+function renderResults() {
+  clear(resultsHost);
+  resultsHost.appendChild(buildResults());
 }
 
 function buildFilters(root) {
@@ -179,7 +191,7 @@ function speciesButton(root, s) {
   }, [icon(s.sprite, 'hwz-species-img', s.name, 0, s.fallbackSprite), el('span', { class: 'hwz-species-name' }, s.name)]);
 }
 
-function buildResults(root) {
+function buildResults() {
   const card = el('div', { class: 'card' });
   const matches = HYPERSPACE.zones.filter(zoneMatches);
   const totalPages = Math.max(1, Math.ceil(matches.length / PAGE_SIZE));
@@ -189,9 +201,9 @@ function buildResults(root) {
   card.appendChild(el('div', { class: 'hwz-results-head' }, [
     el('h3', {}, `Zones (${matches.length})`),
     totalPages > 1 ? el('div', { class: 'dev-pager' }, [
-      el('button', { class: 'pgbtn tiny', disabled: page === 0 || null, onclick: () => { page--; render(root); } }, '‹'),
+      el('button', { class: 'pgbtn tiny', disabled: page === 0 || null, onclick: () => { page--; renderResults(); } }, '‹'),
       el('span', { class: 'muted small' }, `Page ${page + 1} of ${totalPages}`),
-      el('button', { class: 'pgbtn tiny', disabled: page >= totalPages - 1 || null, onclick: () => { page++; render(root); } }, '›'),
+      el('button', { class: 'pgbtn tiny', disabled: page >= totalPages - 1 || null, onclick: () => { page++; renderResults(); } }, '›'),
     ]) : null,
   ]));
 
