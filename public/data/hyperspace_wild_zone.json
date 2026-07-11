@@ -1,0 +1,16 @@
+{
+    "meta": {
+        "schema_version": 1
+    },
+    "zones": [
+        {
+            "type": "Steel",
+            "star": 1,
+            "species":[
+                "052",
+                "304",
+                "707"
+            ]
+        }
+    ]
+}
