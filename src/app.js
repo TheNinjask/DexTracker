@@ -12,6 +12,7 @@ import * as hofView from './views/halloffame.js';
 import * as profilesView from './views/profiles.js';
 import * as registryView from './views/registry.js';
 import * as toolsView from './views/tools.js';
+import * as newsView from './views/news.js';
 import * as aboutView from './views/about.js';
 import * as devView from './views/dev.js';
 
@@ -22,6 +23,7 @@ const TABS = [
   { id: 'hof', label: 'Hall of Fame', render: hofView.render },
   { id: 'profiles', label: 'Profiles', render: profilesView.render },
   { id: 'tools', label: 'Tools', render: toolsView.render },
+  { id: 'news', label: 'News', render: newsView.render },
   { id: 'about', label: 'About', render: aboutView.render },
   // Reference-data editor: only present when the savefile opts into dev mode.
   { id: 'dev', label: 'Dev', render: devView.render, dev: true },
@@ -39,6 +41,9 @@ function renderTab() {
   const tab = tabs.find((t) => t.id === current) || tabs[0];
   current = tab.id;
   document.querySelectorAll('.nav-tab').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab.id));
+  // The News tab fills the screen edge-to-edge below the header so its iframe
+  // is the only scrollable region — everywhere else keeps normal page scroll.
+  document.body.classList.toggle('tab-fill', tab.id === 'news');
   const c = clear(content());
   try { tab.render(c); }
   catch (e) { console.error(e); c.appendChild(el('pre', { class: 'error' }, String(e && e.stack || e))); }
