@@ -29,6 +29,13 @@ body {
 }
 #app { max-width: 1280px; margin: 0 auto; padding: 0 12px 48px; }
 
+/* Fill mode (News tab): the tab's content takes the full viewport below the
+   header, edge to edge, so its embedded iframe is the only thing that scrolls
+   instead of the page scrolling to it and then scrolling again inside it. */
+body.tab-fill { height: 100vh; overflow: hidden; }
+body.tab-fill #app { height: 100%; display: flex; flex-direction: column; padding-bottom: 0; }
+body.tab-fill #content { flex: 1; min-height: 0; display: flex; }
+
 /* Header / nav */
 .app-header {
   position: sticky; top: 0; z-index: 20;
@@ -118,6 +125,17 @@ select.ctrl { border-radius: 999px; }
 .card { background: var(--card); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: var(--shadow); }
 .card h3 { margin: 0 0 10px; font-size: 15px; }
 .muted { color: var(--muted); }
+
+/* News tab */
+.news-card { display: flex; flex-direction: column; flex: 1; min-height: 0; min-width: 0; }
+.news-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 10px; padding: 10px 14px;
+  background: var(--card); backdrop-filter: blur(8px);
+  border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-sm);
+}
+.news-head h3 { margin: 0; }
+.news-frame { flex: 1; min-height: 0; width: 100%; border: 1px solid var(--border-soft); border-radius: 12px; background: #fff; }
 
 /* About / credits tab */
 .about { max-width: 640px; }
