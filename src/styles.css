@@ -319,6 +319,49 @@ select.ctrl { border-radius: 999px; }
 .crumb-current { color: var(--muted); }
 .tool-view-body { margin-top: 4px; }
 
+/* Challenges & Research Tasks */
+.tool-pick-box.dual { padding: 0; position: relative; }
+.tool-pick-box.dual .tool-pick-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.tool-pick-box.dual .tool-pick-img.dual-a { clip-path: polygon(0 0, 100% 0, 0 100%); }
+.tool-pick-box.dual .tool-pick-img.dual-b { clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+
+.chal-progress { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
+.chal-section { margin-bottom: 18px; }
+.chal-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+.chal-section-head h4 { margin: 0; color: var(--accent-deep); }
+.chal-list { display: flex; flex-direction: column; gap: 4px; }
+.chal-row {
+  display: flex; align-items: center; gap: 10px; padding: 7px 10px;
+  border-radius: 10px; background: var(--card2);
+}
+.chal-title { flex: 1; font-size: 13px; }
+.chal-tiers { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.chal-tier {
+  display: flex; align-items: center; gap: 4px; padding: 2px 8px 2px 2px;
+  border-radius: 999px; border: 1px solid var(--border); background: #ffffffb3;
+  cursor: pointer; font-size: 11px; font-weight: 700; color: var(--muted);
+}
+.chal-tier.done { background: #e8f7ef; border-color: #9bd9bb; color: var(--owned); }
+.chal-tier-img { width: 22px; height: 22px; object-fit: contain; border-radius: 50%; }
+
+.chal-task { gap: 12px; }
+.chal-check {
+  flex: 0 0 auto; width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--border);
+  background: #ffffffb3; color: transparent; font-size: 13px; font-weight: 800; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.chal-check.on { background: var(--owned); border-color: var(--owned); color: #fff; }
+.chal-task-no { flex: 0 0 auto; width: 20px; text-align: right; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.chal-task.done .chal-title { color: var(--muted); text-decoration: line-through; }
+.chal-task-pokemon { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.chal-task-mon-img { width: 28px; height: 28px; object-fit: contain; }
+
+@media (max-width: 640px) {
+  .chal-row { flex-wrap: wrap; }
+  .chal-title { flex-basis: 100%; }
+  .chal-tiers, .chal-task-pokemon { justify-content: flex-start; }
+}
+
 /* Hyperspace Wild Zone Searcher */
 .hwz-block { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
 .hwz-stars { display: flex; gap: 4px; }

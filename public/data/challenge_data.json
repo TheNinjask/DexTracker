@@ -1,0 +1,4567 @@
+{
+    "meta": {
+        "id": "home",
+        "name": "Pokémon HOME",
+        "icon": "https://archives.bulbagarden.net/media/upload/2/20/HOME_Icon_Switch.jpg"
+    },
+    "sections": [
+        {
+            "id": "pokemon",
+            "name": "Pokémon Challenges"
+        },
+        {
+            "id": "trade",
+            "name": "Trade Challenges"
+        },
+        {
+            "id": "other",
+            "name": "Others Challenges"
+        },
+        {
+            "id": "legacy",
+            "name": "Legacy Challenges"
+        }
+    ],
+    "challenges": [
+        {
+            "id": "pokemon:fill-in-your-hyperspace-pokedex-in-pokemon-legends-z-a",
+            "section": "pokemon",
+            "title": "Fill in your Hyperspace Pokédex in Pokémon Legends: Z-A!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "hyperspace",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/hyperspace.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-lumiose-pokedex-in-pokemon-legends-z-a",
+            "section": "pokemon",
+            "title": "Fill in your Lumiose Pokédex in Pokémon Legends: Z-A!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "lumiose",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/lumiose.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-mega-evolution-pokedex-in-pokemon-legends-z-a",
+            "section": "pokemon",
+            "title": "Fill in your Mega Evolution Pokédex in Pokémon Legends: Z-A!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "megadex",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/megadex.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-10-forms-of-furfrou",
+            "section": "pokemon",
+            "title": "Register 10 forms of Furfrou",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "furfrou",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/furfrou.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-darkrai-from-pokemon-legends-z-a",
+            "section": "pokemon",
+            "title": "Register Darkrai from Pokémon Legends: Z-A!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "darkrai",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/darkrai.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-eternal-flower-floette-from-pokemon-legends-z-a",
+            "section": "pokemon",
+            "title": "Register Eternal Flower Floette from Pokémon Legends: Z-A!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "floette",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/floette.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-zygarde-from-pokemon-legends-z-a",
+            "section": "pokemon",
+            "title": "Register Zygarde from Pokémon Legends: Z-A!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "zygarde",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/zygarde.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-bashful-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Bashful Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "bashful",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/bashful.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-bold-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Bold Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "bold",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/bold.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-brave-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Brave Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "brave",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/brave.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-calm-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Calm Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "calm",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/calm.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-careful-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Careful Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "careful",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/careful.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-docile-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Docile Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "docile",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/docile.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-gentle-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Gentle Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "gentle",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/gentle.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-hardy-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Hardy Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "hardy",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/hardy.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-hasty-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Hasty Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "hasty",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/hasty.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-jolly-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Jolly Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "jolly",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/jolly.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-lax-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Lax Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "lax",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/lax.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-lonely-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Lonely Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "lonely",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/lonely.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-mild-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Mild Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "mild",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/mild.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-modest-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Modest Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "modest",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/modest.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-naive-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Naive Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "naive",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/naive.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-naughty-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Naughty Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "naughty",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/naughty.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-quiet-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Quiet Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "quiet",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/quiet.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-quirky-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Quirky Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "quirky",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/quirky.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-rash-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Rash Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "rash",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/rash.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-relaxed-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Relaxed Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "relaxed",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/relaxed.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-sassy-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Sassy Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "sassy",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/sassy.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-serious-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Serious Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "serious",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/serious.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-a-timid-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with a Timid Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "timid",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/timid.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-an-adamant-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with an Adamant Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "adamant",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/adamant.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-10-pokemon-with-an-impish-nature",
+            "section": "pokemon",
+            "title": "Deposit 10 Pokémon with an Impish Nature!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "impish",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/impish.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-30-ditto",
+            "section": "pokemon",
+            "title": "Deposit 30 Ditto",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "ditto",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/ditto.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-30-pikachu",
+            "section": "pokemon",
+            "title": "Deposit 30 Pikachu",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "pikachu",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/pikachu.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-a-pokemon-that-has-the-mightiest-mark",
+            "section": "pokemon",
+            "title": "Deposit a Pokémon that has the Mightiest Mark",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "mightiest",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/mightiest.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-a-roaming-form-gimmighoul-that-was-caught-in-pokemon-go",
+            "section": "pokemon",
+            "title": "Deposit a Roaming Form Gimmighoul that was caught in Pokémon GO!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "gimmighoul",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/gimmighoul.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon",
+            "section": "pokemon",
+            "title": "Deposit Pokémon",
+            "tiers": [
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "deppokemon1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/deppokemon1.png"
+                },
+                {
+                    "goal": 100,
+                    "reward_type": "sticker",
+                    "reward_id": "deppokemon2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/deppokemon2.png"
+                },
+                {
+                    "goal": 300,
+                    "reward_type": "sticker",
+                    "reward_id": "deppokemon3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/deppokemon3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-beast-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Beast Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "beastball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/beastball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "beastball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/beastball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "beastball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/beastball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-cherish-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Cherish Ball!",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "cherishball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/cherishball1.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "cherishball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/cherishball2.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "cherishball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/cherishball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-dive-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Dive Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "diveball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/diveball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "diveball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/diveball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "diveball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/diveball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-dream-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Dream Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "dreamball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dreamball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "dreamball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dreamball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "dreamball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dreamball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-dusk-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Dusk Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "duskball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/duskball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "duskball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/duskball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "duskball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/duskball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-fast-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Fast Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "fastball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fastball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "fastball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fastball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "fastball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fastball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-feather-ball-crafted-in-the-hisui-region",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Feather Ball crafted in the Hisui Region!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "featherball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/featherball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "featherball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/featherball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "featherball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/featherball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-friend-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Friend Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "friendball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/friendball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "friendball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/friendball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "friendball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/friendball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-gigaton-ball-crafted-in-the-hisui-region",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Gigaton Ball crafted in the Hisui Region!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "gigatonball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/gigatonball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "gigatonball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/gigatonball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "gigatonball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/gigatonball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-great-ball-crafted-in-the-hisui-region",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Great Ball crafted in the Hisui Region!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "greatballhisui1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/greatballhisui1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "greatballhisui2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/greatballhisui2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "greatballhisui3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/greatballhisui3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-great-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Great Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "greatball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/greatball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "greatball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/greatball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "greatball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/greatball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-heal-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Heal Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "healball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/healball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "healball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/healball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "healball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/healball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-heavy-ball-crafted-in-the-hisui-region",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Heavy Ball crafted in the Hisui Region!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "heavyballhisui1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/heavyballhisui1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "heavyballhisui2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/heavyballhisui2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "heavyballhisui3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/heavyballhisui3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-heavy-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Heavy Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "heavyball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/heavyball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "heavyball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/heavyball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "heavyball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/heavyball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-jet-ball-crafted-in-the-hisui-region",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Jet Ball crafted in the Hisui Region!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "jetball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/jetball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "jetball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/jetball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "jetball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/jetball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-leaden-ball-crafted-in-the-hisui-region",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Leaden Ball crafted in the Hisui Region!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "leadenball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/leadenball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "leadenball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/leadenball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "leadenball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/leadenball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-level-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Level Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "levelball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/levelball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "levelball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/levelball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "levelball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/levelball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-love-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Love Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "loveball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/loveball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "loveball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/loveball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "loveball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/loveball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-lure-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Lure Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "lureball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/lureball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "lureball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/lureball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "lureball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/lureball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-luxury-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Luxury Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "luxuryball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/luxuryball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "luxuryball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/luxuryball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "luxuryball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/luxuryball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-master-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Master Ball!",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "masterball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/masterball1.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "masterball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/masterball2.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "masterball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/masterball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-moon-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Moon Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "moonball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/moonball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "moonball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/moonball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "moonball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/moonball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-nest-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Nest Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "nestball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/nestball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "nestball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/nestball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "nestball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/nestball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-net-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Net Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "netball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/netball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "netball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/netball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "netball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/netball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-poke-ball-crafted-in-the-hisui-region",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Poké Ball crafted in the Hisui Region!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "pokeballhisui1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pokeballhisui1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "pokeballhisui2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pokeballhisui2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "pokeballhisui3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pokeballhisui3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-poke-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Poké Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "pokeball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pokeball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "pokeball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pokeball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "pokeball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pokeball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-premier-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Premier Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "premierball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/premierball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "premierball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/premierball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "premierball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/premierball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-quick-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Quick Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "quickball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/quickball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "quickball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/quickball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "quickball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/quickball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-repeat-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Repeat Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "repeatball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/repeatball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "repeatball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/repeatball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "repeatball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/repeatball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-safari-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Safari Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "safariball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/safariball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "safariball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/safariball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "safariball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/safariball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-sport-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Sport Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "sportball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sportball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "sportball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sportball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "sportball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sportball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-timer-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Timer Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "timerball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/timerball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "timerball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/timerball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "timerball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/timerball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-ultra-ball-crafted-in-the-hisui-region",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Ultra Ball crafted in the Hisui Region!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "ultraballhisui1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ultraballhisui1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "ultraballhisui2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ultraballhisui2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "ultraballhisui3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ultraballhisui3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-ultra-ball",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Ultra Ball!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "ultraball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ultraball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "ultraball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ultraball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "ultraball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ultraball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-in-a-wing-ball-crafted-in-the-hisui-region",
+            "section": "pokemon",
+            "title": "Deposit Pokémon in a Wing Ball crafted in the Hisui Region!",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "wingball1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/wingball1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "wingball2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/wingball2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "wingball3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/wingball3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-that-embody-the-ultimate-in-beauty",
+            "section": "pokemon",
+            "title": "Deposit Pokémon that embody the ultimate in beauty!",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "beauty1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/beauty1.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "beauty2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/beauty2.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "beauty3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/beauty3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-that-embody-the-ultimate-in-cleverness",
+            "section": "pokemon",
+            "title": "Deposit Pokémon that embody the ultimate in cleverness!",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "cleverness1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/cleverness1.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "cleverness2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/cleverness2.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "cleverness3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/cleverness3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-that-embody-the-ultimate-in-coolness",
+            "section": "pokemon",
+            "title": "Deposit Pokémon that embody the ultimate in coolness!",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "coolness1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/coolness1.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "coolness2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/coolness2.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "coolness3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/coolness3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-that-embody-the-ultimate-in-cuteness",
+            "section": "pokemon",
+            "title": "Deposit Pokémon that embody the ultimate in cuteness!",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "cuteness1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/cuteness1.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "cuteness2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/cuteness2.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "cuteness3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/cuteness3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-that-embody-the-ultimate-in-toughness",
+            "section": "pokemon",
+            "title": "Deposit Pokémon that embody the ultimate in toughness!",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "toughness1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/toughness1.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "toughness2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/toughness2.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "toughness3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/toughness3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-that-have-the-jumbo-mark-and-the-mini-mark",
+            "section": "pokemon",
+            "title": "Deposit Pokémon that have the Jumbo Mark and the Mini Mark",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "xxsxxl",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/xxsxxl.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-pokemon-that-show-off-the-ultimate-sheen",
+            "section": "pokemon",
+            "title": "Deposit Pokémon that show off the ultimate sheen!!",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "sheen1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sheen1.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "sheen2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sheen2.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "sheen3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sheen3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-shiny-pokemon",
+            "section": "pokemon",
+            "title": "Deposit Shiny Pokémon",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "shiny1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/shiny1.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "shiny2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/shiny2.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "shiny3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/shiny3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-blueberry-pokedex-in-pokemon-scarlet-or-pokemon-violet",
+            "section": "pokemon",
+            "title": "Fill in your Blueberry Pokédex in Pokémon Scarlet or Pokémon Violet!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "blueberry",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/blueberry.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-crown-tundra-pokedex-in-pokemon-sword-shield",
+            "section": "pokemon",
+            "title": "Fill in your Crown Tundra Pokédex in Pokémon Sword & Shield!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "crowntundra",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/crowntundra.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-galar-pokedex-in-pokemon-sword-shield",
+            "section": "pokemon",
+            "title": "Fill in your Galar Pokédex in Pokémon Sword & Shield!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "galar",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/galar.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-hisui-pokedex-in-pokemon-legends-arceus",
+            "section": "pokemon",
+            "title": "Fill in your Hisui Pokédex in Pokémon Legends: Arceus!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "hisui",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/hisui.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-isle-of-armor-tundra-pokedex-in-pokemon-sword-shield",
+            "section": "pokemon",
+            "title": "Fill in your Isle of Armor Tundra Pokédex in Pokémon Sword & Shield!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "isleofarmor",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/isleofarmor.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-kanto-pokedex-in-pokemon-let-s-go-pikachu-or-pokemon-let-s-go-eevee",
+            "section": "pokemon",
+            "title": "Fill in your Kanto Pokédex in Pokémon Let's Go, Pikachu! or Pokémon: Let's Go, Eevee!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "kantoletsgo",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/kantoletsgo.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-kitakami-pokedex-in-pokemon-scarlet-or-pokemon-violet",
+            "section": "pokemon",
+            "title": "Fill in your Kitakami Pokédex in Pokémon Scarlet or Pokémon Violet!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "kitakami",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/kitakami.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-paldea-region-pokedex-in-pokemon-scarlet-or-pokemon-violet",
+            "section": "pokemon",
+            "title": "Fill in your Paldea region Pokédex in Pokémon Scarlet or Pokémon Violet!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "paldea",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/paldea.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-sinnoh-pokedex-in-pokemon-brilliant-diamond-shining-pearl",
+            "section": "pokemon",
+            "title": "Fill in your Sinnoh Pokédex in Pokémon Brilliant Diamond & Shining Pearl!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "sinnohbdsp",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/sinnohbdsp.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-100-different-species-of-pokemon-that-live-in-the-alola-region",
+            "section": "pokemon",
+            "title": "Register 100 different species of Pokémon that live in the Alola Region",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "alola100",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/alola100.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-18-patterns-of-vivillon",
+            "section": "pokemon",
+            "title": "Register 18 patterns of Vivillon",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "vivillon",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/vivillon.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-2-forms-of-dudunsparce",
+            "section": "pokemon",
+            "title": "Register 2 forms of Dudunsparce!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "dudunsparce",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dudunsparce.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-2-forms-of-maushold",
+            "section": "pokemon",
+            "title": "Register 2 forms of Maushold!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "maushold",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/maushold.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-20-species-of-pokemon-that-were-restored-from-fossils",
+            "section": "pokemon",
+            "title": "Register 20 species of Pokémon that were restored from Fossils!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "fossil",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/fossil.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-28-patterns-of-unown",
+            "section": "pokemon",
+            "title": "Register 28 patterns of Unown",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "unown",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/unown.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-3-varieties-of-paldean-tauros",
+            "section": "pokemon",
+            "title": "Register 3 varieties of Paldean Tauros!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "paldeantauros",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/paldeantauros.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-3-varieties-of-tatsugiri",
+            "section": "pokemon",
+            "title": "Register 3 varieties of Tatsugiri!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "tatsugiri",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/tatsugiri.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-4-colors-of-squawkabilly",
+            "section": "pokemon",
+            "title": "Register 4 colors of Squawkabilly!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "squawkabilly",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/squawkabilly.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-4-different-ruinous-pokemon",
+            "section": "pokemon",
+            "title": "Register 4 different Ruinous Pokémon!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "ruinous",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/ruinous.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-4-forms-of-oricorio",
+            "section": "pokemon",
+            "title": "Register 4 forms of Oricorio!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "oricorio",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/oricorio.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-5-different-species-of-ultra-beast",
+            "section": "pokemon",
+            "title": "Register 5 different species of Ultra Beast",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "ultrabeast",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ultrabeast.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-6-forms-of-rotom",
+            "section": "pokemon",
+            "title": "Register 6 forms of Rotom!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "rotom",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/rotom.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-7-colors-of-minior",
+            "section": "pokemon",
+            "title": "Register 7 colors of Minior",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "minior",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/minior.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-abilities",
+            "section": "pokemon",
+            "title": "Register Abilities!",
+            "tiers": [
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "ability1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ability1.png"
+                },
+                {
+                    "goal": 70,
+                    "reward_type": "sticker",
+                    "reward_id": "ability2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ability2.png"
+                },
+                {
+                    "goal": 200,
+                    "reward_type": "sticker",
+                    "reward_id": "ability3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ability3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-alcremie-s-forms",
+            "section": "pokemon",
+            "title": "Register Alcremie's Forms",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "alcremie1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/alcremie1.png"
+                },
+                {
+                    "goal": 3,
+                    "reward_type": "sticker",
+                    "reward_id": "alcremie2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/alcremie2.png"
+                },
+                {
+                    "goal": 9,
+                    "reward_type": "sticker",
+                    "reward_id": "alcremie3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/alcremie3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-all-the-first-partner-pokemon-that-trainers-can-choose-in-alola",
+            "section": "pokemon",
+            "title": "Register all the first-partner Pokémon that trainers can choose in Alola!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "alolastarter",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/alolastarter.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-all-the-first-partner-pokemon-that-trainers-can-choose-in-galar",
+            "section": "pokemon",
+            "title": "Register all the first-partner Pokémon that trainers can choose in Galar!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "galarstarter",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/galarstarter.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-all-the-first-partner-pokemon-that-trainers-can-choose-in-hoenn",
+            "section": "pokemon",
+            "title": "Register all the first-partner Pokémon that trainers can choose in Hoenn!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "hoennstarter",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/hoennstarter.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-all-the-first-partner-pokemon-that-trainers-can-choose-in-johto",
+            "section": "pokemon",
+            "title": "Register all the first-partner Pokémon that trainers can choose in Johto!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "johtostarter",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/johtostarter.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-all-the-first-partner-pokemon-that-trainers-can-choose-in-kalos",
+            "section": "pokemon",
+            "title": "Register all the first-partner Pokémon that trainers can choose in Kalos!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "kalosstarter",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/kalosstarter.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-all-the-first-partner-pokemon-that-trainers-can-choose-in-kanto",
+            "section": "pokemon",
+            "title": "Register all the first-partner Pokémon that trainers can choose in Kanto!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "kantostarter",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/kantostarter.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-all-the-first-partner-pokemon-that-trainers-can-choose-in-sinnoh",
+            "section": "pokemon",
+            "title": "Register all the first-partner Pokémon that trainers can choose in Sinnoh!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "sinnohstarter",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sinnohstarter.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-all-the-first-partner-pokemon-that-trainers-can-choose-in-unova",
+            "section": "pokemon",
+            "title": "Register all the first-partner Pokémon that trainers can choose in Unova!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "unovastarter",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/unovastarter.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-alpha-pokemon",
+            "section": "pokemon",
+            "title": "Register Alpha Pokémon",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "alpha",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/alpha.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-applin-and-its-4-evolutions",
+            "section": "pokemon",
+            "title": "Register Applin and its 4 evolutions",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "applin",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/applin.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-arceus-from-pokemon-legends-arceus",
+            "section": "pokemon",
+            "title": "Register Arceus from Pokémon Legends: Arceus",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "pla",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pla.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-autumn-form-deerling-and-autumn-form-sawsbuck",
+            "section": "pokemon",
+            "title": "Register Autumn Form Deerling and Autumn Form Sawsbuck",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "autumndeerling",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/autumndeerling.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-blastoise-from-the-good-ol-kanto-region",
+            "section": "pokemon",
+            "title": "Register Blastoise from the good ol' Kanto Region!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "blue",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/blue.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-bug-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Bug-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "bug1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/bug1.png"
+                },
+                {
+                    "goal": 25,
+                    "reward_type": "sticker",
+                    "reward_id": "bug2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/bug2.png"
+                },
+                {
+                    "goal": 60,
+                    "reward_type": "sticker",
+                    "reward_id": "bug3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/bug3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-charizard-from-pokemon-firered-leafgreen",
+            "section": "pokemon",
+            "title": "Register Charizard from Pokémon FireRed & LeafGreen",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "firered",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/firered.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-charizard-from-the-good-ol-kanto-region",
+            "section": "pokemon",
+            "title": "Register Charizard from the good ol' Kanto Region!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "red",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/red.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-cosmog-cosmoem-solgaleo-and-lunala-from-the-alola-region",
+            "section": "pokemon",
+            "title": "Register Cosmog, Cosmoem, Solgaleo and Lunala from the Alola Region",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "solgaleolunala",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/solgaleolunala.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-dark-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Dark-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "dark1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dark1.png"
+                },
+                {
+                    "goal": 20,
+                    "reward_type": "sticker",
+                    "reward_id": "dark2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dark2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "dark3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dark3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-dialga-from-pokemon-brilliant-diamond-or-shining-pearl",
+            "section": "pokemon",
+            "title": "Register Dialga from Pokémon Brilliant Diamond or Shining Pearl",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "brilliantdiamond",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/brilliantdiamond.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-dialga-from-pokemon-diamond-pokemon-pearl-or-pokemon-platinum",
+            "section": "pokemon",
+            "title": "Register Dialga from Pokémon Diamond, Pokémon Pearl, or Pokémon Platinum!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "diamond",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/diamond.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-dialga-palkia-and-giratina-from-the-pokemon-diamond-pokemon-pearl-or-pokemon-platinum",
+            "section": "pokemon",
+            "title": "Register Dialga, Palkia and Giratina from the Pokémon Diamond, Pokémon Pearl, or Pokémon Platinum",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "dialgapalkiagiratina",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dialgapalkiagiratina.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-dragon-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Dragon-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "dragon1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dragon1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "dragon2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dragon2.png"
+                },
+                {
+                    "goal": 40,
+                    "reward_type": "sticker",
+                    "reward_id": "dragon3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dragon3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-eevee-and-its-8-evolutions",
+            "section": "pokemon",
+            "title": "Register Eevee and its 8 Evolutions",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "eevee",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/eevee.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-eevee-from-pokemon-let-s-go-pikachu-or-let-s-go-eevee",
+            "section": "pokemon",
+            "title": "Register Eevee from Pokémon Let's Go, Pikachu! Or Let's Go, Eevee!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "letsgoeevee",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/letsgoeevee.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-electric-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Electric-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "electric1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/electric1.png"
+                },
+                {
+                    "goal": 20,
+                    "reward_type": "sticker",
+                    "reward_id": "electric2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/electric2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "electric3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/electric3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-fairy-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Fairy-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "fairy1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fairy1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "fairy2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fairy2.png"
+                },
+                {
+                    "goal": 40,
+                    "reward_type": "sticker",
+                    "reward_id": "fairy3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fairy3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-fighting-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Fighting-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "fighting1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fighting1.png"
+                },
+                {
+                    "goal": 20,
+                    "reward_type": "sticker",
+                    "reward_id": "fighting2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fighting2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "fighting3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fighting3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-fire-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Fire-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "fire1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fire1.png"
+                },
+                {
+                    "goal": 20,
+                    "reward_type": "sticker",
+                    "reward_id": "fire2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fire2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "fire3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/fire3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-flying-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Flying-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "flying1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/flying1.png"
+                },
+                {
+                    "goal": 25,
+                    "reward_type": "sticker",
+                    "reward_id": "flying2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/flying2.png"
+                },
+                {
+                    "goal": 60,
+                    "reward_type": "sticker",
+                    "reward_id": "flying3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/flying3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-galarian-articuno-galarian-zapdos-and-galarian-moltres",
+            "section": "pokemon",
+            "title": "Register Galarian Articuno, Galarian Zapdos and Galarian Moltres",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "galarianbirds",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/galarianbirds.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-ghost-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Ghost-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "ghost1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ghost1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "ghost2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ghost2.png"
+                },
+                {
+                    "goal": 40,
+                    "reward_type": "sticker",
+                    "reward_id": "ghost3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ghost3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-giratina-from-pokemon-diamond-pokemon-pearl-or-pokemon-platinum",
+            "section": "pokemon",
+            "title": "Register Giratina from Pokémon Diamond, Pokémon Pearl, or Pokémon Platinum!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "platinum",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/platinum.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-grass-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Grass-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "grass1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/grass1.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "grass2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/grass2.png"
+                },
+                {
+                    "goal": 80,
+                    "reward_type": "sticker",
+                    "reward_id": "grass3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/grass3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-groudon-and-kyogrefrom-pokemon-omega-ruby-or-pokemon-alpha-sapphire",
+            "section": "pokemon",
+            "title": "Register Groudon and Kyogrefrom Pokémon Omega Ruby or Pokémon Alpha Sapphire",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "oras",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/oras.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-groudon-from-pokemon-omega-ruby-or-pokemon-alpha-sapphire",
+            "section": "pokemon",
+            "title": "Register Groudon from Pokémon Omega Ruby or Pokémon Alpha Sapphire",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "omegaruby",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/omegaruby.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-groudon-from-pokemon-ruby-pokemon-sapphire-or-pokemon-emerald",
+            "section": "pokemon",
+            "title": "Register Groudon from Pokémon Ruby, Pokémon Sapphire, or Pokémon Emerald",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "ruby",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ruby.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-ground-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Ground-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "ground1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ground1.png"
+                },
+                {
+                    "goal": 20,
+                    "reward_type": "sticker",
+                    "reward_id": "ground2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ground2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "ground3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ground3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-hisuian-decidueye-hisuian-typhlosion-and-hisuian-samurott",
+            "section": "pokemon",
+            "title": "Register Hisuian Decidueye, Hisuian Typhlosion, and Hisuian Samurott",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "hisuistarters",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/hisuistarters.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-ho-oh-from-pokemon-heart-gold-or-pokemon-soulsilver",
+            "section": "pokemon",
+            "title": "Register Ho-Oh from Pokémon Heart Gold, or Pokémon SoulSilver!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "heartgold",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/heartgold.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-ho-oh-from-the-good-ol-johto-region",
+            "section": "pokemon",
+            "title": "Register Ho-Oh from the good ol' Johto Region",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "gold",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/gold.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-ice-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Ice-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "ice1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ice1.png"
+                },
+                {
+                    "goal": 15,
+                    "reward_type": "sticker",
+                    "reward_id": "ice2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ice2.png"
+                },
+                {
+                    "goal": 40,
+                    "reward_type": "sticker",
+                    "reward_id": "ice3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ice3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-iron-bundle-iron-hands-iron-jugulis-and-iron-thorns",
+            "section": "pokemon",
+            "title": "Register Iron Bundle, Iron Hands, Iron Jugulis, and Iron Thorns!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "violetparadox",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/violetparadox.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-iron-leaves-iron-boulder-and-iron-crown",
+            "section": "pokemon",
+            "title": "Register Iron Leaves, Iron Boulder, and Iron Crown!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "paradox2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/paradox2.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-kyogre-from-pokemon-omega-ruby-or-pokemon-alpha-sapphire",
+            "section": "pokemon",
+            "title": "Register Kyogre from Pokémon Omega Ruby or Pokémon Alpha Sapphire",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "alphasapphire",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/alphasapphire.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-kyogre-from-pokemon-ruby-pokemon-sapphire-or-pokemon-emerald",
+            "section": "pokemon",
+            "title": "Register Kyogre from Pokémon Ruby, Pokémon Sapphire, or Pokémon Emerald",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "sapphire",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sapphire.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-lugia-from-pokemon-heartgold-or-pokemon-soul-silver",
+            "section": "pokemon",
+            "title": "Register Lugia from Pokémon HeartGold or Pokémon Soul Silver",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "soulsilver",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/soulsilver.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-lugia-from-the-good-ol-johto-region",
+            "section": "pokemon",
+            "title": "Register Lugia from the good ol' Johto Region",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "silver",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/silver.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-lunala-and-necrozma-pokemon-ultra-sun-or-pokemon-ultra-moon",
+            "section": "pokemon",
+            "title": "Register Lunala and Necrozma Pokémon Ultra Sun or Pokémon Ultra Moon",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "ultramoon",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ultramoon.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-lunala-from-pokemon-sun-or-pokemon-moon",
+            "section": "pokemon",
+            "title": "Register Lunala from Pokémon Sun or Pokémon Moon",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "moon",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/moon.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-meloetta",
+            "section": "pokemon",
+            "title": "Register Meloetta",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "meloettacgear",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/meloettacgear.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-mudkip-marshtomp-and-swampert-from-pokemon-omega-ruby-or-pokemon-alpha-sapphire",
+            "section": "pokemon",
+            "title": "Register Mudkip, Marshtomp and Swampert from Pokémon Omega Ruby or Pokémon Alpha Sapphire!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "megaswampert",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/megaswampert.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-normal-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Normal-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "normal1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/normal1.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "normal2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/normal2.png"
+                },
+                {
+                    "goal": 90,
+                    "reward_type": "sticker",
+                    "reward_id": "normal3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/normal3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-ogerpon",
+            "section": "pokemon",
+            "title": "Register Ogerpon",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "ogerpon",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ogerpon.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-okidogi-munkidori-and-fezandipiti",
+            "section": "pokemon",
+            "title": "Register Okidogi, Munkidori, and Fezandipiti!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "kitakamitrio",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/kitakamitrio.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-palkia-from-pokemon-brilliant-diamond-or-pokemon-shining-pearl",
+            "section": "pokemon",
+            "title": "Register Palkia from Pokémon Brilliant Diamond or Pokémon Shining Pearl",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "shiningpearl",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/shiningpearl.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-palkia-from-pokemon-diamond-pokemon-pearl-or-pokemon-platinum",
+            "section": "pokemon",
+            "title": "Register Palkia from Pokémon Diamond, Pokémon Pearl, or Pokémon Platinum",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "pearl",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pearl.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-pecharunt",
+            "section": "pokemon",
+            "title": "Register Pecharunt!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "pecharunt",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pecharunt.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-physical-moves",
+            "section": "pokemon",
+            "title": "Register Physical Moves",
+            "tiers": [
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "physical1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/physical1.png"
+                },
+                {
+                    "goal": 80,
+                    "reward_type": "sticker",
+                    "reward_id": "physical2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/physical2.png"
+                },
+                {
+                    "goal": 220,
+                    "reward_type": "sticker",
+                    "reward_id": "physical3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/physical3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-pikachu-from-pokemon-let-s-go-pikachu-or-pokemon-let-s-go-eevee",
+            "section": "pokemon",
+            "title": "Register Pikachu from Pokémon Let's Go, Pikachu! Or Pokémon Let's Go, Eevee!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "letsgopikachu",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/letsgopikachu.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-pikachu-from-the-good-ol-kanto-region",
+            "section": "pokemon",
+            "title": "Register Pikachu from the good ol' Kanto Region!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "yellow",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/yellow.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-pikachu-wearing-a-hat",
+            "section": "pokemon",
+            "title": "Register Pikachu wearing a hat",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "ashpikachu",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ashpikachu.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-poison-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Poison-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "poison1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/poison1.png"
+                },
+                {
+                    "goal": 20,
+                    "reward_type": "sticker",
+                    "reward_id": "poison2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/poison2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "poison3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/poison3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-pokemon-that-have-the-twinkling-star-ribbon",
+            "section": "pokemon",
+            "title": "Register Pokémon that have the Twinkling Star Ribbon!!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "contest",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/contest.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-pokemon-with-all-their-effort-levels-maxed",
+            "section": "pokemon",
+            "title": "Register Pokémon with all their effort levels maxed!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "effortlevel",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/effortlevel.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-psychic-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Psychic-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "psychic1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/psychic1.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "psychic2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/psychic2.png"
+                },
+                {
+                    "goal": 70,
+                    "reward_type": "sticker",
+                    "reward_id": "psychic3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/psychic3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-rayquaza-from-pokemon-omega-ruby-or-pokemon-alpha-sapphire",
+            "section": "pokemon",
+            "title": "Register Rayquaza from Pokémon Omega Ruby or Pokémon Alpha Sapphire",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "deltaepisode",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/deltaepisode.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-rayquaza-from-pokemon-ruby-pokemon-sapphire-or-pokemon-emerald",
+            "section": "pokemon",
+            "title": "Register Rayquaza from Pokémon Ruby, Pokémon Sapphire, or Pokémon Emerald",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "emerald",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/emerald.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-reshiram-and-kyurem-from-pokemon-black-2-or-pokemon-white-2",
+            "section": "pokemon",
+            "title": "Register Reshiram and Kyurem from Pokémon Black 2 or Pokémon White 2",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "white2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/white2.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-reshiram-from-the-pokemon-black-or-pokemon-white",
+            "section": "pokemon",
+            "title": "Register Reshiram from the Pokémon Black or Pokémon White",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "black",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/black.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-rock-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Rock-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "rock1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/rock1.png"
+                },
+                {
+                    "goal": 20,
+                    "reward_type": "sticker",
+                    "reward_id": "rock2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/rock2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "rock3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/rock3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-scream-tail-brute-bonnet-flutter-mane-and-sandy-shocks",
+            "section": "pokemon",
+            "title": "Register Scream Tail, Brute Bonnet, Flutter Mane, and Sandy Shocks!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "scarletparadox",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/scarletparadox.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-shaymin",
+            "section": "pokemon",
+            "title": "Register Shaymin",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "shaymin",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/shaymin.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-shiny-genesect",
+            "section": "pokemon",
+            "title": "Register Shiny Genesect",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "genesectcgear",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/genesectcgear.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-shiny-metagross",
+            "section": "pokemon",
+            "title": "Register Shiny Metagross",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "shinymetagross",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/shinymetagross.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-solgaleo-and-necrozma-from-pokemon-ultra-sun-or-pokemon-ultra-moon",
+            "section": "pokemon",
+            "title": "Register Solgaleo and Necrozma from Pokémon Ultra Sun or Pokémon Ultra Moon",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "ultrasun",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ultrasun.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-solgaleo-from-pokemon-sun-or-pokemon-moon",
+            "section": "pokemon",
+            "title": "Register Solgaleo from Pokémon Sun or Pokémon Moon",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "sun",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sun.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-solgaleo-lunala-and-necrozma-from-the-alola-region",
+            "section": "pokemon",
+            "title": "Register Solgaleo, Lunala and Necrozma from the Alola Region",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "necrozma",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/necrozma.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-special-moves",
+            "section": "pokemon",
+            "title": "Register Special Moves",
+            "tiers": [
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "special1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/special1.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "special2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/special2.png"
+                },
+                {
+                    "goal": 140,
+                    "reward_type": "sticker",
+                    "reward_id": "special3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/special3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-spring-form-deerling-and-spring-form-sawsbuck",
+            "section": "pokemon",
+            "title": "Register Spring Form Deerling and Spring Form Sawsbuck",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "springdeerling",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/springdeerling.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-staraptor-bidoof-and-bibarel-from-pokemon-brilliant-diamond-or-pokemon-shining-pearl",
+            "section": "pokemon",
+            "title": "Register Staraptor, Bidoof and Bibarel from Pokémon Brilliant Diamond or Pokémon Shining Pearl!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "bibarel",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/bibarel.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-status-moves",
+            "section": "pokemon",
+            "title": "Register status moves",
+            "tiers": [
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "other1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/other1.png"
+                },
+                {
+                    "goal": 45,
+                    "reward_type": "sticker",
+                    "reward_id": "other2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/other2.png"
+                },
+                {
+                    "goal": 200,
+                    "reward_type": "sticker",
+                    "reward_id": "other3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/other3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-steel-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Steel-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "steel1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/steel1.png"
+                },
+                {
+                    "goal": 20,
+                    "reward_type": "sticker",
+                    "reward_id": "steel2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/steel2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "steel3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/steel3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-suicune-from-the-good-ol-johto-region",
+            "section": "pokemon",
+            "title": "Register Suicune from the good ol' Johto Region",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "crystal",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/crystal.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-summer-form-deerling-and-summer-form-sawsbuck",
+            "section": "pokemon",
+            "title": "Register Summer Form Deerling and Summer Form Sawsbuck",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "summerdeerling",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/summerdeerling.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-terapagos",
+            "section": "pokemon",
+            "title": "Register Terapagos",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "terapagos",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/terapagos.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-the-guardian-deities-of-alola",
+            "section": "pokemon",
+            "title": "Register the guardian deities of Alola!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "tapu",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/tapu.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-torchic-combusken-and-blaziken-from-pokemon-omega-ruby-or-pokemon-alpha-sapphire",
+            "section": "pokemon",
+            "title": "Register Torchic, Combusken and Blaziken from Pokémon Omega Ruby or Pokémon Alpha Sapphire!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "megablaziken",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/megablaziken.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-torterra-infernape-and-empoleon-from-pokemon-brilliant-diamond-or-pokemon-shining-pearl",
+            "section": "pokemon",
+            "title": "Register Torterra, Infernape and Empoleon from Pokémon Brilliant Diamond or Pokémon Shining Pearl!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "sinnohstarterevolved",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sinnohstarterevolved.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-treecko-grovyle-and-sceptile-from-pokemon-omega-ruby-or-pokemon-alpha-sapphire",
+            "section": "pokemon",
+            "title": "Register Treecko, Grovyle and Sceptile from Pokémon Omega Ruby or Pokémon Alpha Sapphire!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "megasceptile",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/megasceptile.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-treecko-torchic-and-mudkip-from-pokemon-omega-ruby-or-pokemon-alpha-sapphire",
+            "section": "pokemon",
+            "title": "Register Treecko, Torchic, and Mudkip from Pokémon Omega Ruby or Pokémon Alpha Sapphire!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "hoennstarteroras",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/hoennstarteroras.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-turtwig-chimchar-and-piplup-from-pokemon-diamond-pokemon-pearl-or-pokemon-platinum",
+            "section": "pokemon",
+            "title": "Register Turtwig, Chimchar and Piplup from Pokémon Diamond, Pokémon Pearl, or Pokémon Platinum",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "sinnohstarterg4",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sinnohstarterg4.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-ursaluna-and-bloodmoon-ursaluna",
+            "section": "pokemon",
+            "title": "Register Ursaluna and Bloodmoon Ursaluna",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "ursaluna",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ursaluna.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-venusaur-from-pokemon-firered-leafgreen",
+            "section": "pokemon",
+            "title": "Register Venusaur from Pokémon FireRed & LeafGreen",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "leafgreen",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/leafgreen.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-venusaur-from-the-good-ol-kanto-region",
+            "section": "pokemon",
+            "title": "Register Venusaur from the good ol' Kanto Region!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "green",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/green.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-walking-wake-gouging-fire-and-raging-bolt",
+            "section": "pokemon",
+            "title": "Register Walking Wake, Gouging Fire, and Raging Bolt!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "paradox",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/paradox.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-water-type-pokemon",
+            "section": "pokemon",
+            "title": "Register Water-type Pokémon",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "water1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/water1.png"
+                },
+                {
+                    "goal": 40,
+                    "reward_type": "sticker",
+                    "reward_id": "water2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/water2.png"
+                },
+                {
+                    "goal": 110,
+                    "reward_type": "sticker",
+                    "reward_id": "water3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/water3.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-winter-form-deerling-and-winter-form-sawsbuck",
+            "section": "pokemon",
+            "title": "Register Winter Form Deerling and Winter Form Sawsbuck",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "winterdeerling",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/winterdeerling.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-xerneas-from-pokemon-x-or-pokemon-y",
+            "section": "pokemon",
+            "title": "Register Xerneas from Pokémon X  or Pokémon Y",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "x",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/x.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-yveltal-from-pokemon-x-or-pokemon-y",
+            "section": "pokemon",
+            "title": "Register Yveltal from Pokémon X or Pokémon Y",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "y",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/y.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-zacian-from-pokemon-sword-or-pokemon-shield",
+            "section": "pokemon",
+            "title": "Register Zacian from Pokémon Sword or Pokémon Shield",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "sword",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sword.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-zamazenta-from-pokemon-sword-or-pokemon-shield",
+            "section": "pokemon",
+            "title": "Register Zamazenta from Pokémon Sword or Pokémon Shield",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "shield",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/shield.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:register-zekrom-and-kyurem-from-pokemon-black-2-or-pokemon-white-2",
+            "section": "pokemon",
+            "title": "Register Zekrom and Kyurem from Pokémon Black 2 or Pokémon White 2",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "black2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/black2.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:host-a-room-trade-with-20-people-in-it",
+            "section": "trade",
+            "title": "Host a Room Trade  with 20 people in it",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "roomtrade20",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/roomtrade20.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:host-room-trades",
+            "section": "trade",
+            "title": "Host Room Trades",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "roomtrade1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/roomtrade1.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "roomtrade2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/roomtrade2.png"
+                },
+                {
+                    "goal": 20,
+                    "reward_type": "sticker",
+                    "reward_id": "roomtrade3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/roomtrade3.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-arcanine-and-hisuian-arcanine",
+            "section": "trade",
+            "title": "Trade Arcanine and Hisuian Arcanine",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "arcanine",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/arcanine.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-armarouge-and-ceruledge",
+            "section": "trade",
+            "title": "Trade Armarouge and Ceruledge!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "armarouge",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/armarouge.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-avalugg-and-hisuian-avalugg",
+            "section": "trade",
+            "title": "Trade Avalugg and Hisuian Avalugg",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "avalugg",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/avalugg.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-braviary-and-hisuian-braviary",
+            "section": "trade",
+            "title": "Trade Braviary and Hisuian Braviary",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "braviary",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/braviary.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-corsola-and-galarian-corsola",
+            "section": "trade",
+            "title": "Trade Corsola and Galarian Corsola",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "corsola",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/corsola.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-cranidos-and-shieldon",
+            "section": "trade",
+            "title": "Trade Cranidos and Shieldon",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "shieldon",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/shieldon.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-darmanitan-and-galarian-darmanitan",
+            "section": "trade",
+            "title": "Trade Darmanitan and Galarian Darmanitan",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "darmanitan",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/darmanitan.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-dugtrio-and-wugtrio",
+            "section": "trade",
+            "title": "Trade Dugtrio and Wugtrio!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "dugtrio",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/dugtrio.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-electivire-and-magmortar",
+            "section": "trade",
+            "title": "Trade Electivire and Magmortar",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "electivire",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/electivire.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-electrode-and-hisuian-electrode",
+            "section": "trade",
+            "title": "Trade Electrode and Hisuian Electrode",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "electrode",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/electrode.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-farfetch-d-and-galarian-farfetch-d",
+            "section": "trade",
+            "title": "Trade Farfetch'd and Galarian Farfetch'd",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "farfetchd",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/farfetchd.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-gardevoir-and-gallade",
+            "section": "trade",
+            "title": "Trade Gardevoir and Gallade",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "gardevoir",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/gardevoir.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-glalie-and-froslass",
+            "section": "trade",
+            "title": "Trade Glalie and Froslass",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "glalie",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/glalie.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-goodra-and-hisuian-goodra",
+            "section": "trade",
+            "title": "Trade Goodra and Hisuian Goodra",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "goodra",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/goodra.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-great-tusk-and-iron-treads",
+            "section": "trade",
+            "title": "Trade Great Tusk and Iron Treads!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "greattusk",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/greattusk.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-hitmonlee-and-hitmonchan",
+            "section": "trade",
+            "title": "Trade Hitmonlee and Hitmonchan",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "hitmon",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/hitmon.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-koraidon-and-miraidon",
+            "section": "trade",
+            "title": "Trade Koraidon and Miraidon!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "koraidon",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/koraidon.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-latias-and-latios",
+            "section": "trade",
+            "title": "Trade Latias and Latios",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "latias",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/latias.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-lilligant-and-hisuian-lilligant",
+            "section": "trade",
+            "title": "Trade Lilligant and Hisuian Lilligant",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "lilligant",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/lilligant.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-linoone-and-galarian-linoone",
+            "section": "trade",
+            "title": "Trade Linoone and Galarian Linoone",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "linoone",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/linoone.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-lunatone-solrock",
+            "section": "trade",
+            "title": "Trade Lunatone & Solrock",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "solrocklunatone",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/solrocklunatone.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-male-basculegion-and-female-basculegion",
+            "section": "trade",
+            "title": "Trade male Basculegion and female Basculegion",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "basculegion",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/basculegion.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-male-meowstic-and-female-meowstic",
+            "section": "trade",
+            "title": "Trade male Meowstic and female Meowstic",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "meowstic",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/meowstic.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-meowth-and-galarian-meowth",
+            "section": "trade",
+            "title": "Trade Meowth and Galarian Meowth",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "regionalmeowth",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/regionalmeowth.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-mr-mime-and-galarian-mr-mime",
+            "section": "trade",
+            "title": "Trade Mr. Mime and Galarian Mr. Mime",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "mrmime",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/mrmime.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-nidoqueen-and-nidoking",
+            "section": "trade",
+            "title": "Trade Nidoqueen and Nidoking",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "nido",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/nido.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-nidorino-and-gengar",
+            "section": "trade",
+            "title": "Trade Nidorino and Gengar",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "start",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/start.jpg"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-pikachu-and-mimikyu",
+            "section": "trade",
+            "title": "Trade Pikachu and Mimikyu",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "pikachumimikyu",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pikachumimikyu.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-pinsir-and-heracross",
+            "section": "trade",
+            "title": "Trade Pinsir and Heracross",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "pinsir",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/pinsir.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-plusle-and-minun",
+            "section": "trade",
+            "title": "Trade Plusle and Minun",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "plusleminun",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/plusleminun.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-polteageist-and-sinistcha",
+            "section": "trade",
+            "title": "Trade Polteageist and Sinistcha",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "polteageist",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/polteageist.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-quagsire-and-clodsire",
+            "section": "trade",
+            "title": "Trade Quagsire and Clodsire!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "quagsire",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/quagsire.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-qwilfish-and-hisuian-qwilfish",
+            "section": "trade",
+            "title": "Trade Qwilfish and Hisuian Qwilfish",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "qwilfish",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/qwilfish.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-rapidash-galarian-rapidash",
+            "section": "trade",
+            "title": "Trade Rapidash & Galarian Rapidash",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "rapidash",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/rapidash.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-roaring-moon-and-iron-valiant",
+            "section": "trade",
+            "title": "Trade Roaring Moon and Iron Valiant!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "roaringmoon",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/roaringmoon.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-scizor-kleavor",
+            "section": "trade",
+            "title": "Trade Scizor & Kleavor",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "scizorkleavor",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/scizorkleavor.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-slither-wing-and-iron-moth",
+            "section": "trade",
+            "title": "Trade Slither Wing and Iron Moth!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "slitherwing",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/slitherwing.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-slowking-and-galarian-slowking",
+            "section": "trade",
+            "title": "Trade Slowking and Galarian Slowking",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "slowking",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/slowking.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-staryu-luvdisc",
+            "section": "trade",
+            "title": "Trade Staryu & Luvdisc",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "staryuluvdisc",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/staryuluvdisc.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-stunfisk-and-galarian-stunfisk",
+            "section": "trade",
+            "title": "Trade Stunfisk and Galarian Stunfisk",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "stunfisk",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/stunfisk.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-tentacruel-and-toedscruel",
+            "section": "trade",
+            "title": "Trade Tentacruel and Toedscruel!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "toedscruel",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/toedscruel.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-the-same-pokemon",
+            "section": "trade",
+            "title": "Trade the same Pokémon",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "trade",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/trade.jpg"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-throh-and-sawk",
+            "section": "trade",
+            "title": "Trade Throh and Sawk",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "sawkthroh",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/sawkthroh.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-using-a-room-trade",
+            "section": "trade",
+            "title": "Trade using a Room Trade",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "roomtrades1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/roomtrades1.png"
+                },
+                {
+                    "goal": 25,
+                    "reward_type": "sticker",
+                    "reward_id": "roomtrades2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/roomtrades2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "roomtrades3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/roomtrades3.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-using-the-gts",
+            "section": "trade",
+            "title": "Trade using the GTS",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "gts1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/gts1.png"
+                },
+                {
+                    "goal": 25,
+                    "reward_type": "sticker",
+                    "reward_id": "gts2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/gts2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "gts3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/gts3.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-using-the-wonder-box",
+            "section": "trade",
+            "title": "Trade using the Wonder Box",
+            "tiers": [
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "wonderboxtrade1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/wonderboxtrade1.png"
+                },
+                {
+                    "goal": 25,
+                    "reward_type": "sticker",
+                    "reward_id": "wonderboxtrade2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/wonderboxtrade2.png"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "sticker",
+                    "reward_id": "wonderboxtrade3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/wonderboxtrade3.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-voltorb-and-foongus",
+            "section": "trade",
+            "title": "Trade Voltorb and Foongus",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "voltorbfoongus",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/voltorbfoongus.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-vulpix-and-alolan-vulpix",
+            "section": "trade",
+            "title": "Trade Vulpix and Alolan Vulpix",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "vulpix",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/vulpix.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-weavile-and-sneasler",
+            "section": "trade",
+            "title": "Trade Weavile and Sneasler",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "weavile",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/weavile.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-weezing-and-galarian-weezing",
+            "section": "trade",
+            "title": "Trade Weezing and Galarian Weezing",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "weezing",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/weezing.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-west-sea-gastrodon-and-east-sea-gastrodon",
+            "section": "trade",
+            "title": "Trade West Sea Gastrodon and East Sea Gastrodon",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "gastrodon",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/gastrodon.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-yamask-and-galarian-yamask",
+            "section": "trade",
+            "title": "Trade Yamask and Galarian Yamask",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "yamask",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/yamask.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-zangoose-and-seviper",
+            "section": "trade",
+            "title": "Trade Zangoose and Seviper",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "zangoose",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/zangoose.png"
+                }
+            ]
+        },
+        {
+            "id": "trade:trade-zoroark-and-hisuian-zoroark",
+            "section": "trade",
+            "title": "Trade Zoroark and Hisuian Zoroark",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "zoroark",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/zoroark.png"
+                }
+            ]
+        },
+        {
+            "id": "other:change-your-user-icon-10-times",
+            "section": "other",
+            "title": "Change your user icon 10 times",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "ditto",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/ditto.png"
+                }
+            ]
+        },
+        {
+            "id": "other:check-the-news",
+            "section": "other",
+            "title": "Check the news",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "news1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/news1.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "news2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/news2.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "news3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/news3.png"
+                }
+            ]
+        },
+        {
+            "id": "other:create-labels",
+            "section": "other",
+            "title": "Create Labels",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "labels1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/labels1.png"
+                },
+                {
+                    "goal": 3,
+                    "reward_type": "sticker",
+                    "reward_id": "labels2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/labels2.png"
+                },
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "labels3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/labels3.png"
+                }
+            ]
+        },
+        {
+            "id": "other:gather-stickers",
+            "section": "other",
+            "title": "Gather Stickers!!",
+            "tiers": [
+                {
+                    "goal": 10,
+                    "reward_type": "wallpaper",
+                    "reward_id": "stickers1",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/stickers1.jpg"
+                },
+                {
+                    "goal": 50,
+                    "reward_type": "wallpaper",
+                    "reward_id": "stickers2",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/stickers2.jpg"
+                },
+                {
+                    "goal": 100,
+                    "reward_type": "wallpaper",
+                    "reward_id": "stickers3",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/stickers3.jpg"
+                }
+            ]
+        },
+        {
+            "id": "other:move-pokemon-from-pokemon-brilliant-diamond-or-pokemon-shining-pearl-to-pokemon-legends-arceus",
+            "section": "other",
+            "title": "Move Pokémon from Pokémon Brilliant Diamond or Pokémon Shining Pearl to Pokémon Legends: Arceus!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "bdsp",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/bdsp.jpg"
+                }
+            ]
+        },
+        {
+            "id": "other:move-pokemon-from-pokemon-legends-arceus-to-pokemon-brilliant-diamond-or-pokemon-shining-pearl",
+            "section": "other",
+            "title": "Move Pokémon from Pokémon Legends: Arceus to Pokémon Brilliant Diamond or Pokémon Shining Pearl!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "pla",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/pla.jpg"
+                }
+            ]
+        },
+        {
+            "id": "other:receive-presents-through-mystery-gift",
+            "section": "other",
+            "title": "Receive presents through Mystery Gift",
+            "tiers": [
+                {
+                    "goal": 1,
+                    "reward_type": "sticker",
+                    "reward_id": "mysterygift1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/mysterygift1.png"
+                },
+                {
+                    "goal": 3,
+                    "reward_type": "sticker",
+                    "reward_id": "mysterygift2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/mysterygift2.png"
+                },
+                {
+                    "goal": 5,
+                    "reward_type": "sticker",
+                    "reward_id": "mysterygift3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/mysterygift3.png"
+                }
+            ]
+        },
+        {
+            "id": "other:save-up-100-pokemon-home-points",
+            "section": "other",
+            "title": "Save up 100 Pokémon HOME Points",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "meowth",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/meowth.png"
+                }
+            ]
+        },
+        {
+            "id": "other:start-using-pokemon-home-days-passed",
+            "section": "other",
+            "title": "Start using Pokémon HOME - Days Passed",
+            "tiers": [
+                {
+                    "goal": 10,
+                    "reward_type": "sticker",
+                    "reward_id": "days1",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/days1.png"
+                },
+                {
+                    "goal": 30,
+                    "reward_type": "sticker",
+                    "reward_id": "days2",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/days2.png"
+                },
+                {
+                    "goal": 60,
+                    "reward_type": "sticker",
+                    "reward_id": "days3",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/days3.png"
+                }
+            ]
+        },
+        {
+            "id": "other:use-speech-recognition",
+            "section": "other",
+            "title": "Use speech Recognition",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "chatot",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/chatot.png"
+                }
+            ]
+        },
+        {
+            "id": "other:withdraw-butterfree-from-pokemon-home",
+            "section": "other",
+            "title": "Withdraw Butterfree from Pokémon HOME",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "butterfree",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/butterfree.png"
+                }
+            ]
+        },
+        {
+            "id": "legacy:move-pokemon-from-pokemon-bank",
+            "section": "legacy",
+            "title": "Move Pokémon from Pokémon Bank!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "bank",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/bank.png"
+                }
+            ]
+        },
+        {
+            "id": "legacy:register-diancie-from-pokemon-x-or-pokemon-y",
+            "section": "legacy",
+            "title": "Register Diancie from Pokémon X or Pokémon Y!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "diancie",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/diancie.png"
+                }
+            ]
+        },
+        {
+            "id": "legacy:register-eevee-brought-over-using-poke-transporter",
+            "section": "legacy",
+            "title": "Register Eevee brought over using Poké Transporter!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "eeveecgear",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/eeveecgear.png"
+                }
+            ]
+        },
+        {
+            "id": "legacy:register-litwick-brought-over-using-poke-transporter",
+            "section": "legacy",
+            "title": "Register Litwick brought over using Poké Transporter!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "litwickcgear",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/litwickcgear.png"
+                }
+            ]
+        },
+        {
+            "id": "legacy:register-pulverizing-snorlax",
+            "section": "legacy",
+            "title": "Register Pulverizing Snorlax",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "snorlax",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/snorlax.png"
+                }
+            ]
+        },
+        {
+            "id": "legacy:deposit-10-pokemon-at-once-in-the-wonder-box",
+            "section": "legacy",
+            "title": "Deposit 10 Pokemon at once in the Wonder Box",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "wonderbox",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/wonderbox.png"
+                }
+            ]
+        }
+    ]
+}

@@ -20,6 +20,8 @@ export function emptySave() {
     hall_of_fame: [],
     switch_profiles: [],
     cooking_recipes: [],
+    challenges_completed: [],
+    research_tasks_completed: [],
     ui: {},
   };
 }
@@ -32,6 +34,8 @@ const index = {
   forms: new Map(),     // key -> ownership row
   perGame: new Map(),   // dexId -> Map(national_no -> row)
   ot: new Map(),        // "ot|tid" -> registry row
+  challengesDone: new Set(), // "<challengeId>::<tierIndex>"
+  tasksDone: new Set(),      // research task id
 };
 
 export function formKey(nat, formCode, form) {
@@ -46,6 +50,8 @@ function reindex() {
   index.forms.clear();
   index.perGame.clear();
   index.ot.clear();
+  index.challengesDone.clear();
+  index.tasksDone.clear();
   (state.species_ownership || []).forEach((r) => index.species.set(r.national_no, r));
   (state.form_ownership || []).forEach((r) => index.forms.set(formKey(r.national_no, r.form_code, r.form), r));
   Object.entries(state.per_game_ownership || {}).forEach(([dexId, rows]) => {
@@ -54,6 +60,8 @@ function reindex() {
     index.perGame.set(dexId, m);
   });
   (state.ot_registry || []).forEach((r) => index.ot.set(otKey(r.ot, r.tid), r));
+  (state.challenges_completed || []).forEach((k) => index.challengesDone.add(k));
+  (state.research_tasks_completed || []).forEach((id) => index.tasksDone.add(id));
 }
 
 export function load() {
@@ -90,6 +98,8 @@ function normalize(obj) {
     hall_of_fame: (obj.hall_of_fame || []).map((r) => (r.team_id ? r : { ...r, team_id: `g:${r.game || 'Unknown'}` })),
     switch_profiles: obj.switch_profiles || [],
     cooking_recipes: obj.cooking_recipes || [],
+    challenges_completed: obj.challenges_completed || [],
+    research_tasks_completed: obj.research_tasks_completed || [],
     ui: obj.ui || {},
   };
 }
@@ -262,4 +272,23 @@ export function removeOtEntry(ot, tid) {
     index.ot.delete(k);
     commit();
   }
+}
+
+// ---- Challenges / Research Tasks completion (simple checklists) ----
+export function challengeTierKey(id, tier) { return `${id}::${tier}`; }
+export function isChallengeTierDone(id, tier) { return index.challengesDone.has(challengeTierKey(id, tier)); }
+export function setChallengeTierDone(id, tier, done) {
+  const k = challengeTierKey(id, tier);
+  if (done === index.challengesDone.has(k)) return;
+  if (done) { state.challenges_completed.push(k); index.challengesDone.add(k); }
+  else { state.challenges_completed = state.challenges_completed.filter((x) => x !== k); index.challengesDone.delete(k); }
+  commit();
+}
+
+export function isResearchTaskDone(id) { return index.tasksDone.has(id); }
+export function setResearchTaskDone(id, done) {
+  if (done === index.tasksDone.has(id)) return;
+  if (done) { state.research_tasks_completed.push(id); index.tasksDone.add(id); }
+  else { state.research_tasks_completed = state.research_tasks_completed.filter((x) => x !== id); index.tasksDone.delete(id); }
+  commit();
 }
