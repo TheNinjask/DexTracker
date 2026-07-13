@@ -320,10 +320,11 @@ select.ctrl { border-radius: 999px; }
 .tool-view-body { margin-top: 4px; }
 
 /* Challenges & Research Tasks */
-.tool-pick-box.dual { padding: 0; position: relative; }
-.tool-pick-box.dual .tool-pick-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
-.tool-pick-box.dual .tool-pick-img.dual-a { clip-path: polygon(0 0, 100% 0, 0 100%); }
-.tool-pick-box.dual .tool-pick-img.dual-b { clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+.tool-pick-box.dual { align-items: stretch; justify-content: stretch; gap: 0; }
+.tool-pick-box.dual .dual-half { flex: 1 1 50%; min-width: 0; overflow: hidden; }
+.tool-pick-box.dual .tool-pick-img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.tool-pick-box.dual .dual-half:first-child .tool-pick-img { border-radius: 8px 0 0 8px; }
+.tool-pick-box.dual .dual-half:last-child .tool-pick-img { border-radius: 0 8px 8px 0; }
 
 .chal-progress { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
 .chal-section { margin-bottom: 18px; }

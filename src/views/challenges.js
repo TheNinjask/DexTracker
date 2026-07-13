@@ -17,14 +17,16 @@ export function render(root) {
   root.appendChild(buildResearch(root, mode));
 }
 
-// Icon box: a single icon, or two overlaid diagonally (half/half) for a paired
-// release (e.g. Scarlet & Violet) — matches request note on shared game tiles.
+// Icon box: a single icon, or two side-by-side halves sharing one square for a
+// paired release (e.g. Scarlet & Violet). Each half is its own flex child, so
+// its icon is centered within that half (via cover's default centering)
+// rather than cropped from a full-box image.
 function pickBox(icons, title) {
   const dual = icons.length > 1;
   const box = el('span', { class: 'tool-pick-box' + (dual ? ' dual' : '') });
   if (dual) {
-    box.appendChild(icon(icons[0], 'tool-pick-img dual-a', title));
-    box.appendChild(icon(icons[1], 'tool-pick-img dual-b', title));
+    box.appendChild(el('span', { class: 'dual-half' }, [icon(icons[0], 'tool-pick-img', title)]));
+    box.appendChild(el('span', { class: 'dual-half' }, [icon(icons[1], 'tool-pick-img', title)]));
   } else {
     box.appendChild(icon(icons[0], 'tool-pick-img', title));
   }
