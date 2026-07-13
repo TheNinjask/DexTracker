@@ -1,10 +1,9 @@
 // Challenges & Research Tasks tab: a simple completion checklist for Pokémon
 // HOME's Challenges (challenge_data.json) and per-game Research Tasks
-// (reasearch_task_data.json), both scraped from Serebii — see
-// scripts/scrape-challenges.mjs. Presentation mirrors the Tools tab: a game/hub
+// (reasearch_task_data.json). Presentation mirrors the Tools tab: a game/hub
 // picker grid, then a breadcrumbed list view. Required-Pokémon icons always use
-// the app's HOME icon composition (spriteUrl('home','icon',...)), never Serebii's
-// own per-game icon set, per the "must be HOME icon variant" requirement.
+// the app's HOME icon composition (spriteUrl('home','icon',...)) rather than
+// Serebii's own per-game icon set, so they match the rest of the app.
 import { CHALLENGES, RESEARCH, researchIdx, spriteUrl } from '../data.js';
 import * as store from '../store.js';
 import { el, clear, icon, pct } from '../dom.js';

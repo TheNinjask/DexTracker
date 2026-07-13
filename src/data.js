@@ -39,7 +39,7 @@ export const toolIdx = {
 export const HYPERSPACE = { zones: [] };
 
 // Challenges (Pokémon HOME) + Research Tasks (per-game), each in its own file/
-// singleton — same reasoning as TOOLS/HYPERSPACE above (see scripts/scrape-challenges.mjs).
+// singleton — same reasoning as TOOLS/HYPERSPACE above.
 export const CHALLENGES = { meta: null, sections: [], challenges: [] };
 export const RESEARCH = { games: [], tasks: [] };
 export const challengeIdx = { byId: new Map() };
