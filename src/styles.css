@@ -328,40 +328,97 @@ select.ctrl { border-radius: 999px; }
 
 .chal-progress { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
 .chal-section { margin-bottom: 18px; }
-.chal-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+.chal-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
 .chal-section-head h4 { margin: 0; color: var(--accent-deep); }
-.chal-list { display: flex; flex-direction: column; gap: 4px; }
-.chal-row {
-  display: flex; align-items: center; gap: 10px; padding: 7px 10px;
-  border-radius: 10px; background: var(--card2);
-}
-.chal-title { flex: 1; font-size: 13px; }
-.chal-tiers { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-.chal-tier {
-  display: flex; align-items: center; gap: 4px; padding: 2px 8px 2px 2px;
-  border-radius: 999px; border: 1px solid var(--border); background: #ffffffb3;
-  cursor: pointer; font-size: 11px; font-weight: 700; color: var(--muted);
-}
-.chal-tier.done { background: #e8f7ef; border-color: #9bd9bb; color: var(--owned); }
-.chal-tier-img { width: 22px; height: 22px; object-fit: contain; border-radius: 50%; }
 
-.chal-task { gap: 12px; }
-.chal-check {
-  flex: 0 0 auto; width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--border);
-  background: #ffffffb3; color: transparent; font-size: 13px; font-weight: 800; cursor: pointer;
+/* Card grid — same shape as the Mega Dimension zone cards / Profile record
+   cards: bordered tiles that flow into as many columns as the width allows,
+   instead of one skinny full-width row per item. */
+/* align-items defaults to stretch, so every card in a grid row is
+   automatically stretched to match the tallest card in that row — no fixed
+   height or text truncation needed, and it re-settles on resize/reflow. */
+.chal-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+/* Research task cards need enough width for 6 Pokémon icons per row
+   (instead of the 5 that fit at the narrower challenge-card width). */
+.chal-list-tasks { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.chal-card {
+  display: flex; flex-direction: column; gap: 8px; padding: 10px 12px;
+  background: #ffffff8c; border: 1px solid var(--border); border-radius: 14px;
+  box-shadow: var(--shadow-sm); transition: box-shadow .12s, border-color .12s, background .12s;
+  text-align: left; width: 100%; box-sizing: border-box;
+}
+.chal-card:hover { box-shadow: var(--shadow); }
+.chal-title { flex: 1; font-size: 13px; line-height: 1.35; }
+
+/* Every challenge is the same card shape regardless of tier count: title +
+   progress badge. Rewards/ticking live in the popup (.chal-modal-tier below),
+   not on the card, so the card is a uniform, low-clutter tile. */
+.chal-card-btn { flex-direction: row; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; }
+.chal-badge {
+  flex: none; min-width: 34px; height: 26px; padding: 0 7px; border-radius: 13px;
+  background: #fff; border: 2px solid var(--border); color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; font-variant-numeric: tabular-nums;
+}
+.chal-badge.partial { border-color: var(--accent); color: var(--accent-deep); }
+.chal-badge.done { background: var(--owned); border-color: var(--owned); color: #fff; font-size: 13px; }
+
+/* Tier popup rows (inside the modal opened from a challenge card). Each row
+   has two independent parts: a plain, non-interactive reward display (icon +
+   goal + type) and a separate toggle button — browsing the reward can never
+   double as ticking it. */
+.chal-modal-tier { display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box; }
+.chal-modal-tier-reward {
+  flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0;
+  padding: 8px; border-radius: 12px; border: 1px solid var(--border); background: #fff;
+}
+.chal-modal-tier.done .chal-modal-tier-reward { background: #eaf8f0; border-color: #9bd9bb; }
+.chal-modal-tier-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.chal-modal-tier-goal { font-size: 13px; font-weight: 700; }
+.chal-modal-tier-type { font-size: 11px; color: var(--muted); text-transform: capitalize; }
+.chal-modal-toggle {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--border);
+  background: #fff; color: transparent; font-size: 15px; font-weight: 800; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
-.chal-check.on { background: var(--owned); border-color: var(--owned); color: #fff; }
-.chal-task-no { flex: 0 0 auto; width: 20px; text-align: right; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-.chal-task.done .chal-title { color: var(--muted); text-decoration: line-through; }
-.chal-task-pokemon { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
-.chal-task-mon-img { width: 28px; height: 28px; object-fit: contain; }
+.chal-modal-toggle.done { background: var(--owned); border-color: var(--owned); color: #fff; }
 
-@media (max-width: 640px) {
-  .chal-row { flex-wrap: wrap; }
-  .chal-title { flex-basis: 100%; }
-  .chal-tiers, .chal-task-pokemon { justify-content: flex-start; }
+/* Reward-icon dot, shared by the tier popup rows — always shows the reward
+   art; done/not-done is communicated only by .chal-modal-toggle beside it.
+   It's a button too: the thumbnail is inherently small, so click opens the
+   same image full-size in its own popup (.chal-reward-full). */
+.chal-step-dot {
+  width: 60px; height: 60px; border-radius: 50%; background: #fff; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none;
+  padding: 0; cursor: zoom-in; transition: box-shadow .12s, transform .04s;
 }
+.chal-step-dot:hover { box-shadow: 0 0 0 3px var(--accent); }
+.chal-step-dot:active { transform: scale(0.96); }
+.chal-step-img { width: 42px; height: 42px; object-fit: contain; }
+.chal-modal-tier.done .chal-step-dot { border-color: var(--owned); }
+.chal-reward-full { display: block; max-width: 100%; height: auto; border-radius: 12px; margin: 0 auto; }
+
+/* Research task cards: number + title in the header, required Pokémon as a
+   wrapped icon row underneath (mirrors .hwz-zone-species). There's no
+   separate done checkbox — a task is ticked by ticking every Pokémon in it
+   (see .chal-mon below), and the card tints green once all are done. */
+.chal-card-head { display: flex; align-items: center; gap: 8px; }
+.chal-task-no { flex: 0 0 auto; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.chal-task-card.done { background: #eaf8f0; border-color: #9bd9bb; }
+.chal-task-card.done .chal-title { color: var(--muted); text-decoration: line-through; }
+.chal-task-pokemon { display: flex; gap: 4px; flex-wrap: wrap; }
+
+/* Each required Pokémon is its own toggle: greyed out (not caught yet) until
+   clicked, then it fills with colour — never covered by a checkmark, so the
+   Pokémon itself always stays visible. */
+.chal-mon {
+  background: none; border: none; padding: 3px; border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: background .12s, transform .04s;
+}
+.chal-mon:hover { background: #00000012; }
+.chal-mon:active { transform: scale(0.92); }
+.chal-task-mon-img { width: 28px; height: 28px; object-fit: contain; filter: grayscale(1) opacity(0.45); transition: filter .15s; }
+.chal-mon.done .chal-task-mon-img { filter: none; }
 
 /* Hyperspace Wild Zone Searcher */
 .hwz-block { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }

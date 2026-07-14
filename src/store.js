@@ -21,7 +21,7 @@ export function emptySave() {
     switch_profiles: [],
     cooking_recipes: [],
     challenges_completed: [],
-    research_tasks_completed: [],
+    research_mons_completed: [],
     ui: {},
   };
 }
@@ -35,7 +35,7 @@ const index = {
   perGame: new Map(),   // dexId -> Map(national_no -> row)
   ot: new Map(),        // "ot|tid" -> registry row
   challengesDone: new Set(), // "<challengeId>::<tierIndex>"
-  tasksDone: new Set(),      // research task id
+  monsDone: new Set(),       // "<researchTaskId>::<pokemonIndex>"
 };
 
 export function formKey(nat, formCode, form) {
@@ -51,7 +51,7 @@ function reindex() {
   index.perGame.clear();
   index.ot.clear();
   index.challengesDone.clear();
-  index.tasksDone.clear();
+  index.monsDone.clear();
   (state.species_ownership || []).forEach((r) => index.species.set(r.national_no, r));
   (state.form_ownership || []).forEach((r) => index.forms.set(formKey(r.national_no, r.form_code, r.form), r));
   Object.entries(state.per_game_ownership || {}).forEach(([dexId, rows]) => {
@@ -61,7 +61,7 @@ function reindex() {
   });
   (state.ot_registry || []).forEach((r) => index.ot.set(otKey(r.ot, r.tid), r));
   (state.challenges_completed || []).forEach((k) => index.challengesDone.add(k));
-  (state.research_tasks_completed || []).forEach((id) => index.tasksDone.add(id));
+  (state.research_mons_completed || []).forEach((k) => index.monsDone.add(k));
 }
 
 export function load() {
@@ -99,7 +99,7 @@ function normalize(obj) {
     switch_profiles: obj.switch_profiles || [],
     cooking_recipes: obj.cooking_recipes || [],
     challenges_completed: obj.challenges_completed || [],
-    research_tasks_completed: obj.research_tasks_completed || [],
+    research_mons_completed: obj.research_mons_completed || [],
     ui: obj.ui || {},
   };
 }
@@ -285,10 +285,15 @@ export function setChallengeTierDone(id, tier, done) {
   commit();
 }
 
-export function isResearchTaskDone(id) { return index.tasksDone.has(id); }
-export function setResearchTaskDone(id, done) {
-  if (done === index.tasksDone.has(id)) return;
-  if (done) { state.research_tasks_completed.push(id); index.tasksDone.add(id); }
-  else { state.research_tasks_completed = state.research_tasks_completed.filter((x) => x !== id); index.tasksDone.delete(id); }
+// A research task is ticked one required Pokémon at a time; there's no
+// separate task-level flag — the task is "done" once every one of its
+// Pokémon is (computed by the caller, which has the task's pokemon list).
+export function researchMonKey(taskId, idx) { return `${taskId}::${idx}`; }
+export function isResearchMonDone(taskId, idx) { return index.monsDone.has(researchMonKey(taskId, idx)); }
+export function setResearchMonDone(taskId, idx, done) {
+  const k = researchMonKey(taskId, idx);
+  if (done === index.monsDone.has(k)) return;
+  if (done) { state.research_mons_completed.push(k); index.monsDone.add(k); }
+  else { state.research_mons_completed = state.research_mons_completed.filter((x) => x !== k); index.monsDone.delete(k); }
   commit();
 }

@@ -4,7 +4,7 @@ import { loadReferenceData } from './data.js';
 import { preloadIcons } from './preload.js';
 import * as store from './store.js';
 import { computeStats } from './compute.js';
-import { el, clear, getPrefs, setPref, downloadJson } from './dom.js';
+import { el, clear, getPrefs, setPref, downloadJson, modal } from './dom.js';
 import { startHost, startJoin, STATUS_TEXT, parseSyncId } from './sync.js';
 import * as boxView from './views/box.js';
 import * as statsView from './views/stats.js';
@@ -130,23 +130,7 @@ function doExport() {
   downloadJson('savefile.json', store.exportSave());
 }
 
-// ---- Modal + savefile sync (SPEC: portable user data) ----
-function modal(title, bodyNodes, onClose) {
-  const overlay = el('div', { class: 'modal-overlay' });
-  const close = () => { overlay.remove(); if (onClose) onClose(); };
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
-  const box = el('div', { class: 'modal' }, [
-    el('div', { class: 'modal-head' }, [
-      el('h3', {}, title),
-      el('button', { class: 'btn icon', title: 'Close', onclick: close }, '✕'),
-    ]),
-    el('div', { class: 'modal-body' }, bodyNodes),
-  ]);
-  overlay.appendChild(box);
-  document.body.appendChild(overlay);
-  return { close, box };
-}
-
+// ---- Savefile sync (SPEC: portable user data) ----
 // Sync hub: this device initiates and picks the direction. Whichever it chooses,
 // it hosts a QR/link; the opener's device automatically does the opposite.
 function openSyncDialog() {

@@ -141,6 +141,23 @@ export function pct(part, total) {
   return (Math.round((part / total) * 1000) / 10) + '%';
 }
 
+// Simple dismissable dialog: click the backdrop or ✕ to close.
+export function modal(title, bodyNodes, onClose) {
+  const overlay = el('div', { class: 'modal-overlay' });
+  const close = () => { overlay.remove(); if (onClose) onClose(); };
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  const box = el('div', { class: 'modal' }, [
+    el('div', { class: 'modal-head' }, [
+      el('h3', {}, title),
+      el('button', { class: 'btn icon', title: 'Close', onclick: close }, '✕'),
+    ]),
+    el('div', { class: 'modal-body' }, bodyNodes),
+  ]);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  return { close, box };
+}
+
 // Trigger a client-side download of a text/JSON document (savefile export, dev
 // reference-data export). Revokes the object URL after the click settles.
 export function downloadJson(filename, text) {

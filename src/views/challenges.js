@@ -6,7 +6,7 @@
 // Serebii's own per-game icon set, so they match the rest of the app.
 import { CHALLENGES, RESEARCH, researchIdx, spriteUrl } from '../data.js';
 import * as store from '../store.js';
-import { el, clear, icon, pct } from '../dom.js';
+import { el, clear, icon, pct, modal } from '../dom.js';
 
 let mode = null; // null = picker, 'home' = Challenges, else = a Research Tasks game id
 
@@ -113,34 +113,87 @@ function buildChallenges(root) {
   return wrap;
 }
 
-function challengeRow(c, onToggle) {
-  const tierEls = c.tiers.map((t, i) => {
-    const done = store.isChallengeTierDone(c.id, i);
-    const btn = el('button', {
-      class: 'chal-tier' + (done ? ' done' : ''),
-      title: (t.goal != null ? `${t.goal} — ` : '') + (t.reward_type || 'Reward'),
-    }, [
-      icon(t.reward_url, 'chal-tier-img', t.reward_type || ''),
-      t.goal != null ? el('span', { class: 'chal-tier-goal' }, String(t.goal)) : null,
-    ]);
-    btn.addEventListener('click', () => {
-      const next = !btn.classList.contains('done');
-      store.setChallengeTierDone(c.id, i, next);
-      btn.classList.toggle('done', next);
-      onToggle(next ? 1 : -1);
-    });
-    return btn;
+// The reward art stays visible regardless of done state — the dedicated
+// toggle button is the only done/not-done indicator, so ticking a tier never
+// hides what it was for. It's also a button in its own right: the thumbnail
+// is necessarily tiny, so clicking it opens the same image at full size.
+function stepDot(t) {
+  const dot = el('button', {
+    class: 'chal-step-dot', type: 'button',
+    title: 'View full size',
+  }, icon(t.reward_url, 'chal-step-img', t.reward_type || ''));
+  dot.addEventListener('click', () => {
+    modal(t.reward_type || 'Reward', [icon(t.reward_url, 'chal-reward-full', t.reward_type || '')]);
   });
-  return el('div', { class: 'chal-row' }, [
-    el('span', { class: 'chal-title' }, c.title),
-    el('div', { class: 'chal-tiers' }, tierEls),
-  ]);
+  return dot;
 }
+
+function doneCount(c) { return c.tiers.reduce((n, _, i) => n + (store.isChallengeTierDone(c.id, i) ? 1 : 0), 0); }
+
+function setBadge(badge, done, total) {
+  const complete = done === total;
+  badge.textContent = complete ? '✓' : `${done}/${total}`;
+  badge.classList.toggle('done', complete);
+  badge.classList.toggle('partial', done > 0 && !complete);
+}
+
+// Every challenge card is the same shape — title + a compact progress badge
+// (the reward art lives only in the popup, not on the card face, so ticking
+// and reward-browsing are two separate acts). Clicking the card opens a
+// dialog listing every tier with its reward and its own toggle.
+function challengeRow(c, onToggle) {
+  const badge = el('span', { class: 'chal-badge' });
+  setBadge(badge, doneCount(c), c.tiers.length);
+  const card = el('button', { class: 'chal-card chal-card-btn' }, [
+    el('span', { class: 'chal-title' }, c.title),
+    badge,
+  ]);
+  card.addEventListener('click', () => openChallengeModal(c, badge, onToggle));
+  return card;
+}
+
+// Each row is a plain (non-interactive) reward display — icon, goal, reward
+// type — plus one dedicated toggle button off to the side. The reward is
+// purely informational; only the toggle is a click target, so browsing the
+// reward art can never be mistaken for (or accidentally trigger) ticking it.
+function openChallengeModal(c, badge, onToggle) {
+  const rows = c.tiers.map((t, i) => {
+    const done = store.isChallengeTierDone(c.id, i);
+    const toggle = el('button', {
+      class: 'chal-modal-toggle' + (done ? ' done' : ''),
+      title: done ? 'Mark not done' : 'Mark done',
+    }, '✓');
+    const row = el('div', { class: 'chal-modal-tier' + (done ? ' done' : '') }, [
+      el('div', { class: 'chal-modal-tier-reward' }, [
+        stepDot(t),
+        el('div', { class: 'chal-modal-tier-info' }, [
+          el('span', { class: 'chal-modal-tier-goal' }, t.goal != null ? `Goal: ${t.goal}` : 'One-time'),
+          el('span', { class: 'chal-modal-tier-type' }, t.reward_type || ''),
+        ]),
+      ]),
+      toggle,
+    ]);
+    toggle.addEventListener('click', () => {
+      const next = !toggle.classList.contains('done');
+      store.setChallengeTierDone(c.id, i, next);
+      toggle.classList.toggle('done', next);
+      row.classList.toggle('done', next);
+      onToggle(next ? 1 : -1);
+      setBadge(badge, doneCount(c), c.tiers.length);
+    });
+    return row;
+  });
+  modal(c.title, rows);
+}
+
+// A task has no standalone done flag — it's ticked one required Pokémon at a
+// time, and counts as done once every one of them is.
+function taskIsDone(t) { return t.pokemon.every((_, i) => store.isResearchMonDone(t.id, i)); }
 
 function buildResearch(root, gameId) {
   const game = researchIdx.gameById.get(gameId);
   const tasks = RESEARCH.tasks.filter((t) => t.game === gameId).sort((a, b) => a.no - b.no);
-  let done = tasks.filter((t) => store.isResearchTaskDone(t.id)).length;
+  let done = tasks.filter(taskIsDone).length;
 
   const wrap = el('div', { class: 'tool-view' });
   wrap.appendChild(buildCrumbs(root, [
@@ -152,39 +205,45 @@ function buildResearch(root, gameId) {
   const updateProgress = () => { progressEl.textContent = progressText(done, tasks.length); };
   updateProgress();
   body.appendChild(progressEl);
-  body.appendChild(el('div', { class: 'chal-list' }, tasks.map((t) => taskRow(t, (delta) => { done += delta; updateProgress(); }))));
+  body.appendChild(el('div', { class: 'chal-list chal-list-tasks' }, tasks.map((t) => taskRow(t, (delta) => { done += delta; updateProgress(); }))));
   wrap.appendChild(body);
   return wrap;
 }
 
 function taskRow(t, onToggle) {
-  const rowDone = store.isResearchTaskDone(t.id);
-  const check = el('button', {
-    class: 'chal-check' + (rowDone ? ' on' : ''),
-    title: rowDone ? 'Mark not done' : 'Mark done',
-  }, rowDone ? '✓' : '');
-  const row = el('div', { class: 'chal-row chal-task' + (rowDone ? ' done' : '') }, [
-    check,
-    el('span', { class: 'chal-task-no' }, String(t.no)),
-    el('span', { class: 'chal-title' }, t.title),
-    el('div', { class: 'chal-task-pokemon' }, t.pokemon.map(taskPokemonIcon)),
+  const card = el('div', { class: 'chal-card chal-task-card' + (taskIsDone(t) ? ' done' : '') }, [
+    el('div', { class: 'chal-card-head' }, [
+      el('span', { class: 'chal-task-no' }, String(t.no)),
+      el('span', { class: 'chal-title' }, t.title),
+    ]),
+    el('div', { class: 'chal-task-pokemon' }, t.pokemon.map((p, i) => taskPokemonIcon(t, p, i, () => {
+      const wasDone = card.classList.contains('done');
+      const nowDone = taskIsDone(t);
+      if (wasDone === nowDone) return;
+      card.classList.toggle('done', nowDone);
+      onToggle(nowDone ? 1 : -1);
+    }))),
   ]);
-  check.addEventListener('click', () => {
-    const next = !check.classList.contains('on');
-    store.setResearchTaskDone(t.id, next);
-    check.classList.toggle('on', next);
-    check.textContent = next ? '✓' : '';
-    check.title = next ? 'Mark not done' : 'Mark done';
-    row.classList.toggle('done', next);
-    onToggle(next ? 1 : -1);
-  });
-  return row;
+  return card;
 }
 
 // HOME icon composition (SPEC §3.5). Mega/Legends-Z-A-exclusive forms have no
 // official HOME icon, so a form_code that 404s falls back to the base species'.
-function taskPokemonIcon(p) {
+// Each Pokémon is its own toggle: greyed out until ticked, then filled with
+// colour — never covered/obscured, so what you're ticking stays visible.
+function taskPokemonIcon(t, p, i, onChange) {
   const src = spriteUrl('home', 'icon', p.national_no, p.form_code);
   const fallback = p.form_code ? spriteUrl('home', 'icon', p.national_no, '') : null;
-  return icon(src, 'chal-task-mon-img', p.name, 3, fallback);
+  const done = store.isResearchMonDone(t.id, i);
+  const btn = el('button', {
+    class: 'chal-mon' + (done ? ' done' : ''),
+    title: p.name,
+  }, icon(src, 'chal-task-mon-img', p.name, 3, fallback));
+  btn.addEventListener('click', () => {
+    const next = !btn.classList.contains('done');
+    store.setResearchMonDone(t.id, i, next);
+    btn.classList.toggle('done', next);
+    onChange();
+  });
+  return btn;
 }
