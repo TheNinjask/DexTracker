@@ -326,7 +326,14 @@ select.ctrl { border-radius: 999px; }
 .tool-pick-box.dual .dual-half:first-child .tool-pick-img { border-radius: 8px 0 0 8px; }
 .tool-pick-box.dual .dual-half:last-child .tool-pick-img { border-radius: 0 8px 8px 0; }
 
-.chal-progress { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
+.chal-progress { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+.chal-filter { display: flex; gap: 6px; margin-bottom: 14px; }
+.chal-filter-btn {
+  padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border); background: #ffffffb3;
+  color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; transition: background .12s, color .12s, border-color .12s;
+}
+.chal-filter-btn:hover { background: #fff; }
+.chal-filter-btn.active { background: var(--accent-deep); border-color: var(--accent-deep); color: #fff; }
 .chal-section { margin-bottom: 18px; }
 .chal-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
 .chal-section-head h4 { margin: 0; color: var(--accent-deep); }

@@ -9,6 +9,8 @@ import * as store from '../store.js';
 import { el, clear, icon, pct, modal } from '../dom.js';
 
 let mode = null; // null = picker, 'home' = Challenges, else = a Research Tasks game id
+let challengeFilter = 'all'; // 'all' | 'done' | 'undone' — kept separate per view
+let researchFilter = 'all';
 
 export function render(root) {
   clear(root);
@@ -65,6 +67,20 @@ function buildCrumbs(root, steps) {
 
 function progressText(done, total) { return `${done} / ${total} completed (${pct(done, total)})`; }
 
+function matchesFilter(isDone, filterVal) {
+  if (filterVal === 'done') return isDone;
+  if (filterVal === 'undone') return !isDone;
+  return true;
+}
+
+const FILTER_OPTIONS = [['all', 'All'], ['done', 'Completed'], ['undone', 'Not completed']];
+function filterBar(current, onChange) {
+  return el('div', { class: 'chal-filter' }, FILTER_OPTIONS.map(([val, label]) => el('button', {
+    class: 'chal-filter-btn' + (current === val ? ' active' : ''),
+    onclick: () => onChange(val),
+  }, label)));
+}
+
 // Rows/icons are built exactly once per navigation into a list; a tier/task
 // toggle only ever mutates the affected button's class + the progress counters
 // in place. Re-rendering the whole (~430-icon) list on every click would queue
@@ -80,10 +96,12 @@ function buildChallenges(root) {
 
   const totalProgress = el('div', { class: 'chal-progress' });
   body.appendChild(totalProgress);
+  body.appendChild(filterBar(challengeFilter, (v) => { challengeFilter = v; render(root); }));
 
   let doneTotal = 0, tierTotal = 0;
   const updateTotal = () => { totalProgress.textContent = progressText(doneTotal, tierTotal); };
 
+  let anyVisible = false;
   CHALLENGES.sections.forEach((section) => {
     const items = CHALLENGES.challenges.filter((c) => c.section === section.id);
     if (!items.length) return;
@@ -95,12 +113,18 @@ function buildChallenges(root) {
       sDone += delta; doneTotal += delta;
       updateSection(); updateTotal();
     };
-    const rows = items.map((c) => challengeRow(c, onToggle));
+    // Section/total counts always reflect every item — only which cards are
+    // *shown* changes with the filter, not the progress math.
     items.forEach((c) => c.tiers.forEach((_, i) => {
       sTotal++; tierTotal++;
       if (store.isChallengeTierDone(c.id, i)) { sDone++; doneTotal++; }
     }));
     updateSection();
+
+    const visible = items.filter((c) => matchesFilter(doneCount(c) === c.tiers.length, challengeFilter));
+    if (!visible.length) return;
+    anyVisible = true;
+    const rows = visible.map((c) => challengeRow(c, onToggle));
 
     body.appendChild(el('div', { class: 'chal-section' }, [
       el('div', { class: 'chal-section-head' }, [el('h4', {}, section.name), countEl]),
@@ -108,6 +132,7 @@ function buildChallenges(root) {
     ]));
   });
   updateTotal();
+  if (!anyVisible) body.appendChild(el('p', { class: 'muted small' }, 'No challenges match this filter.'));
 
   wrap.appendChild(body);
   return wrap;
@@ -205,7 +230,14 @@ function buildResearch(root, gameId) {
   const updateProgress = () => { progressEl.textContent = progressText(done, tasks.length); };
   updateProgress();
   body.appendChild(progressEl);
-  body.appendChild(el('div', { class: 'chal-list chal-list-tasks' }, tasks.map((t) => taskRow(t, (delta) => { done += delta; updateProgress(); }))));
+  body.appendChild(filterBar(researchFilter, (v) => { researchFilter = v; render(root); }));
+
+  const visible = tasks.filter((t) => matchesFilter(taskIsDone(t), researchFilter));
+  if (visible.length) {
+    body.appendChild(el('div', { class: 'chal-list chal-list-tasks' }, visible.map((t) => taskRow(t, (delta) => { done += delta; updateProgress(); }))));
+  } else {
+    body.appendChild(el('p', { class: 'muted small' }, 'No tasks match this filter.'));
+  }
   wrap.appendChild(body);
   return wrap;
 }
