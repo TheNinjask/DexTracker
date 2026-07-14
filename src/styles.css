@@ -27,20 +27,26 @@ body {
   color: var(--text);
   font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
-#app { max-width: 1280px; margin: 0 auto; padding: 0 12px 48px; }
+/* Header spans the full width up top; the sidebar + content row sits below
+   it. No max-width cap: whether collapsing the sidebar actually gains usable
+   space must depend only on the sidebar itself, never on an arbitrary
+   viewport-width breakpoint. */
+#app { padding: 0 12px 48px; display: flex; flex-direction: column; }
+.app-body { display: flex; align-items: flex-start; gap: 14px; }
+#content { flex: 1; min-width: 0; }
 
 /* Fill mode (News tab): the tab's content takes the full viewport below the
    header, edge to edge, so its embedded iframe is the only thing that scrolls
    instead of the page scrolling to it and then scrolling again inside it. */
 body.tab-fill { height: 100vh; overflow: hidden; }
-body.tab-fill #app { height: 100%; display: flex; flex-direction: column; padding-bottom: 0; }
-body.tab-fill #content { flex: 1; min-height: 0; display: flex; }
+body.tab-fill #app { height: 100%; padding-bottom: 0; }
+body.tab-fill .app-body { flex: 1; min-height: 0; }
+body.tab-fill #content { display: flex; }
 
-/* Header / nav */
+/* Header: a slim top bar (hamburger + brand + savebar). */
 .app-header {
   position: sticky; top: 0; z-index: 20;
-  display: flex; flex-direction: column; gap: 6px;
-  padding: 8px 14px 0; margin-bottom: 16px;
+  padding: 8px 14px; margin-bottom: 16px;
   background: #ffffffbf; backdrop-filter: blur(12px);
   border: 1px solid var(--border); border-radius: 0 0 18px 18px;
   box-shadow: var(--shadow);
@@ -48,22 +54,44 @@ body.tab-fill #content { flex: 1; min-height: 0; display: flex; }
 .header-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; letter-spacing: .01em; flex: 0 0 auto; }
 .brand .logo { color: var(--accent2); font-size: 24px; line-height: 1; }
-/* Tabs live on their own row and scroll sideways instead of wrapping, so the
-   header height stays fixed no matter how many tabs or how narrow the screen. */
-.nav {
-  display: flex; gap: 2px; flex-wrap: nowrap;
-  overflow-x: auto; -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; border-top: 1px solid var(--border-soft);
+
+.hamburger-btn {
+  flex: 0 0 auto; width: 34px; height: 34px; padding: 0; border-radius: 10px;
+  border: 1px solid var(--border); background: #ffffffcc; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
 }
-.nav::-webkit-scrollbar { display: none; }
+.hamburger-btn:hover { background: #fff; }
+.hamburger-bar { width: 16px; height: 2px; border-radius: 1px; background: var(--text); }
+
+/* Shown by default; the hamburger collapses it to width 0 to reclaim space
+   rather than opening/closing it like a drawer. Sticky so it stays put
+   alongside the header while a long page (e.g. a big box grid) scrolls. */
+.sidebar {
+  flex: 0 0 220px; position: sticky; top: 70px;
+  display: flex; flex-direction: column; padding: 10px; overflow: hidden;
+  background: #ffffffee; backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 18px;
+  box-shadow: var(--shadow); margin-bottom: 14px;
+  /* flex-basis (not width) is what actually sizes a flex item on the main
+     axis — animating width alone here was a no-op, the 220px flex-basis was
+     still winning every time. */
+  transition: flex-basis .2s ease, padding .2s ease, opacity .15s ease, margin .2s ease, border-width .2s ease;
+}
+.sidebar.collapsed { flex-basis: 0; padding: 0; margin: 0; border-width: 0; opacity: 0; box-shadow: none; }
+.sidebar-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 4px 14px; }
+.sidebar-close {
+  background: none; border: none; font-size: 16px; color: var(--muted); cursor: pointer; padding: 4px 8px; border-radius: 8px;
+}
+.sidebar-close:hover { background: #00000010; color: var(--text); }
+
+.nav { display: flex; flex-direction: column; gap: 2px; }
 .nav-tab {
-  flex: 0 0 auto; background: transparent; color: var(--muted); border: none;
-  border-bottom: 3px solid transparent;
-  padding: 9px 13px 10px; cursor: pointer; font-size: 14px; font-weight: 600; white-space: nowrap;
-  transition: color .12s, border-color .12s;
+  background: transparent; color: var(--muted); border: none; border-left: 3px solid transparent;
+  border-radius: 10px; text-align: left;
+  padding: 10px 12px; cursor: pointer; font-size: 14px; font-weight: 600; white-space: nowrap;
+  transition: color .12s, background .12s, border-color .12s;
 }
-.nav-tab:hover { color: var(--accent-deep); }
-.nav-tab.active { color: var(--accent-deep); border-bottom-color: var(--accent); }
+.nav-tab:hover { color: var(--accent-deep); background: #00000008; }
+.nav-tab.active { color: var(--accent-deep); background: #e3f6f4; border-left-color: var(--accent); }
 /* Save-bar: status chips + action group. Both halves wrap independently via
    flex-wrap, so the bar adapts from a single right-aligned row on desktop down
    to stacked, full-width rows on narrow screens without fixed breakpoints. */

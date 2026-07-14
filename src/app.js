@@ -53,19 +53,44 @@ function renderTab() {
 
 function go(tabId) { current = tabId; setPref('tab', tabId); renderTab(); }
 
+// The sidebar is a normal, always-there part of the layout by default (like
+// any desktop app's nav rail) — the hamburger just collapses it to reclaim
+// width, it doesn't summon a drawer. State persists like the active tab does.
+let sidebarCollapsed = !!getPrefs().sidebarCollapsed;
+function setSidebarCollapsed(v) {
+  sidebarCollapsed = v;
+  setPref('sidebarCollapsed', v);
+  document.getElementById('sidebar').classList.toggle('collapsed', v);
+}
+function toggleSidebar() { setSidebarCollapsed(!sidebarCollapsed); }
+
 function buildChrome() {
   const app = document.getElementById('app');
   clear(app);
 
+  const brand = () => el('div', { class: 'brand' }, [el('span', { class: 'logo' }, '◓'), el('span', {}, 'DexTracker')]);
+
   const header = el('header', { class: 'app-header' }, [
     el('div', { class: 'header-top' }, [
-      el('div', { class: 'brand' }, [el('span', { class: 'logo' }, '◓'), el('span', {}, 'DexTracker')]),
+      el('button', { class: 'hamburger-btn', title: 'Toggle menu', onclick: toggleSidebar }, [
+        el('span', { class: 'hamburger-bar' }), el('span', { class: 'hamburger-bar' }), el('span', { class: 'hamburger-bar' }),
+      ]),
+      brand(),
       buildSaveBar(),
+    ]),
+  ]);
+
+  app.appendChild(header);
+
+  const sidebar = el('aside', { class: 'sidebar' + (sidebarCollapsed ? ' collapsed' : ''), id: 'sidebar' }, [
+    el('div', { class: 'sidebar-head' }, [
+      brand(),
+      el('button', { class: 'sidebar-close', title: 'Hide menu', onclick: toggleSidebar }, '✕'),
     ]),
     el('nav', { class: 'nav', id: 'nav' }, navButtons()),
   ]);
-  app.appendChild(header);
-  app.appendChild(el('main', { id: 'content' }));
+  // Header spans the full width up top; sidebar + content sit in a row below it.
+  app.appendChild(el('div', { class: 'app-body' }, [sidebar, el('main', { id: 'content' })]));
 }
 
 function navButtons() {
