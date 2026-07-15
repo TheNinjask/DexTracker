@@ -82,11 +82,9 @@ function buildChrome() {
 
   app.appendChild(header);
 
+  // The brand + a close control already live in the header right above —
+  // repeating them here would be redundant, so the sidebar is just the nav.
   const sidebar = el('aside', { class: 'sidebar' + (sidebarCollapsed ? ' collapsed' : ''), id: 'sidebar' }, [
-    el('div', { class: 'sidebar-head' }, [
-      brand(),
-      el('button', { class: 'sidebar-close', title: 'Hide menu', onclick: toggleSidebar }, '✕'),
-    ]),
     el('nav', { class: 'nav', id: 'nav' }, navButtons()),
   ]);
   // Header spans the full width up top; sidebar + content sit in a row below it.

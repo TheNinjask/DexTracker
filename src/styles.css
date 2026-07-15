@@ -9,6 +9,11 @@
   --accent2: #f3a01e;
   --card: #ffffffa8;
   --card2: #ffffff70;
+  /* Opaque (not blur-translucent) — used only by the header/sidebar chrome,
+     which visually join at a seam: a backdrop-filter blur would render each
+     side a different shade there, since blur samples whatever's actually
+     behind it and the page's background is a vertical gradient. */
+  --chrome-bg: #fafdf2;
   --border: #ffffffbf;
   --border-soft: #14655814;
   --owned: #2fa86f;
@@ -33,7 +38,9 @@ body {
    viewport-width breakpoint. */
 #app { padding: 0 12px 48px; display: flex; flex-direction: column; }
 .app-body { display: flex; align-items: flex-start; gap: 14px; }
-#content { flex: 1; min-width: 0; }
+/* The sidebar butts flush against the header (see .sidebar/.app-header above)
+   with no gap, but content still wants its own breathing room below it. */
+#content { flex: 1; min-width: 0; margin-top: 16px; }
 
 /* Fill mode (News tab): the tab's content takes the full viewport below the
    header, edge to edge, so its embedded iframe is the only thing that scrolls
@@ -43,12 +50,20 @@ body.tab-fill #app { height: 100%; padding-bottom: 0; }
 body.tab-fill .app-body { flex: 1; min-height: 0; }
 body.tab-fill #content { display: flex; }
 
-/* Header: a slim top bar (hamburger + brand + savebar). */
+/* Header: a slim top bar (hamburger + brand + savebar). Always keeps its own
+   rounded corners — an open sidebar simply overlaps the bottom-left one (see
+   .sidebar's negative margin-top below) and covers it with its own square
+   corner, rather than the header's CSS changing shape depending on sidebar
+   state. Bottom-left radius is deliberately smaller than bottom-right: the
+   hamburger button's own box bottoms out ~8.4px above the header's own
+   bottom edge, so that's the most the sidebar can safely overlap without
+   covering part of the button — the radius is kept a hair under that so the
+   sidebar's overlap fully swallows the curve with no sliver left showing. */
 .app-header {
   position: sticky; top: 0; z-index: 20;
-  padding: 8px 14px; margin-bottom: 16px;
-  background: #ffffffbf; backdrop-filter: blur(12px);
-  border: 1px solid var(--border); border-radius: 0 0 18px 18px;
+  padding: 8px 14px; margin-bottom: 0;
+  background: var(--chrome-bg);
+  border-radius: 0 0 18px 7px;
   box-shadow: var(--shadow);
 }
 .header-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
@@ -67,21 +82,27 @@ body.tab-fill #content { display: flex; }
    rather than opening/closing it like a drawer. Sticky so it stays put
    alongside the header while a long page (e.g. a big box grid) scrolls. */
 .sidebar {
-  flex: 0 0 220px; position: sticky; top: 70px;
+  flex: 0 0 220px; position: sticky; top: 43px;
+  /* Pulls the sidebar's square top-left corner up into the header's rounded
+     bottom-left corner to fully mask it (no sliver of curve left showing) —
+     on top of the header (higher z-index) so the sidebar's own content (the
+     first nav item, below its own 10px padding) never renders underneath
+     the header. Kept just inside the header's own bottom padding below the
+     hamburger button, so this can't cover any real header content either. */
+  margin-top: -8px; z-index: 21;
   display: flex; flex-direction: column; padding: 10px; overflow: hidden;
-  background: #ffffffee; backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 18px;
-  box-shadow: var(--shadow); margin-bottom: 14px;
+  /* Stretches down to the bottom of the viewport rather than stopping right
+     after the last nav item, so it reads as a full-height rail. */
+  min-height: calc(100vh - 57px);
+  background: var(--chrome-bg);
+  border-radius: 0 0 18px 18px;
+  margin-bottom: 14px;
   /* flex-basis (not width) is what actually sizes a flex item on the main
      axis — animating width alone here was a no-op, the 220px flex-basis was
      still winning every time. */
   transition: flex-basis .2s ease, padding .2s ease, opacity .15s ease, margin .2s ease, border-width .2s ease;
 }
-.sidebar.collapsed { flex-basis: 0; padding: 0; margin: 0; border-width: 0; opacity: 0; box-shadow: none; }
-.sidebar-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 4px 14px; }
-.sidebar-close {
-  background: none; border: none; font-size: 16px; color: var(--muted); cursor: pointer; padding: 4px 8px; border-radius: 8px;
-}
-.sidebar-close:hover { background: #00000010; color: var(--text); }
+.sidebar.collapsed { flex-basis: 0; padding: 0; margin: 0; opacity: 0; }
 
 .nav { display: flex; flex-direction: column; gap: 2px; }
 .nav-tab {
