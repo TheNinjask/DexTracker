@@ -4,7 +4,7 @@ import { loadReferenceData } from './data.js';
 import { preloadIcons } from './preload.js';
 import * as store from './store.js';
 import { computeStats } from './compute.js';
-import { el, clear, getPrefs, setPref, downloadJson } from './dom.js';
+import { el, clear, getPrefs, setPref, downloadJson, modal } from './dom.js';
 import { startHost, startJoin, STATUS_TEXT, parseSyncId } from './sync.js';
 import * as boxView from './views/box.js';
 import * as statsView from './views/stats.js';
@@ -12,6 +12,7 @@ import * as hofView from './views/halloffame.js';
 import * as profilesView from './views/profiles.js';
 import * as registryView from './views/registry.js';
 import * as toolsView from './views/tools.js';
+import * as challengesView from './views/challenges.js';
 import * as newsView from './views/news.js';
 import * as aboutView from './views/about.js';
 import * as devView from './views/dev.js';
@@ -23,6 +24,7 @@ const TABS = [
   { id: 'hof', label: 'Hall of Fame', render: hofView.render },
   { id: 'profiles', label: 'Profiles', render: profilesView.render },
   { id: 'tools', label: 'Tools', render: toolsView.render },
+  { id: 'challenges', label: 'Challenges', render: challengesView.render },
   { id: 'news', label: 'News', render: newsView.render },
   { id: 'about', label: 'About', render: aboutView.render },
   // Reference-data editor: only present when the savefile opts into dev mode.
@@ -51,19 +53,47 @@ function renderTab() {
 
 function go(tabId) { current = tabId; setPref('tab', tabId); renderTab(); }
 
+// The sidebar is a normal, always-there part of the layout by default (like
+// any desktop app's nav rail) — the hamburger just collapses it to reclaim
+// width, it doesn't summon a drawer. State persists like the active tab does.
+let sidebarCollapsed = !!getPrefs().sidebarCollapsed;
+function setSidebarCollapsed(v) {
+  sidebarCollapsed = v;
+  setPref('sidebarCollapsed', v);
+  document.getElementById('sidebar').classList.toggle('collapsed', v);
+  document.querySelector('.app-body').classList.toggle('sidebar-collapsed', v);
+}
+function toggleSidebar() { setSidebarCollapsed(!sidebarCollapsed); }
+
 function buildChrome() {
   const app = document.getElementById('app');
   clear(app);
 
+  const brand = () => el('div', { class: 'brand' }, [el('span', { class: 'logo' }, '◓'), el('span', {}, 'DexTracker')]);
+  const hamburgerBtn = () => el('button', { class: 'hamburger-btn', title: 'Toggle menu', onclick: toggleSidebar }, [
+    el('span', { class: 'hamburger-bar' }), el('span', { class: 'hamburger-bar' }), el('span', { class: 'hamburger-bar' }),
+  ]);
+
   const header = el('header', { class: 'app-header' }, [
-    el('div', { class: 'header-top' }, [
-      el('div', { class: 'brand' }, [el('span', { class: 'logo' }, '◓'), el('span', {}, 'DexTracker')]),
-      buildSaveBar(),
-    ]),
-    el('nav', { class: 'nav', id: 'nav' }, navButtons()),
+    el('div', { class: 'header-top' }, [hamburgerBtn(), brand(), buildSaveBar()]),
   ]);
   app.appendChild(header);
-  app.appendChild(el('main', { id: 'content' }));
+
+  // The sidebar overlaps the header's own hamburger+brand when open (it
+  // sits on top, z-index-wise, spanning from the very top of the page) — so
+  // it carries its own matching copy of them at its head, rather than
+  // needing any corner-masking trick. When collapsed, its width shrinks to
+  // 0 and the header's own copy shows through naturally underneath — no
+  // extra show/hide bookkeeping needed for that part.
+  const sidebar = el('aside', { class: 'sidebar' + (sidebarCollapsed ? ' collapsed' : ''), id: 'sidebar' }, [
+    el('div', { class: 'sidebar-head' }, [hamburgerBtn(), brand()]),
+    el('nav', { class: 'nav', id: 'nav' }, navButtons()),
+  ]);
+  // Header spans the full width up top; the fixed sidebar overlaps it on the
+  // left, and .app-body reserves that width for #content via padding-left.
+  app.appendChild(el('div', { class: 'app-body' + (sidebarCollapsed ? ' sidebar-collapsed' : '') }, [
+    sidebar, el('main', { id: 'content' }),
+  ]));
 }
 
 function navButtons() {
@@ -128,23 +158,7 @@ function doExport() {
   downloadJson('savefile.json', store.exportSave());
 }
 
-// ---- Modal + savefile sync (SPEC: portable user data) ----
-function modal(title, bodyNodes, onClose) {
-  const overlay = el('div', { class: 'modal-overlay' });
-  const close = () => { overlay.remove(); if (onClose) onClose(); };
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
-  const box = el('div', { class: 'modal' }, [
-    el('div', { class: 'modal-head' }, [
-      el('h3', {}, title),
-      el('button', { class: 'btn icon', title: 'Close', onclick: close }, '✕'),
-    ]),
-    el('div', { class: 'modal-body' }, bodyNodes),
-  ]);
-  overlay.appendChild(box);
-  document.body.appendChild(overlay);
-  return { close, box };
-}
-
+// ---- Savefile sync (SPEC: portable user data) ----
 // Sync hub: this device initiates and picks the direction. Whichever it chooses,
 // it hosts a QR/link; the opener's device automatically does the opposite.
 function openSyncDialog() {

@@ -1,0 +1,3172 @@
+{
+    "games": [
+        {
+            "id": "za",
+            "name": "Pokémon Legends: Z-A",
+            "icons": [
+                "https://archives.bulbagarden.net/media/upload/b/be/Legends_Z-A_Icon.jpg"
+            ]
+        },
+        {
+            "id": "sv",
+            "name": "Pokémon Scarlet & Violet",
+            "icons": [
+                "https://archives.bulbagarden.net/media/upload/f/f3/Scarlet_Icon.jpg",
+                "https://archives.bulbagarden.net/media/upload/5/53/Violet_Icon.jpg"
+            ]
+        },
+        {
+            "id": "pla",
+            "name": "Pokémon Legends: Arceus",
+            "icons": [
+                "https://archives.bulbagarden.net/media/upload/7/70/Legends_Arceus_Icon.jpg"
+            ]
+        },
+        {
+            "id": "bdsp",
+            "name": "Pokémon Brilliant Diamond & Shining Pearl",
+            "icons": [
+                "https://archives.bulbagarden.net/media/upload/2/2f/Brilliant_Diamond_Icon.jpg",
+                "https://archives.bulbagarden.net/media/upload/3/3b/Shining_Pearl_Icon.jpg"
+            ]
+        },
+        {
+            "id": "swsh",
+            "name": "Pokémon Sword & Shield",
+            "icons": [
+                "https://archives.bulbagarden.net/media/upload/a/ac/Sword_Icon.jpg",
+                "https://archives.bulbagarden.net/media/upload/f/f1/Shield_Icon.jpg"
+            ]
+        },
+        {
+            "id": "lgpe",
+            "name": "Pokémon Let's Go, Pikachu! & Let's Go, Eevee!",
+            "icons": [
+                "https://archives.bulbagarden.net/media/upload/c/c2/Let%27s_Go_Pikachu_Icon.jpg",
+                "https://archives.bulbagarden.net/media/upload/8/83/Let%27s_Go_Eevee_Icon.jpg"
+            ]
+        }
+    ],
+    "tasks": [
+        {
+            "id": "za-1",
+            "game": "za",
+            "no": 1,
+            "title": "Three Reliable Pokémon",
+            "pokemon": [
+                {
+                    "name": "Tepig",
+                    "national_no": "0498",
+                    "form_code": ""
+                },
+                {
+                    "name": "Totodile",
+                    "national_no": "0158",
+                    "form_code": ""
+                },
+                {
+                    "name": "Chikorita",
+                    "national_no": "0152",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "za-2",
+            "game": "za",
+            "no": 2,
+            "title": "In the Wild Zone",
+            "pokemon": [
+                {
+                    "name": "Weedle",
+                    "national_no": "0013",
+                    "form_code": ""
+                },
+                {
+                    "name": "Bunnelby",
+                    "national_no": "0659",
+                    "form_code": ""
+                },
+                {
+                    "name": "Pichu",
+                    "national_no": "0172",
+                    "form_code": ""
+                },
+                {
+                    "name": "Scatterbug",
+                    "national_no": "0664",
+                    "form_code": ""
+                },
+                {
+                    "name": "Fletchling",
+                    "national_no": "0661",
+                    "form_code": ""
+                },
+                {
+                    "name": "Mareep",
+                    "national_no": "0179",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "za-3",
+            "game": "za",
+            "no": 3,
+            "title": "The Z-A Royale",
+            "pokemon": [
+                {
+                    "name": "Simipour",
+                    "national_no": "0516",
+                    "form_code": ""
+                },
+                {
+                    "name": "Vivillon",
+                    "national_no": "0666",
+                    "form_code": ""
+                },
+                {
+                    "name": "Drampa",
+                    "national_no": "0780",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Pikachu",
+                    "national_no": "0025",
+                    "form_code": ""
+                },
+                {
+                    "name": "Furfrou",
+                    "national_no": "0676",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "za-4",
+            "game": "za",
+            "no": 4,
+            "title": "Rogue Mega Evolution",
+            "pokemon": [
+                {
+                    "name": "Slowbro",
+                    "national_no": "0080",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Victreebel",
+                    "national_no": "0071",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Camerupt",
+                    "national_no": "0323",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-5",
+            "game": "za",
+            "no": 5,
+            "title": "Mega-Evolved Partners",
+            "pokemon": [
+                {
+                    "name": "Emboar",
+                    "national_no": "0500",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Feraligatr",
+                    "national_no": "0160",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Meganium",
+                    "national_no": "0154",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-6",
+            "game": "za",
+            "no": 6,
+            "title": "Canari's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Ampharos",
+                    "national_no": "0181",
+                    "form_code": ""
+                },
+                {
+                    "name": "Heliolisk",
+                    "national_no": "0695",
+                    "form_code": ""
+                },
+                {
+                    "name": "Stunfisk",
+                    "national_no": "0618",
+                    "form_code": ""
+                },
+                {
+                    "name": "Eelektross",
+                    "national_no": "0604",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-7",
+            "game": "za",
+            "no": 7,
+            "title": "Vinnie's Request",
+            "pokemon": [
+                {
+                    "name": "Hawlucha",
+                    "national_no": "0701",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Banette",
+                    "national_no": "0354",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Beedrill",
+                    "national_no": "0015",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-8",
+            "game": "za",
+            "no": 8,
+            "title": "Ivor and Gwynn's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Falinks",
+                    "national_no": "0870",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Chandelure",
+                    "national_no": "0609",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-9",
+            "game": "za",
+            "no": 9,
+            "title": "A Job for Team MZ!",
+            "pokemon": [
+                {
+                    "name": "Mawile",
+                    "national_no": "0303",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Barbaracle",
+                    "national_no": "0689",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Ampharos",
+                    "national_no": "0181",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-10",
+            "game": "za",
+            "no": 10,
+            "title": "Corbeau's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Scolipede",
+                    "national_no": "0545",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Gyarados",
+                    "national_no": "0130",
+                    "form_code": ""
+                },
+                {
+                    "name": "Roserade",
+                    "national_no": "0407",
+                    "form_code": ""
+                },
+                {
+                    "name": "Arbok",
+                    "national_no": "0024",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "za-11",
+            "game": "za",
+            "no": 11,
+            "title": "Team MZ's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Staryu",
+                    "national_no": "0120",
+                    "form_code": ""
+                },
+                {
+                    "name": "Scrafty",
+                    "national_no": "0560",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-12",
+            "game": "za",
+            "no": 12,
+            "title": "A New Request",
+            "pokemon": [
+                {
+                    "name": "Froslass",
+                    "national_no": "0478",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Altaria",
+                    "national_no": "0334",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Venusaur",
+                    "national_no": "0003",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-13",
+            "game": "za",
+            "no": 13,
+            "title": "Jacinthe's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Mawile",
+                    "national_no": "0303",
+                    "form_code": ""
+                },
+                {
+                    "name": "Clefable",
+                    "national_no": "0036",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Aurorus",
+                    "national_no": "0699",
+                    "form_code": ""
+                },
+                {
+                    "name": "Gardevoir",
+                    "national_no": "0282",
+                    "form_code": ""
+                },
+                {
+                    "name": "Carbink",
+                    "national_no": "0703",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "za-14",
+            "game": "za",
+            "no": 14,
+            "title": "A Duty to Protect Lumiose",
+            "pokemon": [
+                {
+                    "name": "Starmie",
+                    "national_no": "0121",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Tyranitar",
+                    "national_no": "0248",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Dragonite",
+                    "national_no": "0149",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-15",
+            "game": "za",
+            "no": 15,
+            "title": "Grisham's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Pyroar",
+                    "national_no": "0668",
+                    "form_code": ""
+                },
+                {
+                    "name": "Salamence",
+                    "national_no": "0373",
+                    "form_code": ""
+                },
+                {
+                    "name": "Tyranitar",
+                    "national_no": "0248",
+                    "form_code": ""
+                },
+                {
+                    "name": "Pangoro",
+                    "national_no": "0675",
+                    "form_code": ""
+                },
+                {
+                    "name": "Malamar",
+                    "national_no": "0687",
+                    "form_code": ""
+                },
+                {
+                    "name": "Charizard",
+                    "national_no": "0006",
+                    "form_code": "-mx"
+                }
+            ]
+        },
+        {
+            "id": "za-16",
+            "game": "za",
+            "no": 16,
+            "title": "A Decisive Battle",
+            "pokemon": [
+                {
+                    "name": "Manectric",
+                    "national_no": "0310",
+                    "form_code": ""
+                },
+                {
+                    "name": "Goodra",
+                    "national_no": "0706",
+                    "form_code": ""
+                },
+                {
+                    "name": "Avalugg",
+                    "national_no": "0713",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "za-17",
+            "game": "za",
+            "no": 17,
+            "title": "Centrico Plaza",
+            "pokemon": [
+                {
+                    "name": "Aggron",
+                    "national_no": "0306",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Kangaskhan",
+                    "national_no": "0115",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Metagross",
+                    "national_no": "0376",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Gallade",
+                    "national_no": "0475",
+                    "form_code": "-m"
+                },
+                {
+                    "name": "Steelix",
+                    "national_no": "0208",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-18",
+            "game": "za",
+            "no": 18,
+            "title": "Giving and Taking",
+            "pokemon": [
+                {
+                    "name": "Xerneas",
+                    "national_no": "0716",
+                    "form_code": ""
+                },
+                {
+                    "name": "Yveltal",
+                    "national_no": "0717",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "za-19",
+            "game": "za",
+            "no": 19,
+            "title": "Lumiose's Guardian",
+            "pokemon": [
+                {
+                    "name": "Zygarde",
+                    "national_no": "0718",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "za-20",
+            "game": "za",
+            "no": 20,
+            "title": "The Eternal Flower",
+            "pokemon": [
+                {
+                    "name": "Floette",
+                    "national_no": "0670",
+                    "form_code": "-m"
+                }
+            ]
+        },
+        {
+            "id": "sv-1",
+            "game": "sv",
+            "no": 1,
+            "title": "First Partner Pokémon",
+            "pokemon": [
+                {
+                    "name": "Sprigatito",
+                    "national_no": "0906",
+                    "form_code": ""
+                },
+                {
+                    "name": "Fuecoco",
+                    "national_no": "0909",
+                    "form_code": ""
+                },
+                {
+                    "name": "Quaxly",
+                    "national_no": "0912",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-2",
+            "game": "sv",
+            "no": 2,
+            "title": "Poco Path",
+            "pokemon": [
+                {
+                    "name": "Tarountula",
+                    "national_no": "0917",
+                    "form_code": ""
+                },
+                {
+                    "name": "Pawmi",
+                    "national_no": "0921",
+                    "form_code": ""
+                },
+                {
+                    "name": "Lechonk",
+                    "national_no": "0915",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-3",
+            "game": "sv",
+            "no": 3,
+            "title": "Mesagoza",
+            "pokemon": [
+                {
+                    "name": "Capsakid",
+                    "national_no": "0951",
+                    "form_code": ""
+                },
+                {
+                    "name": "Cyclizar",
+                    "national_no": "0967",
+                    "form_code": ""
+                },
+                {
+                    "name": "Maushold",
+                    "national_no": "0925",
+                    "form_code": "-f"
+                },
+                {
+                    "name": "Squawkabilly",
+                    "national_no": "0931",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-4",
+            "game": "sv",
+            "no": 4,
+            "title": "Unknown Pokémon",
+            "pokemon": [
+                {
+                    "name": "Great Tusk",
+                    "national_no": "0984",
+                    "form_code": ""
+                },
+                {
+                    "name": "Iron Treads",
+                    "national_no": "0990",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-5",
+            "game": "sv",
+            "no": 5,
+            "title": "Paldea's Gyms",
+            "pokemon": [
+                {
+                    "name": "Nymble",
+                    "national_no": "0919",
+                    "form_code": ""
+                },
+                {
+                    "name": "Smoliv",
+                    "national_no": "0928",
+                    "form_code": ""
+                },
+                {
+                    "name": "Bellibolt",
+                    "national_no": "0939",
+                    "form_code": ""
+                },
+                {
+                    "name": "Wugtrio",
+                    "national_no": "0961",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-6",
+            "game": "sv",
+            "no": 6,
+            "title": "The Wild Bulls of Paldea",
+            "pokemon": [
+                {
+                    "name": "Tauros",
+                    "national_no": "0128",
+                    "form_code": "-p"
+                },
+                {
+                    "name": "Tauros",
+                    "national_no": "0128",
+                    "form_code": "-b"
+                },
+                {
+                    "name": "Tauros",
+                    "national_no": "0128",
+                    "form_code": "-a"
+                }
+            ]
+        },
+        {
+            "id": "sv-7",
+            "game": "sv",
+            "no": 7,
+            "title": "Team Star's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Pawniard",
+                    "national_no": "0624",
+                    "form_code": ""
+                },
+                {
+                    "name": "Revavroom",
+                    "national_no": "0966",
+                    "form_code": ""
+                },
+                {
+                    "name": "Annihilape",
+                    "national_no": "0979",
+                    "form_code": ""
+                },
+                {
+                    "name": "Torkoal",
+                    "national_no": "0324",
+                    "form_code": ""
+                },
+                {
+                    "name": "Muk",
+                    "national_no": "0089",
+                    "form_code": ""
+                },
+                {
+                    "name": "Dachsbun",
+                    "national_no": "0927",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-8",
+            "game": "sv",
+            "no": 8,
+            "title": "Titan Pokémon",
+            "pokemon": [
+                {
+                    "name": "Bombirdier",
+                    "national_no": "0962",
+                    "form_code": ""
+                },
+                {
+                    "name": "Tatsugiri",
+                    "national_no": "0978",
+                    "form_code": ""
+                },
+                {
+                    "name": "Dondozo",
+                    "national_no": "0977",
+                    "form_code": ""
+                },
+                {
+                    "name": "Klawf",
+                    "national_no": "0950",
+                    "form_code": ""
+                },
+                {
+                    "name": "Orthworm",
+                    "national_no": "0968",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-9",
+            "game": "sv",
+            "no": 9,
+            "title": "Seaside Pokémon",
+            "pokemon": [
+                {
+                    "name": "Wattrel",
+                    "national_no": "0940",
+                    "form_code": ""
+                },
+                {
+                    "name": "Wiglett",
+                    "national_no": "0960",
+                    "form_code": ""
+                },
+                {
+                    "name": "Finizen",
+                    "national_no": "0963",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-10",
+            "game": "sv",
+            "no": 10,
+            "title": "Treasured Partners",
+            "pokemon": [
+                {
+                    "name": "Meowscarada",
+                    "national_no": "0908",
+                    "form_code": ""
+                },
+                {
+                    "name": "Skeledirge",
+                    "national_no": "0911",
+                    "form_code": ""
+                },
+                {
+                    "name": "Quaquaval",
+                    "national_no": "0914",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-11",
+            "game": "sv",
+            "no": 11,
+            "title": "Victory Road",
+            "pokemon": [
+                {
+                    "name": "Farigiraf",
+                    "national_no": "0981",
+                    "form_code": ""
+                },
+                {
+                    "name": "Dudunsparce",
+                    "national_no": "0982",
+                    "form_code": ""
+                },
+                {
+                    "name": "Cetitan",
+                    "national_no": "0975",
+                    "form_code": ""
+                },
+                {
+                    "name": "Houndstone",
+                    "national_no": "0972",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-12",
+            "game": "sv",
+            "no": 12,
+            "title": "Coint Entity Pokémon",
+            "pokemon": [
+                {
+                    "name": "Gimmighoul",
+                    "national_no": "0999",
+                    "form_code": ""
+                },
+                {
+                    "name": "Gholdengo",
+                    "national_no": "1000",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-13",
+            "game": "sv",
+            "no": 13,
+            "title": "Armored Pokémon",
+            "pokemon": [
+                {
+                    "name": "Armarouge",
+                    "national_no": "0936",
+                    "form_code": ""
+                },
+                {
+                    "name": "Ceruledge",
+                    "national_no": "0937",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-14",
+            "game": "sv",
+            "no": 14,
+            "title": "The Pokémon of the Elite Four",
+            "pokemon": [
+                {
+                    "name": "Clodsire",
+                    "national_no": "0980",
+                    "form_code": ""
+                },
+                {
+                    "name": "Flamigo",
+                    "national_no": "0973",
+                    "form_code": ""
+                },
+                {
+                    "name": "Baxcalibur",
+                    "national_no": "0998",
+                    "form_code": ""
+                },
+                {
+                    "name": "Tinkaton",
+                    "national_no": "0959",
+                    "form_code": ""
+                },
+                {
+                    "name": "Glimmora",
+                    "national_no": "0970",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-15",
+            "game": "sv",
+            "no": 15,
+            "title": "Nemona's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Goodra",
+                    "national_no": "0706",
+                    "form_code": ""
+                },
+                {
+                    "name": "Pawmot",
+                    "national_no": "0923",
+                    "form_code": ""
+                },
+                {
+                    "name": "Lycanroc",
+                    "national_no": "0745",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-16",
+            "game": "sv",
+            "no": 16,
+            "title": "The Great Crater of Paldea",
+            "pokemon": [
+                {
+                    "name": "Iron Bundle",
+                    "national_no": "0991",
+                    "form_code": ""
+                },
+                {
+                    "name": "Iron Hands",
+                    "national_no": "0992",
+                    "form_code": ""
+                },
+                {
+                    "name": "Brute Bonnet",
+                    "national_no": "0986",
+                    "form_code": ""
+                },
+                {
+                    "name": "Slither Wing",
+                    "national_no": "0988",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-17",
+            "game": "sv",
+            "no": 17,
+            "title": "Professor Sada's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Flutter Mane",
+                    "national_no": "0987",
+                    "form_code": ""
+                },
+                {
+                    "name": "Roaring Moon",
+                    "national_no": "1005",
+                    "form_code": ""
+                },
+                {
+                    "name": "Sandy Shocks",
+                    "national_no": "0989",
+                    "form_code": ""
+                },
+                {
+                    "name": "Scream Tail",
+                    "national_no": "0985",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-18",
+            "game": "sv",
+            "no": 18,
+            "title": "Professor Turo's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Iron Thorns",
+                    "national_no": "0995",
+                    "form_code": ""
+                },
+                {
+                    "name": "Iron Jugulis",
+                    "national_no": "0993",
+                    "form_code": ""
+                },
+                {
+                    "name": "Iron Valiant",
+                    "national_no": "1006",
+                    "form_code": ""
+                },
+                {
+                    "name": "Iron Moth",
+                    "national_no": "0994",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-19",
+            "game": "sv",
+            "no": 19,
+            "title": "Ruinous Pokémon",
+            "pokemon": [
+                {
+                    "name": "Wo-Chien",
+                    "national_no": "1001",
+                    "form_code": ""
+                },
+                {
+                    "name": "Chien-Pao",
+                    "national_no": "1002",
+                    "form_code": ""
+                },
+                {
+                    "name": "Ting-Lu",
+                    "national_no": "1003",
+                    "form_code": ""
+                },
+                {
+                    "name": "Chi-Yu",
+                    "national_no": "1004",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "sv-20",
+            "game": "sv",
+            "no": 20,
+            "title": "Legendary Pokémon",
+            "pokemon": [
+                {
+                    "name": "Koraidon",
+                    "national_no": "1007",
+                    "form_code": ""
+                },
+                {
+                    "name": "Miraidon",
+                    "national_no": "1008",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-1",
+            "game": "pla",
+            "no": 1,
+            "title": "First Partner Pokémon",
+            "pokemon": [
+                {
+                    "name": "Cyndaquil",
+                    "national_no": "0155",
+                    "form_code": ""
+                },
+                {
+                    "name": "Rowlet",
+                    "national_no": "0722",
+                    "form_code": ""
+                },
+                {
+                    "name": "Oshawott",
+                    "national_no": "0501",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-2",
+            "game": "pla",
+            "no": 2,
+            "title": "Entry Trial",
+            "pokemon": [
+                {
+                    "name": "Bidoof",
+                    "national_no": "0399",
+                    "form_code": ""
+                },
+                {
+                    "name": "Starly",
+                    "national_no": "0396",
+                    "form_code": ""
+                },
+                {
+                    "name": "Shinx",
+                    "national_no": "0403",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-3",
+            "game": "pla",
+            "no": 3,
+            "title": "Obsidian Fieldlands",
+            "pokemon": [
+                {
+                    "name": "Combee",
+                    "national_no": "0415",
+                    "form_code": ""
+                },
+                {
+                    "name": "Lopunny",
+                    "national_no": "0428",
+                    "form_code": ""
+                },
+                {
+                    "name": "Kleavor",
+                    "national_no": "0900",
+                    "form_code": ""
+                },
+                {
+                    "name": "Ponyta",
+                    "national_no": "0077",
+                    "form_code": ""
+                },
+                {
+                    "name": "Scyther",
+                    "national_no": "0123",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-4",
+            "game": "pla",
+            "no": 4,
+            "title": "Crimson Mirelands",
+            "pokemon": [
+                {
+                    "name": "Petilil",
+                    "national_no": "0548",
+                    "form_code": ""
+                },
+                {
+                    "name": "Stunky",
+                    "national_no": "0434",
+                    "form_code": ""
+                },
+                {
+                    "name": "Lilligant",
+                    "national_no": "0549",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Croagunk",
+                    "national_no": "0453",
+                    "form_code": ""
+                },
+                {
+                    "name": "Hippopotas",
+                    "national_no": "0449",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-5",
+            "game": "pla",
+            "no": 5,
+            "title": "Cobalt Coastlands",
+            "pokemon": [
+                {
+                    "name": "Arcanine",
+                    "national_no": "0059",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Skorupi",
+                    "national_no": "0451",
+                    "form_code": ""
+                },
+                {
+                    "name": "Growlithe",
+                    "national_no": "0058",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Glameow",
+                    "national_no": "0431",
+                    "form_code": ""
+                },
+                {
+                    "name": "Spheal",
+                    "national_no": "0363",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-6",
+            "game": "pla",
+            "no": 6,
+            "title": "Coronet Highlands",
+            "pokemon": [
+                {
+                    "name": "Voltorb",
+                    "national_no": "0100",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Nosepass",
+                    "national_no": "0299",
+                    "form_code": ""
+                },
+                {
+                    "name": "Electrode",
+                    "national_no": "0101",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Sneasel",
+                    "national_no": "0215",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Gligar",
+                    "national_no": "0207",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-7",
+            "game": "pla",
+            "no": 7,
+            "title": "Alabaster Icelands",
+            "pokemon": [
+                {
+                    "name": "Bergmite",
+                    "national_no": "0712",
+                    "form_code": ""
+                },
+                {
+                    "name": "Avalugg",
+                    "national_no": "0713",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Zorua",
+                    "national_no": "0570",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Froslass",
+                    "national_no": "0478",
+                    "form_code": ""
+                },
+                {
+                    "name": "Piloswine",
+                    "national_no": "0221",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-8",
+            "game": "pla",
+            "no": 8,
+            "title": "Shrouded Ruins",
+            "pokemon": [
+                {
+                    "name": "Spiritomb",
+                    "national_no": "0442",
+                    "form_code": ""
+                },
+                {
+                    "name": "Kirlia",
+                    "national_no": "0281",
+                    "form_code": ""
+                },
+                {
+                    "name": "Rhyhorn",
+                    "national_no": "0111",
+                    "form_code": ""
+                },
+                {
+                    "name": "Lickitung",
+                    "national_no": "0108",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-9",
+            "game": "pla",
+            "no": 9,
+            "title": "Deadwood Haunt",
+            "pokemon": [
+                {
+                    "name": "Duskull",
+                    "national_no": "0355",
+                    "form_code": ""
+                },
+                {
+                    "name": "Dusclops",
+                    "national_no": "0356",
+                    "form_code": ""
+                },
+                {
+                    "name": "Dusknoir",
+                    "national_no": "0477",
+                    "form_code": ""
+                },
+                {
+                    "name": "Drifloon",
+                    "national_no": "0425",
+                    "form_code": ""
+                },
+                {
+                    "name": "Chatot",
+                    "national_no": "0441",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-10",
+            "game": "pla",
+            "no": 10,
+            "title": "Snowpoint Temple",
+            "pokemon": [
+                {
+                    "name": "Graveler",
+                    "national_no": "0075",
+                    "form_code": ""
+                },
+                {
+                    "name": "Regigigas",
+                    "national_no": "0486",
+                    "form_code": ""
+                },
+                {
+                    "name": "Bronzong",
+                    "national_no": "0437",
+                    "form_code": ""
+                },
+                {
+                    "name": "Glalie",
+                    "national_no": "0362",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-11",
+            "game": "pla",
+            "no": 11,
+            "title": "Hisui's Swimming Pokémon",
+            "pokemon": [
+                {
+                    "name": "Basculin",
+                    "national_no": "0550",
+                    "form_code": "-w"
+                },
+                {
+                    "name": "Qwilfish",
+                    "national_no": "0211",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Whiscash",
+                    "national_no": "0340",
+                    "form_code": ""
+                },
+                {
+                    "name": "Lumineon",
+                    "national_no": "0457",
+                    "form_code": ""
+                },
+                {
+                    "name": "Mantyke",
+                    "national_no": "0458",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-12",
+            "game": "pla",
+            "no": 12,
+            "title": "Hisui's Flying Pokémon",
+            "pokemon": [
+                {
+                    "name": "Staraptor",
+                    "national_no": "0398",
+                    "form_code": ""
+                },
+                {
+                    "name": "Magnezone",
+                    "national_no": "0462",
+                    "form_code": ""
+                },
+                {
+                    "name": "Togetic",
+                    "national_no": "0176",
+                    "form_code": ""
+                },
+                {
+                    "name": "Gyarados",
+                    "national_no": "0130",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-13",
+            "game": "pla",
+            "no": 13,
+            "title": "Dependable Partners",
+            "pokemon": [
+                {
+                    "name": "Decidueye",
+                    "national_no": "0724",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Typhlosion",
+                    "national_no": "0157",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Samurott",
+                    "national_no": "0503",
+                    "form_code": "-h"
+                }
+            ]
+        },
+        {
+            "id": "pla-14",
+            "game": "pla",
+            "no": 14,
+            "title": "Ride Pokémon",
+            "pokemon": [
+                {
+                    "name": "Wyrdeer",
+                    "national_no": "0899",
+                    "form_code": ""
+                },
+                {
+                    "name": "Sneasler",
+                    "national_no": "0903",
+                    "form_code": ""
+                },
+                {
+                    "name": "Braviary",
+                    "national_no": "0628",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Basculegion",
+                    "national_no": "0902",
+                    "form_code": ""
+                },
+                {
+                    "name": "Ursaluna",
+                    "national_no": "0901",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-15",
+            "game": "pla",
+            "no": 15,
+            "title": "The Miss Fortune Sisters",
+            "pokemon": [
+                {
+                    "name": "Toxicroak",
+                    "national_no": "0454",
+                    "form_code": ""
+                },
+                {
+                    "name": "Gengar",
+                    "national_no": "0094",
+                    "form_code": ""
+                },
+                {
+                    "name": "Abomasnow",
+                    "national_no": "0460",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-16",
+            "game": "pla",
+            "no": 16,
+            "title": "Space-time Distortions",
+            "pokemon": [
+                {
+                    "name": "Scizor",
+                    "national_no": "0212",
+                    "form_code": ""
+                },
+                {
+                    "name": "Porygon",
+                    "national_no": "0137",
+                    "form_code": ""
+                },
+                {
+                    "name": "Cranidos",
+                    "national_no": "0408",
+                    "form_code": ""
+                },
+                {
+                    "name": "Magnemite",
+                    "national_no": "0081",
+                    "form_code": ""
+                },
+                {
+                    "name": "Shieldon",
+                    "national_no": "0410",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-17",
+            "game": "pla",
+            "no": 17,
+            "title": "Lake Guardians",
+            "pokemon": [
+                {
+                    "name": "Goodra",
+                    "national_no": "0706",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Zoroark",
+                    "national_no": "0571",
+                    "form_code": "-h"
+                },
+                {
+                    "name": "Overqwil",
+                    "national_no": "0904",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-18",
+            "game": "pla",
+            "no": 18,
+            "title": "Incarnate Forces of Hisui",
+            "pokemon": [
+                {
+                    "name": "Landorus",
+                    "national_no": "0645",
+                    "form_code": ""
+                },
+                {
+                    "name": "Tornadus",
+                    "national_no": "0641",
+                    "form_code": ""
+                },
+                {
+                    "name": "Enamorus",
+                    "national_no": "0905",
+                    "form_code": ""
+                },
+                {
+                    "name": "Thundurus",
+                    "national_no": "0642",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "pla-19",
+            "game": "pla",
+            "no": 19,
+            "title": "Origin Forme Pokémon",
+            "pokemon": [
+                {
+                    "name": "Dialga",
+                    "national_no": "0483",
+                    "form_code": "-o"
+                },
+                {
+                    "name": "Giratina",
+                    "national_no": "0487",
+                    "form_code": "-o"
+                },
+                {
+                    "name": "Palkia",
+                    "national_no": "0484",
+                    "form_code": "-o"
+                }
+            ]
+        },
+        {
+            "id": "pla-20",
+            "game": "pla",
+            "no": 20,
+            "title": "Almighty Sinnoh",
+            "pokemon": [
+                {
+                    "name": "Arceus",
+                    "national_no": "0493",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-1",
+            "game": "bdsp",
+            "no": 1,
+            "title": "First Partner Pokémon",
+            "pokemon": [
+                {
+                    "name": "Turtwig",
+                    "national_no": "0387",
+                    "form_code": ""
+                },
+                {
+                    "name": "Chimchar",
+                    "national_no": "0390",
+                    "form_code": ""
+                },
+                {
+                    "name": "Piplup",
+                    "national_no": "0393",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-2",
+            "game": "bdsp",
+            "no": 2,
+            "title": "Route 205",
+            "pokemon": [
+                {
+                    "name": "Buizel",
+                    "national_no": "0418",
+                    "form_code": ""
+                },
+                {
+                    "name": "Wingull",
+                    "national_no": "0278",
+                    "form_code": ""
+                },
+                {
+                    "name": "Pachirisu",
+                    "national_no": "0417",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-3",
+            "game": "bdsp",
+            "no": 3,
+            "title": "Eterna Forest",
+            "pokemon": [
+                {
+                    "name": "Murkrow",
+                    "national_no": "0198",
+                    "form_code": ""
+                },
+                {
+                    "name": "Misdreavus",
+                    "national_no": "0200",
+                    "form_code": ""
+                },
+                {
+                    "name": "Buneary",
+                    "national_no": "0427",
+                    "form_code": ""
+                },
+                {
+                    "name": "Budew",
+                    "national_no": "0406",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-4",
+            "game": "bdsp",
+            "no": 4,
+            "title": "Pastoria Great Marsh",
+            "pokemon": [
+                {
+                    "name": "Wooper",
+                    "national_no": "0194",
+                    "form_code": ""
+                },
+                {
+                    "name": "Psyduck",
+                    "national_no": "0054",
+                    "form_code": ""
+                },
+                {
+                    "name": "Quagsire",
+                    "national_no": "0195",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-5",
+            "game": "bdsp",
+            "no": 5,
+            "title": "Mount Coronet",
+            "pokemon": [
+                {
+                    "name": "Cleffa",
+                    "national_no": "0173",
+                    "form_code": ""
+                },
+                {
+                    "name": "Meditite",
+                    "national_no": "0307",
+                    "form_code": ""
+                },
+                {
+                    "name": "Chingling",
+                    "national_no": "0433",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-6",
+            "game": "bdsp",
+            "no": 6,
+            "title": "Lakefront",
+            "pokemon": [
+                {
+                    "name": "Staravia",
+                    "national_no": "0397",
+                    "form_code": ""
+                },
+                {
+                    "name": "Girafarig",
+                    "national_no": "0203",
+                    "form_code": ""
+                },
+                {
+                    "name": "Sneasel",
+                    "national_no": "0215",
+                    "form_code": ""
+                },
+                {
+                    "name": "Bibarel",
+                    "national_no": "0400",
+                    "form_code": ""
+                },
+                {
+                    "name": "Machoke",
+                    "national_no": "0067",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-7",
+            "game": "bdsp",
+            "no": 7,
+            "title": "Fuego Ironworks",
+            "pokemon": [
+                {
+                    "name": "Gastrodon",
+                    "national_no": "0423",
+                    "form_code": ""
+                },
+                {
+                    "name": "Shellos",
+                    "national_no": "0422",
+                    "form_code": ""
+                },
+                {
+                    "name": "Luxio",
+                    "national_no": "0404",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-8",
+            "game": "bdsp",
+            "no": 8,
+            "title": "Iron Island",
+            "pokemon": [
+                {
+                    "name": "Steelix",
+                    "national_no": "0208",
+                    "form_code": ""
+                },
+                {
+                    "name": "Geodude",
+                    "national_no": "0074",
+                    "form_code": ""
+                },
+                {
+                    "name": "Qwilfish",
+                    "national_no": "0211",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-9",
+            "game": "bdsp",
+            "no": 9,
+            "title": "Route 217",
+            "pokemon": [
+                {
+                    "name": "Snover",
+                    "national_no": "0459",
+                    "form_code": ""
+                },
+                {
+                    "name": "Medicham",
+                    "national_no": "0308",
+                    "form_code": ""
+                },
+                {
+                    "name": "Noctowl",
+                    "national_no": "0164",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-10",
+            "game": "bdsp",
+            "no": 10,
+            "title": "The Grand Underground",
+            "pokemon": [
+                {
+                    "name": "Houndoom",
+                    "national_no": "0229",
+                    "form_code": ""
+                },
+                {
+                    "name": "Ralts",
+                    "national_no": "0280",
+                    "form_code": ""
+                },
+                {
+                    "name": "Munchlax",
+                    "national_no": "0446",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-11",
+            "game": "bdsp",
+            "no": 11,
+            "title": "Reliable Partners",
+            "pokemon": [
+                {
+                    "name": "Torterra",
+                    "national_no": "0389",
+                    "form_code": ""
+                },
+                {
+                    "name": "Infernape",
+                    "national_no": "0392",
+                    "form_code": ""
+                },
+                {
+                    "name": "Empoleon",
+                    "national_no": "0395",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-12",
+            "game": "bdsp",
+            "no": 12,
+            "title": "Team Galactic's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Purugly",
+                    "national_no": "0432",
+                    "form_code": ""
+                },
+                {
+                    "name": "Bronzor",
+                    "national_no": "0436",
+                    "form_code": ""
+                },
+                {
+                    "name": "Skuntank",
+                    "national_no": "0435",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-13",
+            "game": "bdsp",
+            "no": 13,
+            "title": "The Elite Four's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Drapion",
+                    "national_no": "0452",
+                    "form_code": ""
+                },
+                {
+                    "name": "Hippowdon",
+                    "national_no": "0450",
+                    "form_code": ""
+                },
+                {
+                    "name": "Rapidash",
+                    "national_no": "0078",
+                    "form_code": ""
+                },
+                {
+                    "name": "Mr. Mime",
+                    "national_no": "0122",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-14",
+            "game": "bdsp",
+            "no": 14,
+            "title": "Cynthia's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Lucario",
+                    "national_no": "0448",
+                    "form_code": ""
+                },
+                {
+                    "name": "Roserade",
+                    "national_no": "0407",
+                    "form_code": ""
+                },
+                {
+                    "name": "Garchomp",
+                    "national_no": "0445",
+                    "form_code": ""
+                },
+                {
+                    "name": "Milotic",
+                    "national_no": "0350",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-15",
+            "game": "bdsp",
+            "no": 15,
+            "title": "Stark Mountain",
+            "pokemon": [
+                {
+                    "name": "Camerupt",
+                    "national_no": "0323",
+                    "form_code": ""
+                },
+                {
+                    "name": "Skarmory",
+                    "national_no": "0227",
+                    "form_code": ""
+                },
+                {
+                    "name": "Magcargo",
+                    "national_no": "0219",
+                    "form_code": ""
+                },
+                {
+                    "name": "Slugma",
+                    "national_no": "0218",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-16",
+            "game": "bdsp",
+            "no": 16,
+            "title": "Route 230",
+            "pokemon": [
+                {
+                    "name": "Dustox",
+                    "national_no": "0269",
+                    "form_code": ""
+                },
+                {
+                    "name": "Beautifly",
+                    "national_no": "0267",
+                    "form_code": ""
+                },
+                {
+                    "name": "Gloom",
+                    "national_no": "0044",
+                    "form_code": ""
+                },
+                {
+                    "name": "Weepinbell",
+                    "national_no": "0070",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-17",
+            "game": "bdsp",
+            "no": 17,
+            "title": "Route 224",
+            "pokemon": [
+                {
+                    "name": "Gastrodon",
+                    "national_no": "0423",
+                    "form_code": "-e"
+                },
+                {
+                    "name": "Shellos",
+                    "national_no": "0422",
+                    "form_code": "-e"
+                },
+                {
+                    "name": "Pelipper",
+                    "national_no": "0279",
+                    "form_code": ""
+                },
+                {
+                    "name": "Floatzel",
+                    "national_no": "0419",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-18",
+            "game": "bdsp",
+            "no": 18,
+            "title": "Deep Within Sinnoh",
+            "pokemon": [
+                {
+                    "name": "Cresselia",
+                    "national_no": "0488",
+                    "form_code": ""
+                },
+                {
+                    "name": "Regigigas",
+                    "national_no": "0486",
+                    "form_code": ""
+                },
+                {
+                    "name": "Heatran",
+                    "national_no": "0485",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-19",
+            "game": "bdsp",
+            "no": 19,
+            "title": "The Lakes of Sinnoh",
+            "pokemon": [
+                {
+                    "name": "Mesprit",
+                    "national_no": "0481",
+                    "form_code": ""
+                },
+                {
+                    "name": "Uxie",
+                    "national_no": "0480",
+                    "form_code": ""
+                },
+                {
+                    "name": "Azelf",
+                    "national_no": "0482",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "bdsp-20",
+            "game": "bdsp",
+            "no": 20,
+            "title": "Legendary Pokémon",
+            "pokemon": [
+                {
+                    "name": "Palkia",
+                    "national_no": "0484",
+                    "form_code": ""
+                },
+                {
+                    "name": "Dialga",
+                    "national_no": "0483",
+                    "form_code": ""
+                },
+                {
+                    "name": "Giratina",
+                    "national_no": "0487",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-1",
+            "game": "swsh",
+            "no": 1,
+            "title": "First partner Pokémon",
+            "pokemon": [
+                {
+                    "name": "Grookey",
+                    "national_no": "0810",
+                    "form_code": ""
+                },
+                {
+                    "name": "Scorbunny",
+                    "national_no": "0813",
+                    "form_code": ""
+                },
+                {
+                    "name": "Sobble",
+                    "national_no": "0816",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-2",
+            "game": "swsh",
+            "no": 2,
+            "title": "Route 1",
+            "pokemon": [
+                {
+                    "name": "Wooloo",
+                    "national_no": "0831",
+                    "form_code": ""
+                },
+                {
+                    "name": "Rookidee",
+                    "national_no": "0821",
+                    "form_code": ""
+                },
+                {
+                    "name": "Skwovet",
+                    "national_no": "0819",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-3",
+            "game": "swsh",
+            "no": 3,
+            "title": "Slumbering Weald",
+            "pokemon": [
+                {
+                    "name": "Weezing",
+                    "national_no": "0110",
+                    "form_code": "-g"
+                },
+                {
+                    "name": "Blipbug",
+                    "national_no": "0824",
+                    "form_code": ""
+                },
+                {
+                    "name": "Munna",
+                    "national_no": "0517",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-4",
+            "game": "swsh",
+            "no": 4,
+            "title": "Rolling Fields",
+            "pokemon": [
+                {
+                    "name": "Combee",
+                    "national_no": "0415",
+                    "form_code": ""
+                },
+                {
+                    "name": "Bounsweet",
+                    "national_no": "0761",
+                    "form_code": ""
+                },
+                {
+                    "name": "Bunnelby",
+                    "national_no": "0659",
+                    "form_code": ""
+                },
+                {
+                    "name": "Onix",
+                    "national_no": "0095",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-5",
+            "game": "swsh",
+            "no": 5,
+            "title": "Watchtower Ruins",
+            "pokemon": [
+                {
+                    "name": "Gastly",
+                    "national_no": "0092",
+                    "form_code": ""
+                },
+                {
+                    "name": "Duskull",
+                    "national_no": "0355",
+                    "form_code": ""
+                },
+                {
+                    "name": "Golett",
+                    "national_no": "0622",
+                    "form_code": ""
+                },
+                {
+                    "name": "Golurk",
+                    "national_no": "0623",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-6",
+            "game": "swsh",
+            "no": 6,
+            "title": "Bridge Field",
+            "pokemon": [
+                {
+                    "name": "Cutiefly",
+                    "national_no": "0742",
+                    "form_code": ""
+                },
+                {
+                    "name": "Inkay",
+                    "national_no": "0686",
+                    "form_code": ""
+                },
+                {
+                    "name": "Zigzagoon",
+                    "national_no": "0263",
+                    "form_code": "-g"
+                },
+                {
+                    "name": "Stufful",
+                    "national_no": "0759",
+                    "form_code": ""
+                },
+                {
+                    "name": "Palpitoad",
+                    "national_no": "0536",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-7",
+            "game": "swsh",
+            "no": 7,
+            "title": "Dusty Bowl",
+            "pokemon": [
+                {
+                    "name": "Eldegoss",
+                    "national_no": "0830",
+                    "form_code": ""
+                },
+                {
+                    "name": "Hattrem",
+                    "national_no": "0857",
+                    "form_code": ""
+                },
+                {
+                    "name": "Frillish",
+                    "national_no": "0592",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-8",
+            "game": "swsh",
+            "no": 8,
+            "title": "Fishing in Galar",
+            "pokemon": [
+                {
+                    "name": "Arrokuda",
+                    "national_no": "0846",
+                    "form_code": ""
+                },
+                {
+                    "name": "Barraskewda",
+                    "national_no": "0847",
+                    "form_code": ""
+                },
+                {
+                    "name": "Wishiwashi",
+                    "national_no": "0746",
+                    "form_code": ""
+                },
+                {
+                    "name": "Magikarp",
+                    "national_no": "0129",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-9",
+            "game": "swsh",
+            "no": 9,
+            "title": "Galar Mine",
+            "pokemon": [
+                {
+                    "name": "Rolycoly",
+                    "national_no": "0837",
+                    "form_code": ""
+                },
+                {
+                    "name": "Woobat",
+                    "national_no": "0527",
+                    "form_code": ""
+                },
+                {
+                    "name": "Carkol",
+                    "national_no": "0838",
+                    "form_code": ""
+                },
+                {
+                    "name": "Timburr",
+                    "national_no": "0532",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-10",
+            "game": "swsh",
+            "no": 10,
+            "title": "Galar Mine No. 2",
+            "pokemon": [
+                {
+                    "name": "Scraggy",
+                    "national_no": "0559",
+                    "form_code": ""
+                },
+                {
+                    "name": "Wimpod",
+                    "national_no": "0767",
+                    "form_code": ""
+                },
+                {
+                    "name": "Drednaw",
+                    "national_no": "0834",
+                    "form_code": ""
+                },
+                {
+                    "name": "Stunfisk",
+                    "national_no": "0618",
+                    "form_code": "-g"
+                }
+            ]
+        },
+        {
+            "id": "swsh-11",
+            "game": "swsh",
+            "no": 11,
+            "title": "Glimwood Tangle",
+            "pokemon": [
+                {
+                    "name": "Phantump",
+                    "national_no": "0708",
+                    "form_code": ""
+                },
+                {
+                    "name": "Sinistea",
+                    "national_no": "0854",
+                    "form_code": ""
+                },
+                {
+                    "name": "Morgrem",
+                    "national_no": "0860",
+                    "form_code": ""
+                },
+                {
+                    "name": "Shiinotic",
+                    "national_no": "0756",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-12",
+            "game": "swsh",
+            "no": 12,
+            "title": "Route 10",
+            "pokemon": [
+                {
+                    "name": "Mr. Mime",
+                    "national_no": "0122",
+                    "form_code": "-g"
+                },
+                {
+                    "name": "Vanilluxe",
+                    "national_no": "0584",
+                    "form_code": ""
+                },
+                {
+                    "name": "Beartic",
+                    "national_no": "0614",
+                    "form_code": ""
+                },
+                {
+                    "name": "Abomasnow",
+                    "national_no": "0460",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-13",
+            "game": "swsh",
+            "no": 13,
+            "title": "The four Fossils",
+            "pokemon": [
+                {
+                    "name": "Dracozolt",
+                    "national_no": "0880",
+                    "form_code": ""
+                },
+                {
+                    "name": "Arctozolt",
+                    "national_no": "0881",
+                    "form_code": ""
+                },
+                {
+                    "name": "Dracovish",
+                    "national_no": "0882",
+                    "form_code": ""
+                },
+                {
+                    "name": "Arctovish",
+                    "national_no": "0883",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-14",
+            "game": "swsh",
+            "no": 14,
+            "title": "Working Pokémon",
+            "pokemon": [
+                {
+                    "name": "Milcery",
+                    "national_no": "0868",
+                    "form_code": ""
+                },
+                {
+                    "name": "Rotom",
+                    "national_no": "0479",
+                    "form_code": ""
+                },
+                {
+                    "name": "Indeedee",
+                    "national_no": "0876",
+                    "form_code": ""
+                },
+                {
+                    "name": "Cufant",
+                    "national_no": "0878",
+                    "form_code": ""
+                },
+                {
+                    "name": "Corviknight",
+                    "national_no": "0823",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-15",
+            "game": "swsh",
+            "no": 15,
+            "title": "Troublesome Team Yell",
+            "pokemon": [
+                {
+                    "name": "Thievul",
+                    "national_no": "0828",
+                    "form_code": ""
+                },
+                {
+                    "name": "Linoone",
+                    "national_no": "0264",
+                    "form_code": "-g"
+                },
+                {
+                    "name": "Liepard",
+                    "national_no": "0510",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-16",
+            "game": "swsh",
+            "no": 16,
+            "title": "Marnie's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Morpeko",
+                    "national_no": "0877",
+                    "form_code": ""
+                },
+                {
+                    "name": "Toxicroak",
+                    "national_no": "0454",
+                    "form_code": ""
+                },
+                {
+                    "name": "Grimmsnarl",
+                    "national_no": "0861",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-17",
+            "game": "swsh",
+            "no": 17,
+            "title": "Bede's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Ponyta",
+                    "national_no": "0077",
+                    "form_code": "-g"
+                },
+                {
+                    "name": "Hattrem",
+                    "national_no": "0857",
+                    "form_code": ""
+                },
+                {
+                    "name": "Gothorita",
+                    "national_no": "0575",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-18",
+            "game": "swsh",
+            "no": 18,
+            "title": "Leon's Pokémon",
+            "pokemon": [
+                {
+                    "name": "Charizard",
+                    "national_no": "0006",
+                    "form_code": ""
+                },
+                {
+                    "name": "Aegislash",
+                    "national_no": "0681",
+                    "form_code": ""
+                },
+                {
+                    "name": "Dragapult",
+                    "national_no": "0887",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-19",
+            "game": "swsh",
+            "no": 19,
+            "title": "The Pokémon Band",
+            "pokemon": [
+                {
+                    "name": "Toxtricity",
+                    "national_no": "0849",
+                    "form_code": ""
+                },
+                {
+                    "name": "Obstagoon",
+                    "national_no": "0862",
+                    "form_code": ""
+                },
+                {
+                    "name": "Rillaboom",
+                    "national_no": "0812",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "swsh-20",
+            "game": "swsh",
+            "no": 20,
+            "title": "Legends of Galar",
+            "pokemon": [
+                {
+                    "name": "Zacian",
+                    "national_no": "0888",
+                    "form_code": ""
+                },
+                {
+                    "name": "Zamazenta",
+                    "national_no": "0889",
+                    "form_code": ""
+                },
+                {
+                    "name": "Eternatus",
+                    "national_no": "0890",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-1",
+            "game": "lgpe",
+            "no": 1,
+            "title": "Route 1",
+            "pokemon": [
+                {
+                    "name": "Rattata",
+                    "national_no": "0019",
+                    "form_code": ""
+                },
+                {
+                    "name": "Pidgey",
+                    "national_no": "0016",
+                    "form_code": ""
+                },
+                {
+                    "name": "Bellsprout",
+                    "national_no": "0069",
+                    "form_code": ""
+                },
+                {
+                    "name": "Oddish",
+                    "national_no": "0043",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-2",
+            "game": "lgpe",
+            "no": 2,
+            "title": "Viridian Forest",
+            "pokemon": [
+                {
+                    "name": "Pikachu",
+                    "national_no": "0025",
+                    "form_code": ""
+                },
+                {
+                    "name": "Caterpie",
+                    "national_no": "0010",
+                    "form_code": ""
+                },
+                {
+                    "name": "Weedle",
+                    "national_no": "0013",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-3",
+            "game": "lgpe",
+            "no": 3,
+            "title": "Mt. Moon",
+            "pokemon": [
+                {
+                    "name": "Zubat",
+                    "national_no": "0041",
+                    "form_code": ""
+                },
+                {
+                    "name": "Clefairy",
+                    "national_no": "0035",
+                    "form_code": ""
+                },
+                {
+                    "name": "Geodude",
+                    "national_no": "0074",
+                    "form_code": ""
+                },
+                {
+                    "name": "Paras",
+                    "national_no": "0046",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-4",
+            "game": "lgpe",
+            "no": 4,
+            "title": "Aquatic Pokémon",
+            "pokemon": [
+                {
+                    "name": "Magikarp",
+                    "national_no": "0129",
+                    "form_code": ""
+                },
+                {
+                    "name": "Horsea",
+                    "national_no": "0116",
+                    "form_code": ""
+                },
+                {
+                    "name": "Poliwag",
+                    "national_no": "0060",
+                    "form_code": ""
+                },
+                {
+                    "name": "Staryu",
+                    "national_no": "0120",
+                    "form_code": ""
+                },
+                {
+                    "name": "Tentacool",
+                    "national_no": "0072",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-5",
+            "game": "lgpe",
+            "no": 5,
+            "title": "Diglett's Cave",
+            "pokemon": [
+                {
+                    "name": "Diglett",
+                    "national_no": "0050",
+                    "form_code": ""
+                },
+                {
+                    "name": "Dugtrio",
+                    "national_no": "0051",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-6",
+            "game": "lgpe",
+            "no": 6,
+            "title": "Psychic",
+            "pokemon": [
+                {
+                    "name": "Abra",
+                    "national_no": "0063",
+                    "form_code": ""
+                },
+                {
+                    "name": "Drowzee",
+                    "national_no": "0096",
+                    "form_code": ""
+                },
+                {
+                    "name": "Mr. Mime",
+                    "national_no": "0122",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-7",
+            "game": "lgpe",
+            "no": 7,
+            "title": "Rock Tunnel",
+            "pokemon": [
+                {
+                    "name": "Charmander",
+                    "national_no": "0004",
+                    "form_code": ""
+                },
+                {
+                    "name": "Kangaskhan",
+                    "national_no": "0115",
+                    "form_code": ""
+                },
+                {
+                    "name": "Rhyhorn",
+                    "national_no": "0111",
+                    "form_code": ""
+                },
+                {
+                    "name": "Machop",
+                    "national_no": "0066",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-8",
+            "game": "lgpe",
+            "no": 8,
+            "title": "Pokémon Tower",
+            "pokemon": [
+                {
+                    "name": "Gastly",
+                    "national_no": "0092",
+                    "form_code": ""
+                },
+                {
+                    "name": "Cubone",
+                    "national_no": "0104",
+                    "form_code": ""
+                },
+                {
+                    "name": "Haunter",
+                    "national_no": "0093",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-9",
+            "game": "lgpe",
+            "no": 9,
+            "title": "Fighting Dojo",
+            "pokemon": [
+                {
+                    "name": "Machamp",
+                    "national_no": "0068",
+                    "form_code": ""
+                },
+                {
+                    "name": "Hitmonchan",
+                    "national_no": "0107",
+                    "form_code": ""
+                },
+                {
+                    "name": "Hitmonlee",
+                    "national_no": "0106",
+                    "form_code": ""
+                },
+                {
+                    "name": "Primeape",
+                    "national_no": "0057",
+                    "form_code": ""
+                },
+                {
+                    "name": "Poliwrath",
+                    "national_no": "0062",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-10",
+            "game": "lgpe",
+            "no": 10,
+            "title": "Power Plant",
+            "pokemon": [
+                {
+                    "name": "Electrode",
+                    "national_no": "0101",
+                    "form_code": ""
+                },
+                {
+                    "name": "Electabuzz",
+                    "national_no": "0125",
+                    "form_code": ""
+                },
+                {
+                    "name": "Voltorb",
+                    "national_no": "0100",
+                    "form_code": ""
+                },
+                {
+                    "name": "Magnemite",
+                    "national_no": "0081",
+                    "form_code": ""
+                },
+                {
+                    "name": "Magneton",
+                    "national_no": "0082",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-11",
+            "game": "lgpe",
+            "no": 11,
+            "title": "Seafoam Islands",
+            "pokemon": [
+                {
+                    "name": "Jynx",
+                    "national_no": "0124",
+                    "form_code": ""
+                },
+                {
+                    "name": "Seel",
+                    "national_no": "0086",
+                    "form_code": ""
+                },
+                {
+                    "name": "Slowpoke",
+                    "national_no": "0079",
+                    "form_code": ""
+                },
+                {
+                    "name": "Shellder",
+                    "national_no": "0090",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-12",
+            "game": "lgpe",
+            "no": 12,
+            "title": "Pokémon Mansion",
+            "pokemon": [
+                {
+                    "name": "Magmar",
+                    "national_no": "0126",
+                    "form_code": ""
+                },
+                {
+                    "name": "Ditto",
+                    "national_no": "0132",
+                    "form_code": ""
+                },
+                {
+                    "name": "Grimer",
+                    "national_no": "0088",
+                    "form_code": ""
+                },
+                {
+                    "name": "Koffing",
+                    "national_no": "0109",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-13",
+            "game": "lgpe",
+            "no": 13,
+            "title": "Fossil Secrets",
+            "pokemon": [
+                {
+                    "name": "Aerodactyl",
+                    "national_no": "0142",
+                    "form_code": ""
+                },
+                {
+                    "name": "Omastar",
+                    "national_no": "0139",
+                    "form_code": ""
+                },
+                {
+                    "name": "Kabutops",
+                    "national_no": "0141",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-14",
+            "game": "lgpe",
+            "no": 14,
+            "title": "Victory Road",
+            "pokemon": [
+                {
+                    "name": "Rhydon",
+                    "national_no": "0112",
+                    "form_code": ""
+                },
+                {
+                    "name": "Machoke",
+                    "national_no": "0067",
+                    "form_code": ""
+                },
+                {
+                    "name": "Graveler",
+                    "national_no": "0075",
+                    "form_code": ""
+                },
+                {
+                    "name": "Golbat",
+                    "national_no": "0042",
+                    "form_code": ""
+                },
+                {
+                    "name": "Onix",
+                    "national_no": "0095",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-15",
+            "game": "lgpe",
+            "no": 15,
+            "title": "Cerulean Cave",
+            "pokemon": [
+                {
+                    "name": "Golduck",
+                    "national_no": "0055",
+                    "form_code": ""
+                },
+                {
+                    "name": "Rhydon",
+                    "national_no": "0112",
+                    "form_code": ""
+                },
+                {
+                    "name": "Chansey",
+                    "national_no": "0113",
+                    "form_code": ""
+                },
+                {
+                    "name": "Lickitung",
+                    "national_no": "0108",
+                    "form_code": ""
+                },
+                {
+                    "name": "Snorlax",
+                    "national_no": "0143",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-16",
+            "game": "lgpe",
+            "no": 16,
+            "title": "Evolution Stones",
+            "pokemon": [
+                {
+                    "name": "Wigglytuff",
+                    "national_no": "0040",
+                    "form_code": ""
+                },
+                {
+                    "name": "Exeggutor",
+                    "national_no": "0103",
+                    "form_code": ""
+                },
+                {
+                    "name": "Vaporeon",
+                    "national_no": "0134",
+                    "form_code": ""
+                },
+                {
+                    "name": "Jolteon",
+                    "national_no": "0135",
+                    "form_code": ""
+                },
+                {
+                    "name": "Flareon",
+                    "national_no": "0136",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-17",
+            "game": "lgpe",
+            "no": 17,
+            "title": "Trading Mysteries",
+            "pokemon": [
+                {
+                    "name": "Alakazam",
+                    "national_no": "0065",
+                    "form_code": ""
+                },
+                {
+                    "name": "Machamp",
+                    "national_no": "0068",
+                    "form_code": ""
+                },
+                {
+                    "name": "Golem",
+                    "national_no": "0076",
+                    "form_code": ""
+                },
+                {
+                    "name": "Gengar",
+                    "national_no": "0094",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-18",
+            "game": "lgpe",
+            "no": 18,
+            "title": "Flying",
+            "pokemon": [
+                {
+                    "name": "Charizard",
+                    "national_no": "0006",
+                    "form_code": ""
+                },
+                {
+                    "name": "Aerodactyl",
+                    "national_no": "0142",
+                    "form_code": ""
+                },
+                {
+                    "name": "Dragonite",
+                    "national_no": "0149",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-19",
+            "game": "lgpe",
+            "no": 19,
+            "title": "Legendary Bird Pokémon",
+            "pokemon": [
+                {
+                    "name": "Articuno",
+                    "national_no": "0144",
+                    "form_code": ""
+                },
+                {
+                    "name": "Zapdos",
+                    "national_no": "0145",
+                    "form_code": ""
+                },
+                {
+                    "name": "Moltres",
+                    "national_no": "0146",
+                    "form_code": ""
+                }
+            ]
+        },
+        {
+            "id": "lgpe-20",
+            "game": "lgpe",
+            "no": 20,
+            "title": "Genetic Pokémon",
+            "pokemon": [
+                {
+                    "name": "Mewtwo",
+                    "national_no": "0150",
+                    "form_code": ""
+                }
+            ]
+        }
+    ]
+}
