@@ -20,6 +20,8 @@ export function emptySave() {
     hall_of_fame: [],
     switch_profiles: [],
     cooking_recipes: [],
+    challenges_completed: [],
+    research_mons_completed: [],
     ui: {},
   };
 }
@@ -32,6 +34,8 @@ const index = {
   forms: new Map(),     // key -> ownership row
   perGame: new Map(),   // dexId -> Map(national_no -> row)
   ot: new Map(),        // "ot|tid" -> registry row
+  challengesDone: new Set(), // "<challengeId>::<tierIndex>"
+  monsDone: new Set(),       // "<researchTaskId>::<pokemonIndex>"
 };
 
 export function formKey(nat, formCode, form) {
@@ -46,6 +50,8 @@ function reindex() {
   index.forms.clear();
   index.perGame.clear();
   index.ot.clear();
+  index.challengesDone.clear();
+  index.monsDone.clear();
   (state.species_ownership || []).forEach((r) => index.species.set(r.national_no, r));
   (state.form_ownership || []).forEach((r) => index.forms.set(formKey(r.national_no, r.form_code, r.form), r));
   Object.entries(state.per_game_ownership || {}).forEach(([dexId, rows]) => {
@@ -54,6 +60,8 @@ function reindex() {
     index.perGame.set(dexId, m);
   });
   (state.ot_registry || []).forEach((r) => index.ot.set(otKey(r.ot, r.tid), r));
+  (state.challenges_completed || []).forEach((k) => index.challengesDone.add(k));
+  (state.research_mons_completed || []).forEach((k) => index.monsDone.add(k));
 }
 
 export function load() {
@@ -90,6 +98,8 @@ function normalize(obj) {
     hall_of_fame: (obj.hall_of_fame || []).map((r) => (r.team_id ? r : { ...r, team_id: `g:${r.game || 'Unknown'}` })),
     switch_profiles: obj.switch_profiles || [],
     cooking_recipes: obj.cooking_recipes || [],
+    challenges_completed: obj.challenges_completed || [],
+    research_mons_completed: obj.research_mons_completed || [],
     ui: obj.ui || {},
   };
 }
@@ -262,4 +272,28 @@ export function removeOtEntry(ot, tid) {
     index.ot.delete(k);
     commit();
   }
+}
+
+// ---- Challenges / Research Tasks completion (simple checklists) ----
+export function challengeTierKey(id, tier) { return `${id}::${tier}`; }
+export function isChallengeTierDone(id, tier) { return index.challengesDone.has(challengeTierKey(id, tier)); }
+export function setChallengeTierDone(id, tier, done) {
+  const k = challengeTierKey(id, tier);
+  if (done === index.challengesDone.has(k)) return;
+  if (done) { state.challenges_completed.push(k); index.challengesDone.add(k); }
+  else { state.challenges_completed = state.challenges_completed.filter((x) => x !== k); index.challengesDone.delete(k); }
+  commit();
+}
+
+// A research task is ticked one required Pokémon at a time; there's no
+// separate task-level flag — the task is "done" once every one of its
+// Pokémon is (computed by the caller, which has the task's pokemon list).
+export function researchMonKey(taskId, idx) { return `${taskId}::${idx}`; }
+export function isResearchMonDone(taskId, idx) { return index.monsDone.has(researchMonKey(taskId, idx)); }
+export function setResearchMonDone(taskId, idx, done) {
+  const k = researchMonKey(taskId, idx);
+  if (done === index.monsDone.has(k)) return;
+  if (done) { state.research_mons_completed.push(k); index.monsDone.add(k); }
+  else { state.research_mons_completed = state.research_mons_completed.filter((x) => x !== k); index.monsDone.delete(k); }
+  commit();
 }

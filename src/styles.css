@@ -9,6 +9,11 @@
   --accent2: #f3a01e;
   --card: #ffffffa8;
   --card2: #ffffff70;
+  /* Opaque (not blur-translucent) — used only by the header/sidebar chrome,
+     which visually join at a seam: a backdrop-filter blur would render each
+     side a different shade there, since blur samples whatever's actually
+     behind it and the page's background is a vertical gradient. */
+  --chrome-bg: #fafdf2;
   --border: #ffffffbf;
   --border-soft: #14655814;
   --owned: #2fa86f;
@@ -27,43 +32,101 @@ body {
   color: var(--text);
   font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
-#app { max-width: 1280px; margin: 0 auto; padding: 0 12px 48px; }
+/* Header spans the full width up top. The sidebar is fixed (not part of this
+   flow at all — see .sidebar below), so .app-body just reserves its width
+   with padding-left, transitioning together with the sidebar's own width. No
+   max-width cap: whether collapsing the sidebar actually gains usable space
+   must depend only on the sidebar itself, never on an arbitrary
+   viewport-width breakpoint. */
+#app { padding: 0 12px 48px; display: flex; flex-direction: column; }
+.app-body { padding-left: 234px; transition: padding-left .2s ease; }
+.app-body.sidebar-collapsed { padding-left: 0; }
+/* The sidebar butts flush against the header (see .sidebar/.app-header above)
+   with no gap, but content still wants its own breathing room below it. */
+#content { margin-top: 16px; }
 
 /* Fill mode (News tab): the tab's content takes the full viewport below the
    header, edge to edge, so its embedded iframe is the only thing that scrolls
-   instead of the page scrolling to it and then scrolling again inside it. */
+   instead of the page scrolling to it and then scrolling again inside it.
+   .app-body/#content need to actually become a flex column here — the base
+   rules above don't make them one (the sidebar is fixed/out of flow now, so
+   .app-body has no everyday reason to be a flex container itself). */
 body.tab-fill { height: 100vh; overflow: hidden; }
-body.tab-fill #app { height: 100%; display: flex; flex-direction: column; padding-bottom: 0; }
+body.tab-fill #app { height: 100%; padding-bottom: 0; }
+body.tab-fill .app-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 body.tab-fill #content { flex: 1; min-height: 0; display: flex; }
 
-/* Header / nav */
+/* Header: a slim top bar (hamburger + brand + savebar). Sits underneath the
+   sidebar — when the sidebar is open it overlaps and covers this header's
+   own hamburger+brand entirely (see .sidebar below), so nothing needs to be
+   hidden/shown here; the sidebar's own matching copy is simply what's on
+   top. When the sidebar collapses, this original copy shows through again
+   naturally, with no extra bookkeeping. */
 .app-header {
   position: sticky; top: 0; z-index: 20;
-  display: flex; flex-direction: column; gap: 6px;
-  padding: 8px 14px 0; margin-bottom: 16px;
-  background: #ffffffbf; backdrop-filter: blur(12px);
-  border: 1px solid var(--border); border-radius: 0 0 18px 18px;
+  padding: 8px 14px; margin-bottom: 0;
+  background: var(--chrome-bg);
+  border-radius: 0 0 18px 18px;
   box-shadow: var(--shadow);
 }
-.header-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+/* Fixed height (not just align-items:center) so this row is always exactly
+   34px tall regardless of the savebar's content — otherwise it can end up a
+   hair taller than 34px, centering the hamburger button with a sub-pixel
+   offset relative to .sidebar-head's identical-looking but savebar-less row,
+   producing a visible jitter as the sidebar's copy crossfades with the
+   header's. */
+.header-top { display: flex; align-items: center; gap: 12px; min-width: 0; height: 34px; }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; letter-spacing: .01em; flex: 0 0 auto; }
 .brand .logo { color: var(--accent2); font-size: 24px; line-height: 1; }
-/* Tabs live on their own row and scroll sideways instead of wrapping, so the
-   header height stays fixed no matter how many tabs or how narrow the screen. */
-.nav {
-  display: flex; gap: 2px; flex-wrap: nowrap;
-  overflow-x: auto; -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; border-top: 1px solid var(--border-soft);
+
+.hamburger-btn {
+  flex: 0 0 auto; width: 34px; height: 34px; padding: 0; border-radius: 10px;
+  border: 1px solid var(--border); background: #ffffffcc; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
 }
-.nav::-webkit-scrollbar { display: none; }
+.hamburger-btn:hover { background: #fff; }
+.hamburger-bar { width: 16px; height: 2px; border-radius: 1px; background: var(--text); }
+
+/* Shown by default; the hamburger collapses it to width 0 to reclaim space
+   rather than opening/closing it like a drawer. Sticky so it stays put while
+   a long page (e.g. a big box grid) scrolls. Starts at the very top (top:0,
+   same as the header) and sits above it (z-index), covering the header's
+   own hamburger+brand — .sidebar-head below carries an identical copy of
+   them so nothing looks missing. */
+.sidebar {
+  /* Fixed, not sticky: sticky only overrides position once scrolled past its
+     natural in-flow spot, which (after the header) is below it — so at
+     scroll 0 it would render as a second row under the header instead of
+     overlapping it. Fixed always sits at these exact viewport coordinates,
+     from the very first paint. */
+  position: fixed; top: 0; left: 12px; width: 220px; z-index: 21;
+  display: flex; flex-direction: column; overflow: hidden;
+  /* Reaches the bottom of the viewport (minus a little breathing room)
+     rather than stopping right after the last nav item, so it reads as a
+     full-height rail. */
+  height: calc(100vh - 14px);
+  background: var(--chrome-bg);
+  border-radius: 0 0 18px 18px;
+  transition: width .2s ease, opacity .15s ease;
+}
+.sidebar.collapsed { width: 0; opacity: 0; }
+/* Matches .header-top's own spacing and height exactly, so the hamburger+
+   brand land at the identical pixel position as the header's copy directly
+   underneath. Margin (not padding) for the 8px/14px spacing — header-top's
+   equivalent padding lives one level up on .app-header, outside its own
+   34px-tall box, so padding here (inside a height:34px, border-box element)
+   would instead shrink the available content area and clip the button. */
+.sidebar-head { display: flex; align-items: center; gap: 12px; height: 34px; margin: 8px 14px; }
+
+.nav { display: flex; flex-direction: column; gap: 2px; padding: 10px; }
 .nav-tab {
-  flex: 0 0 auto; background: transparent; color: var(--muted); border: none;
-  border-bottom: 3px solid transparent;
-  padding: 9px 13px 10px; cursor: pointer; font-size: 14px; font-weight: 600; white-space: nowrap;
-  transition: color .12s, border-color .12s;
+  background: transparent; color: var(--muted); border: none; border-left: 3px solid transparent;
+  border-radius: 10px; text-align: left;
+  padding: 10px 12px; cursor: pointer; font-size: 14px; font-weight: 600; white-space: nowrap;
+  transition: color .12s, background .12s, border-color .12s;
 }
-.nav-tab:hover { color: var(--accent-deep); }
-.nav-tab.active { color: var(--accent-deep); border-bottom-color: var(--accent); }
+.nav-tab:hover { color: var(--accent-deep); background: #00000008; }
+.nav-tab.active { color: var(--accent-deep); background: #e3f6f4; border-left-color: var(--accent); }
 /* Save-bar: status chips + action group. Both halves wrap independently via
    flex-wrap, so the bar adapts from a single right-aligned row on desktop down
    to stacked, full-width rows on narrow screens without fixed breakpoints. */
@@ -246,10 +309,13 @@ select.ctrl { border-radius: 999px; }
 .data-table tr:hover td { background: #ffffff66; }
 
 /* OT Registry / Profiles tables render as cards (one card per record, each cell a
-   label/value row). Cards flow into as many columns as the width allows. */
+   label/value row). Cards flow into as many columns as the width allows;
+   align-items defaults to stretch, so every card in a grid row automatically
+   matches the tallest card in that row (e.g. one with an extra field) rather
+   than each sizing to its own content. */
 .table-wrap .data-table {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 8px; align-items: start;
+  gap: 8px;
 }
 .table-wrap .data-table tbody { display: contents; }
 .table-wrap .data-table .data-head { display: none; }
@@ -318,6 +384,114 @@ select.ctrl { border-radius: 999px; }
 .crumb-sep { color: var(--muted); }
 .crumb-current { color: var(--muted); }
 .tool-view-body { margin-top: 4px; }
+
+/* Challenges & Research Tasks */
+.tool-pick-box.dual { align-items: stretch; justify-content: stretch; gap: 0; }
+.tool-pick-box.dual .dual-half { flex: 1 1 50%; min-width: 0; overflow: hidden; }
+.tool-pick-box.dual .tool-pick-img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.tool-pick-box.dual .dual-half:first-child .tool-pick-img { border-radius: 8px 0 0 8px; }
+.tool-pick-box.dual .dual-half:last-child .tool-pick-img { border-radius: 0 8px 8px 0; }
+
+.chal-progress { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+.chal-filter { display: flex; gap: 6px; margin-bottom: 14px; }
+.chal-filter-btn {
+  padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border); background: #ffffffb3;
+  color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; transition: background .12s, color .12s, border-color .12s;
+}
+.chal-filter-btn:hover { background: #fff; }
+.chal-filter-btn.active { background: var(--accent-deep); border-color: var(--accent-deep); color: #fff; }
+.chal-section { margin-bottom: 18px; }
+.chal-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.chal-section-head h4 { margin: 0; color: var(--accent-deep); }
+
+/* Card grid — same shape as the Mega Dimension zone cards / Profile record
+   cards: bordered tiles that flow into as many columns as the width allows,
+   instead of one skinny full-width row per item. */
+/* align-items defaults to stretch, so every card in a grid row is
+   automatically stretched to match the tallest card in that row — no fixed
+   height or text truncation needed, and it re-settles on resize/reflow. */
+.chal-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+/* Research task cards need enough width for 6 Pokémon icons per row
+   (instead of the 5 that fit at the narrower challenge-card width). */
+.chal-list-tasks { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.chal-card {
+  display: flex; flex-direction: column; gap: 8px; padding: 10px 12px;
+  background: #ffffff8c; border: 1px solid var(--border); border-radius: 14px;
+  box-shadow: var(--shadow-sm); transition: box-shadow .12s, border-color .12s, background .12s;
+  text-align: left; width: 100%; box-sizing: border-box;
+}
+.chal-card:hover { box-shadow: var(--shadow); }
+.chal-title { flex: 1; font-size: 13px; line-height: 1.35; }
+
+/* Every challenge is the same card shape regardless of tier count: title +
+   progress badge. Rewards/ticking live in the popup (.chal-modal-tier below),
+   not on the card, so the card is a uniform, low-clutter tile. */
+.chal-card-btn { flex-direction: row; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; }
+.chal-badge {
+  flex: none; min-width: 34px; height: 26px; padding: 0 7px; border-radius: 13px;
+  background: #fff; border: 2px solid var(--border); color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; font-variant-numeric: tabular-nums;
+}
+.chal-badge.partial { border-color: var(--accent); color: var(--accent-deep); }
+.chal-badge.done { background: var(--owned); border-color: var(--owned); color: #fff; font-size: 13px; }
+
+/* Tier popup rows (inside the modal opened from a challenge card). Each row
+   has two independent parts: a plain, non-interactive reward display (icon +
+   goal + type) and a separate toggle button — browsing the reward can never
+   double as ticking it. */
+.chal-modal-tier { display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box; }
+.chal-modal-tier-reward {
+  flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0;
+  padding: 8px; border-radius: 12px; border: 1px solid var(--border); background: #fff;
+}
+.chal-modal-tier.done .chal-modal-tier-reward { background: #eaf8f0; border-color: #9bd9bb; }
+.chal-modal-tier-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.chal-modal-tier-goal { font-size: 13px; font-weight: 700; }
+.chal-modal-tier-type { font-size: 11px; color: var(--muted); text-transform: capitalize; }
+.chal-modal-toggle {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--border);
+  background: #fff; color: transparent; font-size: 15px; font-weight: 800; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.chal-modal-toggle.done { background: var(--owned); border-color: var(--owned); color: #fff; }
+
+/* Reward-icon dot, shared by the tier popup rows — always shows the reward
+   art; done/not-done is communicated only by .chal-modal-toggle beside it.
+   It's a button too: the thumbnail is inherently small, so click opens the
+   same image full-size in its own popup (.chal-reward-full). */
+.chal-step-dot {
+  width: 60px; height: 60px; border-radius: 50%; background: #fff; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none;
+  padding: 0; cursor: zoom-in; transition: box-shadow .12s, transform .04s;
+}
+.chal-step-dot:hover { box-shadow: 0 0 0 3px var(--accent); }
+.chal-step-dot:active { transform: scale(0.96); }
+.chal-step-img { width: 42px; height: 42px; object-fit: contain; }
+.chal-modal-tier.done .chal-step-dot { border-color: var(--owned); }
+.chal-reward-full { display: block; max-width: 100%; height: auto; border-radius: 12px; margin: 0 auto; }
+
+/* Research task cards: number + title in the header, required Pokémon as a
+   wrapped icon row underneath (mirrors .hwz-zone-species). There's no
+   separate done checkbox — a task is ticked by ticking every Pokémon in it
+   (see .chal-mon below), and the card tints green once all are done. */
+.chal-card-head { display: flex; align-items: center; gap: 8px; }
+.chal-task-no { flex: 0 0 auto; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.chal-task-card.done { background: #eaf8f0; border-color: #9bd9bb; }
+.chal-task-card.done .chal-title { color: var(--muted); text-decoration: line-through; }
+.chal-task-pokemon { display: flex; gap: 4px; flex-wrap: wrap; }
+
+/* Each required Pokémon is its own toggle: greyed out (not caught yet) until
+   clicked, then it fills with colour — never covered by a checkmark, so the
+   Pokémon itself always stays visible. */
+.chal-mon {
+  background: none; border: none; padding: 3px; border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: background .12s, transform .04s;
+}
+.chal-mon:hover { background: #00000012; }
+.chal-mon:active { transform: scale(0.92); }
+.chal-task-mon-img { width: 28px; height: 28px; object-fit: contain; filter: grayscale(1) opacity(0.45); transition: filter .15s; }
+.chal-mon.done .chal-task-mon-img { filter: none; }
 
 /* Hyperspace Wild Zone Searcher */
 .hwz-block { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
