@@ -107,10 +107,13 @@ body.tab-fill #content { display: flex; }
   transition: width .2s ease, opacity .15s ease;
 }
 .sidebar.collapsed { width: 0; opacity: 0; }
-/* Matches .header-top's own padding and height exactly, so the hamburger+
+/* Matches .header-top's own spacing and height exactly, so the hamburger+
    brand land at the identical pixel position as the header's copy directly
-   underneath. */
-.sidebar-head { display: flex; align-items: center; gap: 12px; padding: 8px 14px; height: 34px; }
+   underneath. Margin (not padding) for the 8px/14px spacing — header-top's
+   equivalent padding lives one level up on .app-header, outside its own
+   34px-tall box, so padding here (inside a height:34px, border-box element)
+   would instead shrink the available content area and clip the button. */
+.sidebar-head { display: flex; align-items: center; gap: 12px; height: 34px; margin: 8px 14px; }
 
 .nav { display: flex; flex-direction: column; gap: 2px; padding: 10px; }
 .nav-tab {
