@@ -51,7 +51,17 @@ function renderTab() {
   catch (e) { console.error(e); c.appendChild(el('pre', { class: 'error' }, String(e && e.stack || e))); }
 }
 
-function go(tabId) { current = tabId; setPref('tab', tabId); renderTab(); }
+// Matches the CSS breakpoint (@media max-width: 760px) where the sidebar
+// switches from pushing content to overlaying it with a backdrop.
+const isNarrow = () => window.matchMedia('(max-width: 760px)').matches;
+
+function go(tabId) {
+  current = tabId; setPref('tab', tabId); renderTab();
+  // On the overlay layout picking a destination should dismiss the sidebar
+  // (it's covering the content you just asked to see); on the desktop push
+  // layout it stays open, per the earlier persistent-sidebar requirement.
+  if (isNarrow() && !sidebarCollapsed) setSidebarCollapsed(true);
+}
 
 // The sidebar is a normal, always-there part of the layout by default (like
 // any desktop app's nav rail) — the hamburger just collapses it to reclaim
@@ -89,10 +99,15 @@ function buildChrome() {
     el('div', { class: 'sidebar-head' }, [hamburgerBtn(), brand()]),
     el('nav', { class: 'nav', id: 'nav' }, navButtons()),
   ]);
+  // On phones (see the matching @media rule) the sidebar overlays content
+  // instead of pushing it, and this backdrop dims/defocuses that content —
+  // clicking it closes the sidebar, same as the original drawer version.
+  const backdrop = el('div', { class: 'sidebar-backdrop', onclick: () => setSidebarCollapsed(true) });
+
   // Header spans the full width up top; the fixed sidebar overlaps it on the
   // left, and .app-body reserves that width for #content via padding-left.
   app.appendChild(el('div', { class: 'app-body' + (sidebarCollapsed ? ' sidebar-collapsed' : '') }, [
-    sidebar, el('main', { id: 'content' }),
+    sidebar, backdrop, el('main', { id: 'content' }),
   ]));
 }
 

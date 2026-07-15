@@ -41,6 +41,21 @@ body {
 #app { padding: 0 12px 48px; display: flex; flex-direction: column; }
 .app-body { padding-left: 234px; transition: padding-left .2s ease; }
 .app-body.sidebar-collapsed { padding-left: 0; }
+
+/* Phones: there's no width to spare, so reserving 234px for the sidebar just
+   squeezes content until something with a min-width (a card grid, a table
+   row) can't shrink any further and forces a horizontal scroll. Below this
+   width the sidebar instead overlays content (like the very first drawer
+   version) with a dimming backdrop behind it, and content never resizes. */
+.sidebar-backdrop { display: none; }
+@media (max-width: 760px) {
+  .app-body { padding-left: 0; }
+  .sidebar-backdrop {
+    position: fixed; inset: 0; z-index: 20;
+    background: #1d4a3a59; backdrop-filter: blur(2px);
+  }
+  .app-body:not(.sidebar-collapsed) .sidebar-backdrop { display: block; }
+}
 /* The sidebar butts flush against the header (see .sidebar/.app-header above)
    with no gap, but content still wants its own breathing room below it. */
 #content { margin-top: 16px; }
