@@ -61,6 +61,7 @@ function setSidebarCollapsed(v) {
   sidebarCollapsed = v;
   setPref('sidebarCollapsed', v);
   document.getElementById('sidebar').classList.toggle('collapsed', v);
+  document.querySelector('.app-body').classList.toggle('sidebar-collapsed', v);
 }
 function toggleSidebar() { setSidebarCollapsed(!sidebarCollapsed); }
 
@@ -69,26 +70,30 @@ function buildChrome() {
   clear(app);
 
   const brand = () => el('div', { class: 'brand' }, [el('span', { class: 'logo' }, '◓'), el('span', {}, 'DexTracker')]);
+  const hamburgerBtn = () => el('button', { class: 'hamburger-btn', title: 'Toggle menu', onclick: toggleSidebar }, [
+    el('span', { class: 'hamburger-bar' }), el('span', { class: 'hamburger-bar' }), el('span', { class: 'hamburger-bar' }),
+  ]);
 
   const header = el('header', { class: 'app-header' }, [
-    el('div', { class: 'header-top' }, [
-      el('button', { class: 'hamburger-btn', title: 'Toggle menu', onclick: toggleSidebar }, [
-        el('span', { class: 'hamburger-bar' }), el('span', { class: 'hamburger-bar' }), el('span', { class: 'hamburger-bar' }),
-      ]),
-      brand(),
-      buildSaveBar(),
-    ]),
+    el('div', { class: 'header-top' }, [hamburgerBtn(), brand(), buildSaveBar()]),
   ]);
-
   app.appendChild(header);
 
-  // The brand + a close control already live in the header right above —
-  // repeating them here would be redundant, so the sidebar is just the nav.
+  // The sidebar overlaps the header's own hamburger+brand when open (it
+  // sits on top, z-index-wise, spanning from the very top of the page) — so
+  // it carries its own matching copy of them at its head, rather than
+  // needing any corner-masking trick. When collapsed, its width shrinks to
+  // 0 and the header's own copy shows through naturally underneath — no
+  // extra show/hide bookkeeping needed for that part.
   const sidebar = el('aside', { class: 'sidebar' + (sidebarCollapsed ? ' collapsed' : ''), id: 'sidebar' }, [
+    el('div', { class: 'sidebar-head' }, [hamburgerBtn(), brand()]),
     el('nav', { class: 'nav', id: 'nav' }, navButtons()),
   ]);
-  // Header spans the full width up top; sidebar + content sit in a row below it.
-  app.appendChild(el('div', { class: 'app-body' }, [sidebar, el('main', { id: 'content' })]));
+  // Header spans the full width up top; the fixed sidebar overlaps it on the
+  // left, and .app-body reserves that width for #content via padding-left.
+  app.appendChild(el('div', { class: 'app-body' + (sidebarCollapsed ? ' sidebar-collapsed' : '') }, [
+    sidebar, el('main', { id: 'content' }),
+  ]));
 }
 
 function navButtons() {

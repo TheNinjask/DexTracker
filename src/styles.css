@@ -32,15 +32,18 @@ body {
   color: var(--text);
   font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
-/* Header spans the full width up top; the sidebar + content row sits below
-   it. No max-width cap: whether collapsing the sidebar actually gains usable
-   space must depend only on the sidebar itself, never on an arbitrary
+/* Header spans the full width up top. The sidebar is fixed (not part of this
+   flow at all — see .sidebar below), so .app-body just reserves its width
+   with padding-left, transitioning together with the sidebar's own width. No
+   max-width cap: whether collapsing the sidebar actually gains usable space
+   must depend only on the sidebar itself, never on an arbitrary
    viewport-width breakpoint. */
 #app { padding: 0 12px 48px; display: flex; flex-direction: column; }
-.app-body { display: flex; align-items: flex-start; gap: 14px; }
+.app-body { padding-left: 234px; transition: padding-left .2s ease; }
+.app-body.sidebar-collapsed { padding-left: 0; }
 /* The sidebar butts flush against the header (see .sidebar/.app-header above)
    with no gap, but content still wants its own breathing room below it. */
-#content { flex: 1; min-width: 0; margin-top: 16px; }
+#content { margin-top: 16px; }
 
 /* Fill mode (News tab): the tab's content takes the full viewport below the
    header, edge to edge, so its embedded iframe is the only thing that scrolls
@@ -50,23 +53,26 @@ body.tab-fill #app { height: 100%; padding-bottom: 0; }
 body.tab-fill .app-body { flex: 1; min-height: 0; }
 body.tab-fill #content { display: flex; }
 
-/* Header: a slim top bar (hamburger + brand + savebar). Always keeps its own
-   rounded corners — an open sidebar simply overlaps the bottom-left one (see
-   .sidebar's negative margin-top below) and covers it with its own square
-   corner, rather than the header's CSS changing shape depending on sidebar
-   state. Bottom-left radius is deliberately smaller than bottom-right: the
-   hamburger button's own box bottoms out ~8.4px above the header's own
-   bottom edge, so that's the most the sidebar can safely overlap without
-   covering part of the button — the radius is kept a hair under that so the
-   sidebar's overlap fully swallows the curve with no sliver left showing. */
+/* Header: a slim top bar (hamburger + brand + savebar). Sits underneath the
+   sidebar — when the sidebar is open it overlaps and covers this header's
+   own hamburger+brand entirely (see .sidebar below), so nothing needs to be
+   hidden/shown here; the sidebar's own matching copy is simply what's on
+   top. When the sidebar collapses, this original copy shows through again
+   naturally, with no extra bookkeeping. */
 .app-header {
   position: sticky; top: 0; z-index: 20;
   padding: 8px 14px; margin-bottom: 0;
   background: var(--chrome-bg);
-  border-radius: 0 0 18px 7px;
+  border-radius: 0 0 18px 18px;
   box-shadow: var(--shadow);
 }
-.header-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+/* Fixed height (not just align-items:center) so this row is always exactly
+   34px tall regardless of the savebar's content — otherwise it can end up a
+   hair taller than 34px, centering the hamburger button with a sub-pixel
+   offset relative to .sidebar-head's identical-looking but savebar-less row,
+   producing a visible jitter as the sidebar's copy crossfades with the
+   header's. */
+.header-top { display: flex; align-items: center; gap: 12px; min-width: 0; height: 34px; }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; letter-spacing: .01em; flex: 0 0 auto; }
 .brand .logo { color: var(--accent2); font-size: 24px; line-height: 1; }
 
@@ -79,32 +85,34 @@ body.tab-fill #content { display: flex; }
 .hamburger-bar { width: 16px; height: 2px; border-radius: 1px; background: var(--text); }
 
 /* Shown by default; the hamburger collapses it to width 0 to reclaim space
-   rather than opening/closing it like a drawer. Sticky so it stays put
-   alongside the header while a long page (e.g. a big box grid) scrolls. */
+   rather than opening/closing it like a drawer. Sticky so it stays put while
+   a long page (e.g. a big box grid) scrolls. Starts at the very top (top:0,
+   same as the header) and sits above it (z-index), covering the header's
+   own hamburger+brand — .sidebar-head below carries an identical copy of
+   them so nothing looks missing. */
 .sidebar {
-  flex: 0 0 220px; position: sticky; top: 43px;
-  /* Pulls the sidebar's square top-left corner up into the header's rounded
-     bottom-left corner to fully mask it (no sliver of curve left showing) —
-     on top of the header (higher z-index) so the sidebar's own content (the
-     first nav item, below its own 10px padding) never renders underneath
-     the header. Kept just inside the header's own bottom padding below the
-     hamburger button, so this can't cover any real header content either. */
-  margin-top: -8px; z-index: 21;
-  display: flex; flex-direction: column; padding: 10px; overflow: hidden;
-  /* Stretches down to the bottom of the viewport rather than stopping right
-     after the last nav item, so it reads as a full-height rail. */
-  min-height: calc(100vh - 57px);
+  /* Fixed, not sticky: sticky only overrides position once scrolled past its
+     natural in-flow spot, which (after the header) is below it — so at
+     scroll 0 it would render as a second row under the header instead of
+     overlapping it. Fixed always sits at these exact viewport coordinates,
+     from the very first paint. */
+  position: fixed; top: 0; left: 12px; width: 220px; z-index: 21;
+  display: flex; flex-direction: column; overflow: hidden;
+  /* Reaches the bottom of the viewport (minus a little breathing room)
+     rather than stopping right after the last nav item, so it reads as a
+     full-height rail. */
+  height: calc(100vh - 14px);
   background: var(--chrome-bg);
   border-radius: 0 0 18px 18px;
-  margin-bottom: 14px;
-  /* flex-basis (not width) is what actually sizes a flex item on the main
-     axis — animating width alone here was a no-op, the 220px flex-basis was
-     still winning every time. */
-  transition: flex-basis .2s ease, padding .2s ease, opacity .15s ease, margin .2s ease, border-width .2s ease;
+  transition: width .2s ease, opacity .15s ease;
 }
-.sidebar.collapsed { flex-basis: 0; padding: 0; margin: 0; opacity: 0; }
+.sidebar.collapsed { width: 0; opacity: 0; }
+/* Matches .header-top's own padding and height exactly, so the hamburger+
+   brand land at the identical pixel position as the header's copy directly
+   underneath. */
+.sidebar-head { display: flex; align-items: center; gap: 12px; padding: 8px 14px; height: 34px; }
 
-.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav { display: flex; flex-direction: column; gap: 2px; padding: 10px; }
 .nav-tab {
   background: transparent; color: var(--muted); border: none; border-left: 3px solid transparent;
   border-radius: 10px; text-align: left;
