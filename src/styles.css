@@ -47,11 +47,14 @@ body {
 
 /* Fill mode (News tab): the tab's content takes the full viewport below the
    header, edge to edge, so its embedded iframe is the only thing that scrolls
-   instead of the page scrolling to it and then scrolling again inside it. */
+   instead of the page scrolling to it and then scrolling again inside it.
+   .app-body/#content need to actually become a flex column here — the base
+   rules above don't make them one (the sidebar is fixed/out of flow now, so
+   .app-body has no everyday reason to be a flex container itself). */
 body.tab-fill { height: 100vh; overflow: hidden; }
 body.tab-fill #app { height: 100%; padding-bottom: 0; }
-body.tab-fill .app-body { flex: 1; min-height: 0; }
-body.tab-fill #content { display: flex; }
+body.tab-fill .app-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+body.tab-fill #content { flex: 1; min-height: 0; display: flex; }
 
 /* Header: a slim top bar (hamburger + brand + savebar). Sits underneath the
    sidebar — when the sidebar is open it overlaps and covers this header's
@@ -306,10 +309,13 @@ select.ctrl { border-radius: 999px; }
 .data-table tr:hover td { background: #ffffff66; }
 
 /* OT Registry / Profiles tables render as cards (one card per record, each cell a
-   label/value row). Cards flow into as many columns as the width allows. */
+   label/value row). Cards flow into as many columns as the width allows;
+   align-items defaults to stretch, so every card in a grid row automatically
+   matches the tallest card in that row (e.g. one with an extra field) rather
+   than each sizing to its own content. */
 .table-wrap .data-table {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 8px; align-items: start;
+  gap: 8px;
 }
 .table-wrap .data-table tbody { display: contents; }
 .table-wrap .data-table .data-head { display: none; }
