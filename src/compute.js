@@ -74,6 +74,7 @@ export function buildDexEntries(dexId) {
       shiny,
       formCode: f.form_code || '',
       formCodeShiny: f.form_code || '',
+      formCodeBase: f.form_code_base || '',
       slotKind: 'form',
       dexId,
       group: f.box_group || 'Forms',
@@ -102,7 +103,7 @@ export function buildDexEntries(dexId) {
 // Get the ownership slot {ot,tid,is_mine?} for an entry.
 export function entrySlot(e) {
   if (e.slotKind === 'species') return store.getSpeciesSlot(e.national_no, e.shiny);
-  if (e.slotKind === 'form') return store.getFormSlot(e.national_no, e.formCode, e.form, e.shiny);
+  if (e.slotKind === 'form') return store.getFormSlot(e.national_no, e.formCode, e.form, e.shiny, e.formCodeBase);
   if (e.slotKind === 'pergame') return store.getPerGameRow(e.dexId, e.national_no);
   return null;
 }
@@ -147,7 +148,7 @@ function tallyForms(shiny) {
   let owned = 0, go = 0;
   const total = REF.forms.length;
   REF.forms.forEach((f) => {
-    const slot = store.getFormSlot(f.national_no, f.form_code, f.form, shiny);
+    const slot = store.getFormSlot(f.national_no, f.form_code, f.form, shiny, f.form_code_base);
     if (store.isOwned(slot)) {
       owned++;
       const o = resolveOrigin(slot.ot, slot.tid);
