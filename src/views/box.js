@@ -248,7 +248,7 @@ function jumpTo(root, entry) {
   refresh(root);
 }
 
-function keyOf(e) { return `${e.dexId}|${e.national_no}|${e.formCode}|${e.shiny}|${e.form || ''}`; }
+function keyOf(e) { return `${e.dexId}|${e.national_no}|${e.formCode}|${e.shiny}|${e.form || ''}|${e.formCodeBase || ''}`; }
 
 // Jump from a species (Home / Shiny Home) entry to its alternate forms: switch to
 // the matching Form Dex (shiny→Shiny) and search by National No. so the first form
@@ -413,7 +413,7 @@ function buildDetail(root, e) {
     el('button', { class: 'btn primary', onclick: () => {
       const ot = otIn.value.trim(), tid = tidIn.value.trim();
       if (e.slotKind === 'species') store.setSpeciesSlot(e.national_no, e.shiny, ot, tid);
-      else if (e.slotKind === 'form') store.setFormSlot(e.national_no, e.formCode, e.form, e.shiny, ot, tid);
+      else if (e.slotKind === 'form') store.setFormSlot(e.national_no, e.formCode, e.form, e.shiny, ot, tid, e.formCodeBase);
       else {
         // is_mine is no longer user-set — derive it from the OT+TID registry entry.
         const reg = store.getOtEntry(ot, tid);
@@ -424,7 +424,7 @@ function buildDetail(root, e) {
     } }, 'Save'),
     owned ? el('button', { class: 'btn', onclick: () => {
       if (e.slotKind === 'species') store.setSpeciesSlot(e.national_no, e.shiny, '', '');
-      else if (e.slotKind === 'form') store.setFormSlot(e.national_no, e.formCode, e.form, e.shiny, '', '');
+      else if (e.slotKind === 'form') store.setFormSlot(e.national_no, e.formCode, e.form, e.shiny, '', '', e.formCodeBase);
       else store.setPerGameSlot(e.dexId, e.national_no, e.regional_no, '', '', false);
       refresh(root);
     } }, 'Clear') : null,
