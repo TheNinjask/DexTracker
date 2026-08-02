@@ -161,17 +161,20 @@ export function removeSpecies(nationalNo) {
   rebuildIndexes();
 }
 
+// form_code alone isn't always unique per species (e.g. Gigantamax Toxtricity), so match form + form_code_base too.
 export function upsertForm(row) {
   const nat = pad4(row.national_no);
   const next = { ...row, national_no: nat };
-  const i = REF.forms.findIndex((f) => f.national_no === nat && f.form_code === row.form_code);
+  const i = REF.forms.findIndex((f) => f.national_no === nat && f.form_code === row.form_code
+    && f.form === row.form && (f.form_code_base || '') === (row.form_code_base || ''));
   if (i >= 0) REF.forms[i] = { ...REF.forms[i], ...next };
   else REF.forms.push(next);
   rebuildIndexes();
 }
-export function removeForm(nationalNo, formCode) {
+export function removeForm(nationalNo, formCode, form, formCodeBase) {
   const nat = pad4(nationalNo);
-  REF.forms = REF.forms.filter((f) => !(f.national_no === nat && f.form_code === formCode));
+  REF.forms = REF.forms.filter((f) => !(f.national_no === nat && f.form_code === formCode
+    && f.form === form && (f.form_code_base || '') === (formCodeBase || '')));
   rebuildIndexes();
 }
 

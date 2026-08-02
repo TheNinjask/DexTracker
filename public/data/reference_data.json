@@ -11134,6 +11134,7 @@
             "form": "Gigantamax",
             "form_code": "-gi",
             "form_code_special": "-gi",
+            "form_code_base": "-l",
             "name": "Toxtricity",
             "box_group": "Gigantamax",
             "serebii_link": "https://www.serebii.net/pokemon/toxtricity/"

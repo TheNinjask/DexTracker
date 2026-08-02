@@ -38,8 +38,10 @@ const index = {
   monsDone: new Set(),       // "<researchTaskId>::<pokemonIndex>"
 };
 
-export function formKey(nat, formCode, form) {
-  return `${nat || ''}|${formCode || ''}|${form || ''}`;
+// formCodeBase disambiguates forms sharing an identical form_code + form (e.g.
+// Gigantamax Toxtricity); appended only when present so old keys stay unchanged.
+export function formKey(nat, formCode, form, formCodeBase) {
+  return `${nat || ''}|${formCode || ''}|${form || ''}${formCodeBase ? `|${formCodeBase}` : ''}`;
 }
 export function otKey(ot, tid) {
   return `${(ot || '').trim()}|${(tid || '').trim()}`;
@@ -53,7 +55,7 @@ function reindex() {
   index.challengesDone.clear();
   index.monsDone.clear();
   (state.species_ownership || []).forEach((r) => index.species.set(r.national_no, r));
-  (state.form_ownership || []).forEach((r) => index.forms.set(formKey(r.national_no, r.form_code, r.form), r));
+  (state.form_ownership || []).forEach((r) => index.forms.set(formKey(r.national_no, r.form_code, r.form, r.form_code_base), r));
   Object.entries(state.per_game_ownership || {}).forEach(([dexId, rows]) => {
     const m = new Map();
     (rows || []).forEach((r) => m.set(r.national_no, r));
@@ -156,16 +158,17 @@ export function setSpeciesSlot(nat, shiny, ot, tid) {
 }
 
 export function getFormRow(nat, formCode, form) { return index.forms.get(formKey(nat, formCode, form)); }
-export function getFormSlot(nat, formCode, form, shiny) {
-  const r = index.forms.get(formKey(nat, formCode, form));
+export function getFormSlot(nat, formCode, form, shiny, formCodeBase) {
+  const r = index.forms.get(formKey(nat, formCode, form, formCodeBase));
   if (!r) return null;
   return shiny ? r.shiny : r.normal;
 }
-export function setFormSlot(nat, formCode, form, shiny, ot, tid) {
-  const k = formKey(nat, formCode, form);
+export function setFormSlot(nat, formCode, form, shiny, ot, tid, formCodeBase) {
+  const k = formKey(nat, formCode, form, formCodeBase);
   let r = index.forms.get(k);
   if (!r) {
     r = { national_no: nat, form, form_code: formCode };
+    if (formCodeBase) r.form_code_base = formCodeBase;
     state.form_ownership.push(r);
     index.forms.set(k, r);
   }

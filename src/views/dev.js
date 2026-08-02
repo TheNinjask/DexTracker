@@ -206,7 +206,7 @@ function renderForms(wrap, root) {
     { c: 'muted small', v: f.box_group || '' },
     rowActions(
       () => { editing.forms = f; render(root); },
-      () => { if (confirm(`Remove form ${f.name} (${f.form})?`)) { if (editing.forms === f) editing.forms = null; removeForm(f.national_no, f.form_code); render(root); } },
+      () => { if (confirm(`Remove form ${f.name} (${f.form})?`)) { if (editing.forms === f) editing.forms = null; removeForm(f.national_no, f.form_code, f.form, f.form_code_base); render(root); } },
     ),
   ]);
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
@@ -219,6 +219,7 @@ function buildFormForm(root) {
   const form = el('input', { class: 'ctrl', placeholder: 'Form (e.g. Alolan)', value: p.form || '' });
   const code = el('input', { class: 'ctrl', placeholder: 'Form code (e.g. -a)', value: p.form_code || '' });
   const codeSp = el('input', { class: 'ctrl', placeholder: 'Form code (special)', value: p.form_code_special || '' });
+  const codeBase = el('input', { class: 'ctrl', placeholder: 'Base form code (rare, e.g. -l)', value: p.form_code_base || '' });
   const group = el('input', { class: 'ctrl', placeholder: 'Box group', value: p.box_group || '' });
   const gen = el('input', { class: 'ctrl', placeholder: 'Gen', value: p.generation != null ? String(p.generation) : '' });
   const link = el('input', { class: 'ctrl wide', placeholder: 'Serebii link', value: p.serebii_link || '' });
@@ -244,6 +245,7 @@ function buildFormForm(root) {
       form: form.value.trim(),
       form_code: code.value.trim(),
       form_code_special: codeSp.value.trim() || code.value.trim(),
+      form_code_base: codeBase.value.trim() || null,
       name: name.value.trim() || speciesName(key),
       box_group: group.value.trim() || null,
       serebii_link: link.value.trim() || null,
@@ -254,7 +256,7 @@ function buildFormForm(root) {
 
   const card = formCard(
     editing.forms ? `Edit ${p.name || ''} (${p.form || ''})` : 'Add / update form',
-    [nat, name, form, code, codeSp, group, gen, link],
+    [nat, name, form, code, codeSp, codeBase, group, gen, link],
     save, () => { editing.forms = null; render(root); }, !!editing.forms, preview,
   );
   refresh();
