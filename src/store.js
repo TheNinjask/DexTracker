@@ -1,6 +1,11 @@
 // Savefile state: all user-created data (SPEC §10). Lives in localStorage,
 // importable/exportable as one portable JSON document. Never bundled with the app.
-import { findGame } from './data.js';
+// Deliberately independent of data.js: migrations below never read live reference
+// data (REF.games etc.) or call its helpers (findGame etc.) — that data's shape and
+// content can both change later (a game can be renamed in the Dev tab, a field can
+// be restructured), but a migration must keep transforming old savefiles exactly as
+// it did the day it was written. Each migration instead bakes in whatever frozen
+// snapshot of reference data it actually needs, as a literal constant.
 
 const LS_KEY = 'dextracker.savefile.v1';
 export const SCHEMA_VERSION = 2;
@@ -94,15 +99,27 @@ export function persist() {
 }
 
 // v1 -> v2: ot_registry's mark override now points at a mark id (REF.marks)
-// directly instead of a game id whose mark got borrowed.
+// directly instead of a game id whose mark got borrowed. This table is a frozen
+// snapshot of REF.games' id -> mark_id mapping as it stood the day this migration
+// was written (captured from reference_data.json, not read live) — a game can be
+// renamed or re-keyed in the Dev tab at any point afterward without affecting how
+// old v1 saves get translated.
+const V1_GAME_MARK_ID = {
+  'Go': 'GO', 'Home/Go': 'GO', 'Scarlet': 'SV', 'Violet': 'SV', 'Legends: Arceus': 'LA',
+  'Brilliant Diamond': 'BDSP', 'Shining Pearl': 'BDSP', 'Shield': 'SWSH', 'Sword': 'SWSH',
+  "Let's Go Eevee": 'LGPE', 'Ultra Sun': 'USUM', 'Sun': 'SM', 'Alpha Sapphire': 'ORAS',
+  'Y': 'XY', 'White 2': '', 'White': '', 'Heart Gold': '', 'Soul Silver': '', 'Platinum': '',
+  'Emerald': '', 'Silver': 'GS', 'Yellow': 'RBY', 'Home': '', 'Bank': '', 'Home(PLA)': 'LA',
+  'Home(BDSP)': 'BDSP', 'Home(SV)': 'SV', 'Event(SwSh)': 'SWSH', 'Home(SwSh)': 'SWSH',
+  'Home(LGPE)': 'LGPE', "Let's Go Pikachu": 'LGPE', 'Legends: ZA': 'LZA', 'HOME (PLZA)': 'LZA',
+};
 function migrateV1toV2(data) {
   return {
     ...data,
     ot_registry: (data.ot_registry || []).map((r) => {
       if (!('mark_game' in r)) return r;
       const { mark_game, ...rest } = r;
-      const game = mark_game ? findGame(mark_game) : null;
-      return { ...rest, mark_id: game ? (game.mark_id || '') : '' };
+      return { ...rest, mark_id: mark_game ? (V1_GAME_MARK_ID[mark_game] ?? '') : '' };
     }),
   };
 }
