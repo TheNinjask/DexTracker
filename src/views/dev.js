@@ -10,6 +10,7 @@ import {
   upsertDex, removeDex,
   upsertMappingRow, removeMappingRow,
   upsertGame, removeGame,
+  upsertMark, removeMark,
   addImageSource, renameImageSource, removeImageSource,
   setImageVariant, removeImageVariant,
   exportReferenceData,
@@ -22,13 +23,14 @@ const SECTIONS = [
   { id: 'dexes', label: 'Dexes' },
   { id: 'mappings', label: 'Dex mappings' },
   { id: 'games', label: 'Games' },
+  { id: 'marks', label: 'Marks' },
   { id: 'sources', label: 'Sprite sources' },
 ];
 
 let section = 'species';
 // Per-section UI state so switching sections doesn't bleed edit/filter state.
-const filters = { species: '', forms: '', dexes: '', mappings: '', games: '', sources: '' };
-const editing = { species: null, forms: null, dexes: null, mappings: null, games: null, sources: null };
+const filters = { species: '', forms: '', dexes: '', mappings: '', games: '', marks: '', sources: '' };
+const editing = { species: null, forms: null, dexes: null, mappings: null, games: null, marks: null, sources: null };
 let mappingDex = null; // selected dex id for the mappings editor
 let srcName = null;     // selected source name for the sprite-source editor
 let sampleNo = '025';   // national # used for sprite-source preview thumbnails
@@ -48,7 +50,7 @@ function sampleUrl(prefix, suffix) {
 // The full species (1025) / forms (400) lists are too heavy to mount at once, so
 // long lists are paged. The filter box narrows; the pager walks the rest.
 const PAGE_SIZE = 200;
-const pages = { species: 0, forms: 0, dexes: 0, mappings: 0, games: 0, sources: 0 };
+const pages = { species: 0, forms: 0, dexes: 0, mappings: 0, games: 0, marks: 0, sources: 0 };
 
 // Slice `matched` to the current page and build a pager (Showing a–b of N, Prev/Next).
 // Clamps the stored page so a narrowed filter never leaves you past the last page.
@@ -92,6 +94,7 @@ export function render(root) {
   else if (section === 'dexes') renderDexes(wrap, root);
   else if (section === 'mappings') renderMappings(wrap, root);
   else if (section === 'games') renderGames(wrap, root);
+  else if (section === 'marks') renderMarks(wrap, root);
   else renderSources(wrap, root);
 
   root.appendChild(wrap);
@@ -484,6 +487,64 @@ function buildGameForm(root) {
     editing.games ? `Edit ${p.id || ''}` : 'Add / update game',
     [id, markCode, iconUrl, markUrl],
     save, () => { editing.games = null; render(root); }, !!editing.games, preview,
+  );
+  refresh();
+  return card;
+}
+
+// ---- Marks --------------------------------------------------------------------
+function renderMarks(wrap, root) {
+  wrap.appendChild(buildMarkForm(root));
+
+  const q = filters.marks.trim().toLowerCase();
+  const all = REF.marks;
+  const matched = q ? all.filter((m) => (m.id || '').toLowerCase().includes(q)) : all;
+  const { rows, pager } = paginate(matched, root);
+
+  wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), pager]));
+
+  const headers = ['Id (mark code)', 'Icon', ''];
+  const body = rows.map((m) => [
+    { c: 'mono', v: m.id || '' },
+    el('td', {}, m.icon_url ? icon(m.icon_url, 'origin-icon', m.id) : el('span', { class: 'muted' }, '—')),
+    rowActions(
+      () => { editing.marks = m; render(root); },
+      () => { if (confirm(`Remove mark "${m.id}"?`)) { if (editing.marks === m) editing.marks = null; removeMark(m.id); render(root); } },
+    ),
+  ]);
+  wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
+}
+
+function buildMarkForm(root) {
+  const p = editing.marks || {};
+  const id = el('input', { class: 'ctrl', placeholder: 'Id / mark code (e.g. SV)', value: p.id || '' });
+  const iconUrl = el('input', { class: 'ctrl wide', placeholder: 'Icon URL', value: p.icon_url || '' });
+
+  // Live preview of the icon for the typed URL.
+  const preview = el('span', { class: 'origin-preview' });
+  const refresh = () => {
+    clear(preview);
+    preview.appendChild(iconUrl.value.trim() ? icon(iconUrl.value.trim(), 'origin-icon', 'mark') : el('span', { class: 'muted small' }, 'No imagery'));
+  };
+  iconUrl.addEventListener('input', refresh);
+
+  const save = el('button', { class: 'btn primary', onclick: () => {
+    if (!id.value.trim()) { alert('A mark id is required.'); return; }
+    if (editing.marks && editing.marks.id !== id.value.trim() && REF.marks.some((m) => m.id === id.value.trim())) {
+      alert('Another mark already uses that id.'); return;
+    }
+    upsertMark({
+      id: id.value.trim(),
+      icon_url: iconUrl.value.trim() || null,
+    }, editing.marks);
+    editing.marks = null;
+    render(root);
+  } }, editing.marks ? 'Save changes' : 'Add mark');
+
+  const card = formCard(
+    editing.marks ? `Edit ${p.id || ''}` : 'Add / update mark',
+    [id, iconUrl],
+    save, () => { editing.marks = null; render(root); }, !!editing.marks, preview,
   );
   refresh();
   return card;

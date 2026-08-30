@@ -7,6 +7,7 @@ export const REF = {
   forms: [],
   types: [],
   games: [],
+  marks: [],
   dexes: [],
   dexMappings: {},
   imageSources: {},
@@ -19,6 +20,7 @@ export const idx = {
   typeByName: new Map(),
   gameById: new Map(),
   gameByIdLower: new Map(), // case-insensitive fallback for registry game names
+  markById: new Map(),
   dexById: new Map(),
   berryById: new Map(),
 };
@@ -52,6 +54,12 @@ export function findGame(id) {
   return idx.gameById.get(id) || idx.gameByIdLower.get(String(id).toLowerCase()) || null;
 }
 
+// Resolve a mark by id.
+export function findMark(id) {
+  if (id == null) return null;
+  return idx.markById.get(id) || null;
+}
+
 // Games sorted alphabetically by id, for the game pickers in the OT Registry,
 // Hall of Fame and Profiles. Returns a copy so the canonical REF.games order
 // (used elsewhere, e.g. stats) is left untouched.
@@ -68,11 +76,13 @@ export function rebuildIndexes() {
   idx.typeByName.clear();
   idx.gameById.clear();
   idx.gameByIdLower.clear();
+  idx.markById.clear();
   idx.dexById.clear();
   idx.berryById.clear();
   REF.species.forEach((s) => idx.speciesByNat.set(s.national_no, s));
   REF.types.forEach((t) => idx.typeByName.set(t.name, t));
   REF.games.forEach((g) => { idx.gameById.set(g.id, g); idx.gameByIdLower.set(String(g.id).toLowerCase(), g); });
+  REF.marks.forEach((m) => idx.markById.set(m.id, m));
   REF.dexes.forEach((d) => idx.dexById.set(d.id, d));
   REF.berries.forEach((b) => idx.berryById.set(b.id, b));
 }
@@ -107,6 +117,7 @@ export async function loadReferenceData() {
   REF.forms = data.forms || [];
   REF.types = data.types || [];
   REF.games = data.games || [];
+  REF.marks = data.marks || [];
   REF.dexes = data.dexes || [];
   REF.dexMappings = data.dex_mappings || {};
   REF.imageSources = data.image_sources || {};
@@ -227,6 +238,23 @@ export function removeGame(id) {
   rebuildIndexes();
 }
 
+// Marks: standalone origin-mark badges (id, icon_url) — id doubles as the mark
+// code (e.g. "SV"), not yet referenced by games/OT registry — a normalized
+// table to point them at later.
+// `original` (the pre-edit row, by reference) locates the row being edited so
+// renaming its id updates in place instead of leaving the old id behind as an
+// orphaned duplicate.
+export function upsertMark(row, original) {
+  const i = original ? REF.marks.indexOf(original) : REF.marks.findIndex((m) => m.id === row.id);
+  if (i >= 0) REF.marks[i] = { ...REF.marks[i], ...row };
+  else REF.marks.push({ ...row });
+  rebuildIndexes();
+}
+export function removeMark(id) {
+  REF.marks = REF.marks.filter((m) => m.id !== id);
+  rebuildIndexes();
+}
+
 // image_sources: { [name]: { [variant]: { prefix, suffix } } } — sprite URL
 // templates a dex's sprite_source points at. Not indexed (spriteUrl reads REF
 // directly), so these need no reindex.
@@ -263,6 +291,7 @@ export function exportReferenceData() {
     forms: REF.forms,
     types: REF.types,
     games: REF.games,
+    marks: REF.marks,
     dexes: REF.dexes,
     dex_mappings: REF.dexMappings,
     image_sources: REF.imageSources,
