@@ -12507,7 +12507,60 @@
             "mark_code": "LZA"
         }
     ],
-    "marks": [],
+    "marks": [
+        {
+            "id": "BDSP",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/5/5f/BDSP_icon.png"
+        },
+        {
+            "id": "GO",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/thumb/2/2e/GO_icon_VIII.png/48px-GO_icon_VIII.png"
+        },
+        {
+            "id": "GS",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/thumb/a/a4/GB_icon_VIII.png/36px-GB_icon_VIII.png"
+        },
+        {
+            "id": "LA",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/thumb/d/dc/Arceus_mark.png/51px-Arceus_mark.png"
+        },
+        {
+            "id": "LGPE",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/a/a4/Let%27s_Go_icon.png"
+        },
+        {
+            "id": "LZA",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/a/a7/Z-A_icon.png"
+        },
+        {
+            "id": "ORAS",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/1/1b/Blue_pentagon_VIII.png"
+        },
+        {
+            "id": "RBY",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/thumb/a/a4/GB_icon_VIII.png/36px-GB_icon_VIII.png"
+        },
+        {
+            "id": "SM",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/c/c3/Black_clover_VIII.png"
+        },
+        {
+            "id": "SV",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/thumb/8/89/Paldea_icon.png/38px-Paldea_icon.png"
+        },
+        {
+            "id": "SWSH",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/3/3e/Galar_symbol.png"
+        },
+        {
+            "id": "USUM",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/c/c3/Black_clover_VIII.png"
+        },
+        {
+            "id": "XY",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/1/1b/Blue_pentagon_VIII.png"
+        }
+    ],
     "dexes": [
         {
             "id": "Nat Dex",
