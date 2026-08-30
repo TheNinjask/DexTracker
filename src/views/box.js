@@ -147,9 +147,64 @@ export function render(root) {
     if (inp) { inp.focus(); try { const n = inp.value.length; inp.setSelectionRange(n, n); } catch {} }
     refocusSearch = false;
   }
+  requestAnimationFrame(() => sizeGrid(root));
+  watchResize(root);
 }
 
 function refresh(root) { render(root); }
+
+// Above the 860px breakpoint (matches .box-main's own media query) the
+// sidebar sits beside the box, not below it — the box's max size (full width,
+// cells at aspect-ratio 1) is capped to fit the remaining viewport height so
+// it never forces the page to scroll, since nothing sits below it there.
+// Below 860px the sidebar stacks below the box instead, so that reasoning no
+// longer applies — leave the original CSS-only (unbounded, page-scrolls)
+// behavior completely alone there.
+const GAP = 7, PAD = 24, COLS = 6, ROWS = 5; // must mirror .box-grid's own gap/padding
+const DESKTOP_BREAKPOINT = 860;
+
+function sizeGrid(root) {
+  const wrap = root.querySelector('.grid-wrap');
+  const grid = root.querySelector('.box-grid');
+  const header = root.querySelector('.grid-header');
+  if (!wrap || !grid || !header) return;
+  grid.style.width = ''; grid.style.height = ''; header.style.width = '';
+  if (window.innerWidth <= DESKTOP_BREAKPOINT) return;
+  const availW = wrap.clientWidth;
+  // Bounded against the nav sidebar's own actual bottom edge (not an estimate
+  // of the viewport minus assorted padding) so the box can never visibly hang
+  // lower than it — a real, measured boundary rather than one more guessed
+  // buffer constant to keep in sync with CSS changes elsewhere.
+  const sidebar = document.getElementById('sidebar');
+  const bottomBound = sidebar ? sidebar.getBoundingClientRect().bottom : window.innerHeight;
+  const availH = bottomBound - wrap.getBoundingClientRect().top - header.offsetHeight - 10 - 2; // 2 = rounding safety
+  const cellW = (availW - PAD - GAP * (COLS - 1)) / COLS;
+  const cellH = (availH - PAD - GAP * (ROWS - 1)) / ROWS;
+  const cell = Math.max(1, Math.min(cellW, cellH));
+  const w = Math.round(cell * COLS + GAP * (COLS - 1) + PAD);
+  const h = Math.round(cell * ROWS + GAP * (ROWS - 1) + PAD);
+  grid.style.width = `${w}px`;
+  grid.style.height = `${h}px`;
+  header.style.width = `${w}px`;
+}
+
+// One set of listeners for the tab's lifetime — root (#content) is a stable
+// element that render() clears and repopulates rather than replacing.
+let resizeWatched = false;
+function watchResize(root) {
+  if (resizeWatched) return;
+  resizeWatched = true;
+  let raf = 0;
+  const resize = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => sizeGrid(root)); };
+  window.addEventListener('resize', resize);
+  // Collapsing/expanding the nav sidebar changes .app-body's available width
+  // (its padding-left) without the window itself resizing, so the 'resize'
+  // listener above misses it — this also fires continuously through the
+  // sidebar's own .2s collapse animation, so the box tracks it smoothly
+  // instead of only jumping once it's done.
+  const appBody = document.querySelector('.app-body');
+  if (appBody && window.ResizeObserver) new ResizeObserver(resize).observe(appBody);
+}
 
 function buildControls(root) {
   const bar = el('div', { class: 'controls' });
