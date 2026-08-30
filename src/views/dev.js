@@ -191,22 +191,27 @@ function renderForms(wrap, root) {
   const q = filters.forms.trim().toLowerCase();
   const all = REF.forms;
   const matched = q
-    ? all.filter((f) => f.national_no.includes(q) || (f.name || '').toLowerCase().includes(q) || (f.form || '').toLowerCase().includes(q))
+    ? all.filter((f) => f.national_no.includes(q) || (f.name || '').toLowerCase().includes(q) || (f.form || '').toLowerCase().includes(q)
+      || (f.form_code_base || '').toLowerCase().includes(q))
     : all;
   const { rows, pager } = paginate(matched, root);
 
   wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), pager]));
 
-  const headers = ['Nat #', 'Name', 'Form', 'Code', 'Group', ''];
+  // form_code alone can collide within a species (e.g. Gigantamax Toxtricity's
+  // amped/low-key forms both use "-gi") — show form_code_base too so rows that
+  // only differ by it aren't indistinguishable in the list.
+  const headers = ['Nat #', 'Name', 'Form', 'Code', 'Base', 'Group', ''];
   const body = rows.map((f) => [
     { c: 'mono', v: f.national_no },
     f.name || '',
     f.form || '',
     { c: 'mono', v: f.form_code || '' },
+    { c: 'mono', v: f.form_code_base || '' },
     { c: 'muted small', v: f.box_group || '' },
     rowActions(
       () => { editing.forms = f; render(root); },
-      () => { if (confirm(`Remove form ${f.name} (${f.form})?`)) { if (editing.forms === f) editing.forms = null; removeForm(f.national_no, f.form_code, f.form, f.form_code_base); render(root); } },
+      () => { if (confirm(`Remove form ${f.name} (${f.form}${f.form_code_base ? ` · base ${f.form_code_base}` : ''})?`)) { if (editing.forms === f) editing.forms = null; removeForm(f.national_no, f.form_code, f.form, f.form_code_base); render(root); } },
     ),
   ]);
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
@@ -249,13 +254,13 @@ function buildFormForm(root) {
       name: name.value.trim() || speciesName(key),
       box_group: group.value.trim() || null,
       serebii_link: link.value.trim() || null,
-    });
+    }, editing.forms);
     editing.forms = null;
     render(root);
   } }, editing.forms ? 'Save changes' : 'Add form');
 
   const card = formCard(
-    editing.forms ? `Edit ${p.name || ''} (${p.form || ''})` : 'Add / update form',
+    editing.forms ? `Edit ${p.name || ''} (${p.form || ''}${p.form_code_base ? ` · base ${p.form_code_base}` : ''})` : 'Add / update form',
     [nat, name, form, code, codeSp, codeBase, group, gen, link],
     save, () => { editing.forms = null; render(root); }, !!editing.forms, preview,
   );

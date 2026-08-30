@@ -162,11 +162,17 @@ export function removeSpecies(nationalNo) {
 }
 
 // form_code alone isn't always unique per species (e.g. Gigantamax Toxtricity), so match form + form_code_base too.
-export function upsertForm(row) {
+// When editing an existing row, `original` (the pre-edit row, by reference) is used
+// to find it instead of re-deriving a key from the (possibly just-changed) new
+// values — otherwise editing a row's own form_code_base wouldn't find itself and
+// would push a duplicate instead of updating in place.
+export function upsertForm(row, original) {
   const nat = pad4(row.national_no);
   const next = { ...row, national_no: nat };
-  const i = REF.forms.findIndex((f) => f.national_no === nat && f.form_code === row.form_code
-    && f.form === row.form && (f.form_code_base || '') === (row.form_code_base || ''));
+  const i = original
+    ? REF.forms.indexOf(original)
+    : REF.forms.findIndex((f) => f.national_no === nat && f.form_code === row.form_code
+      && f.form === row.form && (f.form_code_base || '') === (row.form_code_base || ''));
   if (i >= 0) REF.forms[i] = { ...REF.forms[i], ...next };
   else REF.forms.push(next);
   rebuildIndexes();
