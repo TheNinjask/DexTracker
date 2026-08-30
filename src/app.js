@@ -133,7 +133,7 @@ function buildSaveBar() {
       if (!f) return;
       const reader = new FileReader();
       reader.onload = () => {
-        try { store.importSave(JSON.parse(reader.result)); updateSaveStatus(); renderTab(); }
+        try { offerBackup(store.importSave(JSON.parse(reader.result))); updateSaveStatus(); renderTab(); }
         catch (err) { alert('Invalid savefile: ' + err.message); }
       };
       reader.readAsText(f);
@@ -169,6 +169,18 @@ function newSave() {
   }
 }
 
+// When a load/import brings in savefile data on an older schema (store.load /
+// store.importSave return non-null updateInfo), the data is already migrated in
+// memory — this just offers a safety-net copy of the pre-migration data before
+// the old shape is gone for good.
+function offerBackup(updateInfo) {
+  if (!updateInfo) return;
+  const { fromVersion, toVersion, backupJson } = updateInfo;
+  if (confirm(`Your savefile is being updated (v${fromVersion} → v${toVersion}). Back up the old version first?`)) {
+    downloadJson(`savefile-backup-v${fromVersion}.json`, backupJson);
+  }
+}
+
 function doExport() {
   downloadJson('savefile.json', store.exportSave());
 }
@@ -193,7 +205,7 @@ function applyReceived(data, status, m) {
   try { obj = JSON.parse(data); }
   catch { status.textContent = 'Received invalid data.'; return; }
   if (confirm('Received a savefile from the other device. Import it? This replaces the data currently loaded (export first if needed).')) {
-    store.importSave(obj);
+    offerBackup(store.importSave(obj));
     updateSaveStatus();
     renderTab();
     status.textContent = 'Imported ✓';
@@ -302,7 +314,8 @@ async function main() {
     content().appendChild(el('div', { class: 'error' }, 'Failed to load reference data. ' + e.message));
     return;
   }
-  const had = store.load();
+  const { hadSave, updateInfo } = store.load();
+  offerBackup(updateInfo);
   updateSaveStatus();
   refreshNav(); // savefile is loaded now → reflect its dev_mode in the nav
   store.onChange(() => { updateSaveStatus(); refreshNav(); });
@@ -313,7 +326,7 @@ async function main() {
   if (sync) {
     history.replaceState(null, '', location.href.split('#')[0]);
     openJoinDialog(sync.id, sync.role);
-  } else if (!had) showWelcome();
+  } else if (!hadSave) showWelcome();
   // Warm the shared game/type icons into the cache (paced, off the critical path)
   // so the box grid stops bursting the image host. Fire-and-forget.
   preloadIcons();

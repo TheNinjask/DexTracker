@@ -1,8 +1,9 @@
 // Savefile state: all user-created data (SPEC §10). Lives in localStorage,
 // importable/exportable as one portable JSON document. Never bundled with the app.
+import { findGame } from './data.js';
 
 const LS_KEY = 'dextracker.savefile.v1';
-const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 const listeners = new Set();
 export function onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); }
@@ -70,14 +71,20 @@ export function load() {
   try {
     const raw = localStorage.getItem(LS_KEY);
     if (raw) {
-      state = normalize(JSON.parse(raw));
+      const parsed = JSON.parse(raw);
+      const { data, fromVersion, updated } = updateSaveFile(parsed);
+      state = normalize(data);
       reindex();
-      return true;
+      // Persist the migrated shape right away so localStorage itself moves off the
+      // old schema — otherwise every future load would see v1 again and re-offer
+      // the backup prompt on every visit instead of just once.
+      if (updated) persist();
+      return { hadSave: true, updateInfo: updated ? { fromVersion, toVersion: SCHEMA_VERSION, backupJson: raw } : null };
     }
   } catch (e) { console.warn('Failed to load savefile from localStorage', e); }
   state = emptySave();
   reindex();
-  return false;
+  return { hadSave: false, updateInfo: null };
 }
 
 export function persist() {
@@ -86,10 +93,34 @@ export function persist() {
   } catch (e) { console.warn('Failed to persist savefile', e); }
 }
 
+// v1 -> v2: ot_registry's mark override now points at a mark id (REF.marks)
+// directly instead of a game id whose mark got borrowed.
+function migrateV1toV2(data) {
+  return {
+    ...data,
+    ot_registry: (data.ot_registry || []).map((r) => {
+      if (!('mark_game' in r)) return r;
+      const { mark_game, ...rest } = r;
+      const game = mark_game ? findGame(mark_game) : null;
+      return { ...rest, mark_id: game ? (game.mark_id || '') : '' };
+    }),
+  };
+}
+
+// Version-gated migration entry point. `obj.meta.schema_version` missing entirely
+// means pre-versioning data — treated as v1. Chains forward to SCHEMA_VERSION so a
+// save several versions behind still ends up fully current in one call.
+export function updateSaveFile(obj) {
+  const fromVersion = (obj.meta && obj.meta.schema_version) || 1;
+  let data = obj;
+  if (fromVersion < 2) data = migrateV1toV2(data);
+  return { data, fromVersion, updated: fromVersion < SCHEMA_VERSION };
+}
+
 function normalize(obj) {
   const base = emptySave();
   return {
-    meta: obj.meta || base.meta,
+    meta: { ...(obj.meta || base.meta), schema_version: SCHEMA_VERSION },
     species_ownership: obj.species_ownership || [],
     form_ownership: obj.form_ownership || [],
     per_game_ownership: obj.per_game_ownership || {},
@@ -107,10 +138,12 @@ function normalize(obj) {
 }
 
 export function importSave(obj) {
-  state = normalize(obj);
+  const { data, fromVersion, updated } = updateSaveFile(obj);
+  state = normalize(data);
   reindex();
   persist();
   emit();
+  return updated ? { fromVersion, toVersion: SCHEMA_VERSION, backupJson: JSON.stringify(obj) } : null;
 }
 
 export function resetSave() {

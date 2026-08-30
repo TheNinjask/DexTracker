@@ -1,5 +1,5 @@
 // OT registry editor (SPEC §4.4). The join table turning (OT,TID) into origin metadata.
-import { findGame, findMark, gamesAlpha } from '../data.js';
+import { REF, findGame, findMark, gamesAlpha } from '../data.js';
 import { resolveOrigin } from '../compute.js';
 import * as store from '../store.js';
 import { el, clear, icon, dataTable } from '../dom.js';
@@ -23,7 +23,7 @@ export function render(root) {
       { c: 'mono', v: r.tid },
       el('td', {}, r.game || el('span', { class: 'muted' }, '—')),
       assetCell(o.iconUrl, r.icon_game),
-      assetCell(o.markUrl, r.mark_game),
+      assetCell(o.markUrl, r.mark_id),
       r.is_mine ? '✓' : '',
       r.is_go ? 'GO' : '',
       { c: 'muted small', v: r.profile || '' },
@@ -38,14 +38,14 @@ export function render(root) {
   root.appendChild(wrap);
 }
 
-// A table cell showing a resolved icon/mark image plus a note of which game it
-// was borrowed from when overridden.
-function assetCell(url, overrideGame) {
+// A table cell showing a resolved icon/mark image plus a note of what it was
+// overridden from (a game id for the icon, a mark id for the mark) when set.
+function assetCell(url, overrideLabel) {
   // Wrap icon + override note in one span so the card layout keeps them together
-  // (icon immediately left of "↳ game") on the value side, not spread apart.
+  // (icon immediately left of "↳ label") on the value side, not spread apart.
   return el('td', {}, el('span', { class: 'asset-val' }, [
-    url ? icon(url, 'origin-icon', overrideGame || '') : el('span', { class: 'muted' }, '—'),
-    overrideGame ? el('span', { class: 'muted small override-note' }, ` ↳ ${overrideGame}`) : null,
+    url ? icon(url, 'origin-icon', overrideLabel || '') : el('span', { class: 'muted' }, '—'),
+    overrideLabel ? el('span', { class: 'muted small override-note' }, ` ↳ ${overrideLabel}`) : null,
   ]));
 }
 
@@ -65,6 +65,13 @@ function gameOptions(selected, placeholder) {
   ]);
 }
 
+function markOptions(selected, placeholder) {
+  return el('select', { class: 'ctrl' }, [
+    el('option', { value: '' }, placeholder),
+    ...REF.marks.map((m) => el('option', { value: m.id, selected: m.id === selected ? '' : null }, m.id)),
+  ]);
+}
+
 function labeled(text, control) {
   return el('label', { class: 'field' }, [el('span', { class: 'field-label' }, text), control]);
 }
@@ -79,7 +86,7 @@ function buildForm(root) {
   const profile = el('input', { class: 'ctrl', placeholder: 'Profile', value: p.profile && p.profile !== 'N/A' ? p.profile : '' });
   const desc = el('input', { class: 'ctrl wide', placeholder: 'Description', value: p.description || '' });
   const iconGame = gameOptions(p.icon_game, '— origin: from game —');
-  const markGame = gameOptions(p.mark_game, '— mark: from game —');
+  const markId = markOptions(p.mark_id, '— mark: default —');
 
   // Live preview of the effective origin icon + mark for the current selections.
   const preview = el('span', { class: 'origin-preview' });
@@ -87,13 +94,12 @@ function buildForm(root) {
     clear(preview);
     const g = findGame(game.value);
     const ig = (iconGame.value && findGame(iconGame.value)) || g;
-    const mg = (markGame.value && findGame(markGame.value)) || g;
-    const mark = mg ? findMark(mg.mark_id) : null;
+    const mark = (markId.value && findMark(markId.value)) || (g ? findMark(g.mark_id) : null);
     preview.appendChild(el('span', { class: 'muted small' }, 'Effective: '));
     preview.appendChild(ig && ig.icon_url ? icon(ig.icon_url, 'origin-icon', ig.id) : el('span', { class: 'muted small' }, 'no icon '));
     preview.appendChild(mark && mark.icon_url ? icon(mark.icon_url, 'origin-icon', mark.id) : el('span', { class: 'muted small' }, ' no mark'));
   };
-  [game, iconGame, markGame].forEach((s) => s.addEventListener('change', refresh));
+  [game, iconGame, markId].forEach((s) => s.addEventListener('change', refresh));
 
   const save = el('button', { class: 'btn primary', onclick: () => {
     if (!ot.value.trim() || !tid.value.trim()) { alert('OT and TID are required.'); return; }
@@ -101,7 +107,7 @@ function buildForm(root) {
       ot: ot.value.trim(), tid: tid.value.trim(), game: game.value.trim(),
       is_mine: mine.checked, is_go: go.checked,
       profile: profile.value.trim() || 'N/A', description: desc.value.trim(),
-      icon_game: iconGame.value || '', mark_game: markGame.value || '',
+      icon_game: iconGame.value || '', mark_id: markId.value || '',
     });
     editing = null;
     render(root);
@@ -115,7 +121,7 @@ function buildForm(root) {
       el('label', { class: 'toggle' }, [mine, el('span', {}, 'isMine')]),
       el('label', { class: 'toggle' }, [go, el('span', {}, 'isGo')]),
       profile, desc,
-      labeled('Origin icon', iconGame), labeled('Origin mark', markGame),
+      labeled('Origin icon', iconGame), labeled('Origin mark', markId),
     ]),
     el('div', { class: 'form-foot' }, [
       preview,
