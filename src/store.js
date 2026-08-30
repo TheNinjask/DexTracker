@@ -8,7 +8,14 @@
 // snapshot of reference data it actually needs, as a literal constant.
 
 const LS_KEY = 'dextracker.savefile.v1';
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
+
+// Pure, dependency-free id generator (no reference-data or app-logic coupling) —
+// safe to use identically from both live code and migrations.
+function newId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  return `id_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+}
 
 const listeners = new Set();
 export function onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); }
@@ -124,6 +131,16 @@ function migrateV1toV2(data) {
   };
 }
 
+// v2 -> v3: every ot_registry row gets a stable unique id. Rows were previously
+// identified solely by (ot, tid) — that stays the uniqueness key for now, this
+// just gives each row an identity that survives an ot/tid edit.
+function migrateV2toV3(data) {
+  return {
+    ...data,
+    ot_registry: (data.ot_registry || []).map((r) => ('id' in r ? r : { id: newId(), ...r })),
+  };
+}
+
 // Version-gated migration entry point. `obj.meta.schema_version` missing entirely
 // means pre-versioning data — treated as v1. Chains forward to SCHEMA_VERSION so a
 // save several versions behind still ends up fully current in one call.
@@ -131,6 +148,7 @@ export function updateSaveFile(obj) {
   const fromVersion = (obj.meta && obj.meta.schema_version) || 1;
   let data = obj;
   if (fromVersion < 2) data = migrateV1toV2(data);
+  if (fromVersion < 3) data = migrateV2toV3(data);
   return { data, fromVersion, updated: fromVersion < SCHEMA_VERSION };
 }
 
@@ -310,10 +328,11 @@ export function upsertOtEntry(entry) {
   const k = otKey(entry.ot, entry.tid);
   const existing = index.ot.get(k);
   if (existing) {
-    Object.assign(existing, entry);
+    Object.assign(existing, entry, { id: existing.id });
   } else {
-    state.ot_registry.push(entry);
-    index.ot.set(k, entry);
+    const row = { id: newId(), ...entry };
+    state.ot_registry.push(row);
+    index.ot.set(k, row);
   }
   commit();
 }
