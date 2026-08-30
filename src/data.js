@@ -226,9 +226,12 @@ export function removeMappingRow(dexId, nationalNo) {
   if (arr) REF.dexMappings[dexId] = arr.filter((m) => m.national_no !== nat);
 }
 
-// Games carry origin icon/mark imagery (OT registry, HoF, profiles). Key: id.
-export function upsertGame(row) {
-  const i = REF.games.findIndex((g) => g.id === row.id);
+// Games carry an origin icon + a mark_id pointing at REF.marks (OT registry, HoF,
+// profiles). Key: id. `original` (the pre-edit row, by reference) locates the row
+// being edited so renaming its id updates in place instead of leaving the old id
+// behind as an orphaned duplicate — see upsertForm/upsertMark for the same pattern.
+export function upsertGame(row, original) {
+  const i = original ? REF.games.indexOf(original) : REF.games.findIndex((g) => g.id === row.id);
   if (i >= 0) REF.games[i] = { ...REF.games[i], ...row };
   else REF.games.push({ ...row });
   rebuildIndexes();

@@ -1,6 +1,6 @@
 // Derived/computed logic (SPEC §5). All recomputed from user data + seed data.
 
-import { REF, idx, spriteUrl, speciesName, findGame } from './data.js';
+import { REF, idx, spriteUrl, speciesName, findGame, findMark } from './data.js';
 import * as store from './store.js';
 
 // Resolve a slot's (OT,TID) to rich origin metadata via the OT registry + Game Ref.
@@ -14,12 +14,13 @@ export function resolveOrigin(ot, tid) {
   // "Event") display a chosen game's assets without changing the recorded origin.
   const iconSrc = (reg.icon_game && findGame(reg.icon_game)) || game;
   const markSrc = (reg.mark_game && findGame(reg.mark_game)) || game;
+  const mark = markSrc ? findMark(markSrc.mark_id) : null;
   return {
     game: reg.game,
     gameId: reg.game,
     iconUrl: iconSrc ? iconSrc.icon_url : null,
-    markUrl: markSrc ? markSrc.mark_url : null,
-    markCode: markSrc ? markSrc.mark_code : null,
+    markUrl: mark ? mark.icon_url : null,
+    markCode: mark ? mark.id : null,
     iconGame: reg.icon_game || null,
     markGame: reg.mark_game || null,
     isMine: reg.is_mine,

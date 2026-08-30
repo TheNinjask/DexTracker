@@ -1,5 +1,5 @@
 // OT registry editor (SPEC §4.4). The join table turning (OT,TID) into origin metadata.
-import { findGame, gamesAlpha } from '../data.js';
+import { findGame, findMark, gamesAlpha } from '../data.js';
 import { resolveOrigin } from '../compute.js';
 import * as store from '../store.js';
 import { el, clear, icon, dataTable } from '../dom.js';
@@ -88,9 +88,10 @@ function buildForm(root) {
     const g = findGame(game.value);
     const ig = (iconGame.value && findGame(iconGame.value)) || g;
     const mg = (markGame.value && findGame(markGame.value)) || g;
+    const mark = mg ? findMark(mg.mark_id) : null;
     preview.appendChild(el('span', { class: 'muted small' }, 'Effective: '));
     preview.appendChild(ig && ig.icon_url ? icon(ig.icon_url, 'origin-icon', ig.id) : el('span', { class: 'muted small' }, 'no icon '));
-    preview.appendChild(mg && mg.mark_url ? icon(mg.mark_url, 'origin-icon', mg.id) : el('span', { class: 'muted small' }, ' no mark'));
+    preview.appendChild(mark && mark.icon_url ? icon(mark.icon_url, 'origin-icon', mark.id) : el('span', { class: 'muted small' }, ' no mark'));
   };
   [game, iconGame, markGame].forEach((s) => s.addEventListener('change', refresh));
 

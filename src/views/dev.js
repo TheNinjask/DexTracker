@@ -4,7 +4,7 @@
 // reference_data.json to commit to the repo. Nothing here is persisted — edits live
 // for the session only (export to keep them).
 import {
-  REF, speciesName, spriteUrl, pad3, pad4,
+  REF, speciesName, spriteUrl, pad3, pad4, findMark,
   upsertSpecies, removeSpecies,
   upsertForm, removeForm,
   upsertDex, removeDex,
@@ -431,42 +431,53 @@ function renderGames(wrap, root) {
 
   const q = filters.games.trim().toLowerCase();
   const all = REF.games;
-  const matched = q ? all.filter((g) => (g.id || '').toLowerCase().includes(q) || (g.mark_code || '').toLowerCase().includes(q)) : all;
+  const matched = q ? all.filter((g) => (g.id || '').toLowerCase().includes(q) || (g.mark_id || '').toLowerCase().includes(q)) : all;
   const { rows, pager } = paginate(matched, root);
 
   wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), pager]));
 
-  const headers = ['Id', 'Icon', 'Mark', 'Mark code', ''];
-  const body = rows.map((g) => [
-    g.id || '',
-    el('td', {}, g.icon_url ? icon(g.icon_url, 'origin-icon', g.id) : el('span', { class: 'muted' }, '—')),
-    el('td', {}, g.mark_url ? icon(g.mark_url, 'origin-icon', g.id) : el('span', { class: 'muted' }, '—')),
-    { c: 'mono', v: g.mark_code || '' },
-    rowActions(
-      () => { editing.games = g; render(root); },
-      () => { if (confirm(`Remove game "${g.id}"? OT registry rows that reference it will lose their origin imagery.`)) { if (editing.games === g) editing.games = null; removeGame(g.id); render(root); } },
-    ),
-  ]);
+  const headers = ['Id', 'Icon', 'Mark', ''];
+  const body = rows.map((g) => {
+    const mark = findMark(g.mark_id);
+    return [
+      g.id || '',
+      el('td', {}, g.icon_url ? icon(g.icon_url, 'origin-icon', g.id) : el('span', { class: 'muted' }, '—')),
+      el('td', {}, mark
+        ? el('span', { class: 'asset-val' }, [mark.icon_url ? icon(mark.icon_url, 'origin-icon', mark.id) : null, el('span', { class: 'mono' }, mark.id)])
+        : el('span', { class: 'muted' }, '—')),
+      rowActions(
+        () => { editing.games = g; render(root); },
+        () => { if (confirm(`Remove game "${g.id}"? OT registry rows that reference it will lose their origin imagery.`)) { if (editing.games === g) editing.games = null; removeGame(g.id); render(root); } },
+      ),
+    ];
+  });
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
+}
+
+function markOptions(selected, placeholder) {
+  return el('select', { class: 'ctrl' }, [
+    el('option', { value: '' }, placeholder),
+    ...REF.marks.map((m) => el('option', { value: m.id, selected: m.id === selected ? '' : null }, m.id)),
+  ]);
 }
 
 function buildGameForm(root) {
   const p = editing.games || {};
   const id = el('input', { class: 'ctrl', placeholder: 'Id (e.g. Scarlet)', value: p.id || '' });
-  const markCode = el('input', { class: 'ctrl', placeholder: 'Mark code', value: p.mark_code || '' });
   const iconUrl = el('input', { class: 'ctrl wide', placeholder: 'Icon URL', value: p.icon_url || '' });
-  const markUrl = el('input', { class: 'ctrl wide', placeholder: 'Mark URL', value: p.mark_url || '' });
+  const markId = markOptions(p.mark_id, '— no mark —');
 
-  // Live preview of the icon + mark images for the typed URLs.
+  // Live preview of the icon + the selected mark's icon.
   const preview = el('span', { class: 'origin-preview' });
   const refresh = () => {
     clear(preview);
     if (iconUrl.value.trim()) preview.appendChild(icon(iconUrl.value.trim(), 'origin-icon', 'icon'));
-    if (markUrl.value.trim()) preview.appendChild(icon(markUrl.value.trim(), 'origin-icon', 'mark'));
-    if (!iconUrl.value.trim() && !markUrl.value.trim()) preview.appendChild(el('span', { class: 'muted small' }, 'No imagery'));
+    const mark = markId.value ? findMark(markId.value) : null;
+    if (mark && mark.icon_url) preview.appendChild(icon(mark.icon_url, 'origin-icon', 'mark'));
+    if (!iconUrl.value.trim() && !(mark && mark.icon_url)) preview.appendChild(el('span', { class: 'muted small' }, 'No imagery'));
   };
   iconUrl.addEventListener('input', refresh);
-  markUrl.addEventListener('input', refresh);
+  markId.addEventListener('change', refresh);
 
   const save = el('button', { class: 'btn primary', onclick: () => {
     if (!id.value.trim()) { alert('A game id is required.'); return; }
@@ -476,16 +487,15 @@ function buildGameForm(root) {
     upsertGame({
       id: id.value.trim(),
       icon_url: iconUrl.value.trim() || null,
-      mark_url: markUrl.value.trim() || null,
-      mark_code: markCode.value.trim() || null,
-    });
+      mark_id: markId.value || null,
+    }, editing.games);
     editing.games = null;
     render(root);
   } }, editing.games ? 'Save changes' : 'Add game');
 
   const card = formCard(
     editing.games ? `Edit ${p.id || ''}` : 'Add / update game',
-    [id, markCode, iconUrl, markUrl],
+    [id, iconUrl, labeled('Mark', markId)],
     save, () => { editing.games = null; render(root); }, !!editing.games, preview,
   );
   refresh();

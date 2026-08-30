@@ -12311,200 +12311,167 @@
         {
             "id": "Go",
             "icon_url": "https://archives.bulbagarden.net/media/upload/4/44/HOME_GO_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/thumb/2/2e/GO_icon_VIII.png/48px-GO_icon_VIII.png",
-            "mark_code": "Go"
+            "mark_id": "GO"
         },
         {
             "id": "Home/Go",
             "icon_url": "https://archives.bulbagarden.net/media/upload/4/44/HOME_GO_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/thumb/2/2e/GO_icon_VIII.png/48px-GO_icon_VIII.png",
-            "mark_code": "Go"
+            "mark_id": "GO"
         },
         {
             "id": "Scarlet",
             "icon_url": "https://archives.bulbagarden.net/media/upload/2/29/HOME_Scarlet_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/thumb/8/89/Paldea_icon.png/38px-Paldea_icon.png",
-            "mark_code": "SV"
+            "mark_id": "SV"
         },
         {
             "id": "Violet",
             "icon_url": "https://archives.bulbagarden.net/media/upload/9/92/HOME_Violet_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/thumb/8/89/Paldea_icon.png/38px-Paldea_icon.png",
-            "mark_code": "SV"
+            "mark_id": "SV"
         },
         {
             "id": "Legends: Arceus",
             "icon_url": "https://archives.bulbagarden.net/media/upload/b/ba/HOME_Legends_Arceus_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/thumb/d/dc/Arceus_mark.png/51px-Arceus_mark.png",
-            "mark_code": "LA"
+            "mark_id": "LA"
         },
         {
             "id": "Brilliant Diamond",
             "icon_url": "https://archives.bulbagarden.net/media/upload/c/cf/HOME_Brilliant_Diamond_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/5/5f/BDSP_icon.png",
-            "mark_code": "BDSP"
+            "mark_id": "BDSP"
         },
         {
             "id": "Shining Pearl",
             "icon_url": "https://archives.bulbagarden.net/media/upload/7/75/HOME_Shining_Pearl_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/5/5f/BDSP_icon.png",
-            "mark_code": "BDSP"
+            "mark_id": "BDSP"
         },
         {
             "id": "Shield",
             "icon_url": "https://archives.bulbagarden.net/media/upload/c/c8/HOME_Shield_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/3/3e/Galar_symbol.png",
-            "mark_code": "SWSH"
+            "mark_id": "SWSH"
         },
         {
             "id": "Sword",
             "icon_url": "https://archives.bulbagarden.net/media/upload/f/fe/HOME_Sword_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/3/3e/Galar_symbol.png",
-            "mark_code": "SWSH"
+            "mark_id": "SWSH"
         },
         {
             "id": "Let's Go Eevee",
             "icon_url": "https://archives.bulbagarden.net/media/upload/3/3f/HOME_Let%27s_Go_Eevee_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/a/a4/Let%27s_Go_icon.png",
-            "mark_code": "LGPE"
+            "mark_id": "LGPE"
         },
         {
             "id": "Ultra Sun",
             "icon_url": "https://archives.bulbagarden.net/media/upload/b/be/HOME_Ultra_Sun_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/c/c3/Black_clover_VIII.png",
-            "mark_code": "USUM"
+            "mark_id": "USUM"
         },
         {
             "id": "Sun",
             "icon_url": "https://archives.bulbagarden.net/media/upload/7/7c/HOME_Sun_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/c/c3/Black_clover_VIII.png",
-            "mark_code": "SM"
+            "mark_id": "SM"
         },
         {
             "id": "Alpha Sapphire",
             "icon_url": "https://archives.bulbagarden.net/media/upload/e/e3/HOME_Alpha_Sapphire_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/1/1b/Blue_pentagon_VIII.png",
-            "mark_code": "ORAS"
+            "mark_id": "ORAS"
         },
         {
             "id": "Y",
             "icon_url": "https://archives.bulbagarden.net/media/upload/d/d5/HOME_Y_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/1/1b/Blue_pentagon_VIII.png",
-            "mark_code": "XY"
+            "mark_id": "XY"
         },
         {
             "id": "White 2",
             "icon_url": "https://serebii.net/Toolbar/icon/white2.png",
-            "mark_url": null,
-            "mark_code": "B2W2"
+            "mark_id": null
         },
         {
             "id": "White",
             "icon_url": "https://serebii.net/Toolbar/icon/white.png",
-            "mark_url": null,
-            "mark_code": "BW"
+            "mark_id": null
         },
         {
             "id": "Heart Gold",
             "icon_url": "https://serebii.net/Toolbar/icon/heartgold.png",
-            "mark_url": null,
-            "mark_code": "HGSS"
+            "mark_id": null
         },
         {
             "id": "Soul Silver",
             "icon_url": "https://serebii.net/Toolbar/icon/soulsilver.png",
-            "mark_url": null,
-            "mark_code": "HGSS"
+            "mark_id": null
         },
         {
             "id": "Platinum",
             "icon_url": "https://serebii.net/Toolbar/icon/platinum.png",
-            "mark_url": null,
-            "mark_code": "DPPt"
+            "mark_id": null
         },
         {
             "id": "Emerald",
             "icon_url": "https://cdn2.steamgriddb.com/icon_thumb/5d12d5a76a9683536eb23a6a1c9767cc.png",
-            "mark_url": null,
-            "mark_code": "RSE"
+            "mark_id": null
         },
         {
             "id": "Silver",
             "icon_url": "https://serebii.net/Toolbar/icon/svc.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/thumb/a/a4/GB_icon_VIII.png/36px-GB_icon_VIII.png",
-            "mark_code": "GS"
+            "mark_id": "GS"
         },
         {
             "id": "Yellow",
             "icon_url": "https://serebii.net/Toolbar/icon/yellow.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/thumb/a/a4/GB_icon_VIII.png/36px-GB_icon_VIII.png",
-            "mark_code": "RBY"
+            "mark_id": "RBY"
         },
         {
             "id": "Home",
             "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_url": null,
-            "mark_code": "HOME"
+            "mark_id": null
         },
         {
             "id": "Bank",
             "icon_url": "https://archives.bulbagarden.net/media/upload/f/f7/HOME_Bank_icon.png",
-            "mark_url": null,
-            "mark_code": "BANK"
+            "mark_id": null
         },
         {
             "id": "Home(PLA)",
             "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/thumb/d/dc/Arceus_mark.png/51px-Arceus_mark.png",
-            "mark_code": "LA"
+            "mark_id": "LA"
         },
         {
             "id": "Home(BDSP)",
             "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/5/5f/BDSP_icon.png",
-            "mark_code": "BDSP"
+            "mark_id": "BDSP"
         },
         {
             "id": "Home(SV)",
             "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/thumb/8/89/Paldea_icon.png/38px-Paldea_icon.png",
-            "mark_code": "SV"
+            "mark_id": "SV"
         },
         {
             "id": "Event(SwSh)",
             "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/3/3e/Galar_symbol.png",
-            "mark_code": "SWSH"
+            "mark_id": "SWSH"
         },
         {
             "id": "Home(SwSh)",
             "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/3/3e/Galar_symbol.png",
-            "mark_code": "SWSH"
+            "mark_id": "SWSH"
         },
         {
             "id": "Home(LGPE)",
             "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/a/a4/Let%27s_Go_icon.png",
-            "mark_code": "LGPE"
+            "mark_id": "LGPE"
         },
         {
             "id": "Let's Go Pikachu",
             "icon_url": "https://archives.bulbagarden.net/media/upload/1/19/HOME_Let%27s_Go_Pikachu_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/a/a4/Let%27s_Go_icon.png",
-            "mark_code": "LGPE"
+            "mark_id": "LGPE"
         },
         {
             "id": "Legends: ZA",
             "icon_url": "https://archives.bulbagarden.net/media/upload/4/4c/HOME_Legends_Z-A_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/a/a7/Z-A_icon.png",
-            "mark_code": "LZA"
+            "mark_id": "LZA"
         },
         {
             "id": "HOME (PLZA)",
             "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_url": "https://archives.bulbagarden.net/media/upload/a/a7/Z-A_icon.png",
-            "mark_code": "LZA"
+            "mark_id": "LZA"
         }
     ],
     "marks": [
