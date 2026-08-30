@@ -4,12 +4,13 @@
 // reference_data.json to commit to the repo. Nothing here is persisted — edits live
 // for the session only (export to keep them).
 import {
-  REF, speciesName, spriteUrl, pad3, pad4,
+  REF, speciesName, spriteUrl, pad3, pad4, findMark,
   upsertSpecies, removeSpecies,
   upsertForm, removeForm,
   upsertDex, removeDex,
   upsertMappingRow, removeMappingRow,
   upsertGame, removeGame,
+  upsertMark, removeMark,
   addImageSource, renameImageSource, removeImageSource,
   setImageVariant, removeImageVariant,
   exportReferenceData,
@@ -22,13 +23,14 @@ const SECTIONS = [
   { id: 'dexes', label: 'Dexes' },
   { id: 'mappings', label: 'Dex mappings' },
   { id: 'games', label: 'Games' },
+  { id: 'marks', label: 'Marks' },
   { id: 'sources', label: 'Sprite sources' },
 ];
 
 let section = 'species';
 // Per-section UI state so switching sections doesn't bleed edit/filter state.
-const filters = { species: '', forms: '', dexes: '', mappings: '', games: '', sources: '' };
-const editing = { species: null, forms: null, dexes: null, mappings: null, games: null, sources: null };
+const filters = { species: '', forms: '', dexes: '', mappings: '', games: '', marks: '', sources: '' };
+const editing = { species: null, forms: null, dexes: null, mappings: null, games: null, marks: null, sources: null };
 let mappingDex = null; // selected dex id for the mappings editor
 let srcName = null;     // selected source name for the sprite-source editor
 let sampleNo = '025';   // national # used for sprite-source preview thumbnails
@@ -48,7 +50,7 @@ function sampleUrl(prefix, suffix) {
 // The full species (1025) / forms (400) lists are too heavy to mount at once, so
 // long lists are paged. The filter box narrows; the pager walks the rest.
 const PAGE_SIZE = 200;
-const pages = { species: 0, forms: 0, dexes: 0, mappings: 0, games: 0, sources: 0 };
+const pages = { species: 0, forms: 0, dexes: 0, mappings: 0, games: 0, marks: 0, sources: 0 };
 
 // Slice `matched` to the current page and build a pager (Showing a–b of N, Prev/Next).
 // Clamps the stored page so a narrowed filter never leaves you past the last page.
@@ -92,6 +94,7 @@ export function render(root) {
   else if (section === 'dexes') renderDexes(wrap, root);
   else if (section === 'mappings') renderMappings(wrap, root);
   else if (section === 'games') renderGames(wrap, root);
+  else if (section === 'marks') renderMarks(wrap, root);
   else renderSources(wrap, root);
 
   root.appendChild(wrap);
@@ -191,22 +194,27 @@ function renderForms(wrap, root) {
   const q = filters.forms.trim().toLowerCase();
   const all = REF.forms;
   const matched = q
-    ? all.filter((f) => f.national_no.includes(q) || (f.name || '').toLowerCase().includes(q) || (f.form || '').toLowerCase().includes(q))
+    ? all.filter((f) => f.national_no.includes(q) || (f.name || '').toLowerCase().includes(q) || (f.form || '').toLowerCase().includes(q)
+      || (f.form_code_base || '').toLowerCase().includes(q))
     : all;
   const { rows, pager } = paginate(matched, root);
 
   wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), pager]));
 
-  const headers = ['Nat #', 'Name', 'Form', 'Code', 'Group', ''];
+  // form_code alone can collide within a species (e.g. Gigantamax Toxtricity's
+  // amped/low-key forms both use "-gi") — show form_code_base too so rows that
+  // only differ by it aren't indistinguishable in the list.
+  const headers = ['Nat #', 'Name', 'Form', 'Code', 'Base', 'Group', ''];
   const body = rows.map((f) => [
     { c: 'mono', v: f.national_no },
     f.name || '',
     f.form || '',
     { c: 'mono', v: f.form_code || '' },
+    { c: 'mono', v: f.form_code_base || '' },
     { c: 'muted small', v: f.box_group || '' },
     rowActions(
       () => { editing.forms = f; render(root); },
-      () => { if (confirm(`Remove form ${f.name} (${f.form})?`)) { if (editing.forms === f) editing.forms = null; removeForm(f.national_no, f.form_code, f.form, f.form_code_base); render(root); } },
+      () => { if (confirm(`Remove form ${f.name} (${f.form}${f.form_code_base ? ` · base ${f.form_code_base}` : ''})?`)) { if (editing.forms === f) editing.forms = null; removeForm(f.national_no, f.form_code, f.form, f.form_code_base); render(root); } },
     ),
   ]);
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
@@ -249,13 +257,13 @@ function buildFormForm(root) {
       name: name.value.trim() || speciesName(key),
       box_group: group.value.trim() || null,
       serebii_link: link.value.trim() || null,
-    });
+    }, editing.forms);
     editing.forms = null;
     render(root);
   } }, editing.forms ? 'Save changes' : 'Add form');
 
   const card = formCard(
-    editing.forms ? `Edit ${p.name || ''} (${p.form || ''})` : 'Add / update form',
+    editing.forms ? `Edit ${p.name || ''} (${p.form || ''}${p.form_code_base ? ` · base ${p.form_code_base}` : ''})` : 'Add / update form',
     [nat, name, form, code, codeSp, codeBase, group, gen, link],
     save, () => { editing.forms = null; render(root); }, !!editing.forms, preview,
   );
@@ -423,42 +431,53 @@ function renderGames(wrap, root) {
 
   const q = filters.games.trim().toLowerCase();
   const all = REF.games;
-  const matched = q ? all.filter((g) => (g.id || '').toLowerCase().includes(q) || (g.mark_code || '').toLowerCase().includes(q)) : all;
+  const matched = q ? all.filter((g) => (g.id || '').toLowerCase().includes(q) || (g.mark_id || '').toLowerCase().includes(q)) : all;
   const { rows, pager } = paginate(matched, root);
 
   wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), pager]));
 
-  const headers = ['Id', 'Icon', 'Mark', 'Mark code', ''];
-  const body = rows.map((g) => [
-    g.id || '',
-    el('td', {}, g.icon_url ? icon(g.icon_url, 'origin-icon', g.id) : el('span', { class: 'muted' }, '—')),
-    el('td', {}, g.mark_url ? icon(g.mark_url, 'origin-icon', g.id) : el('span', { class: 'muted' }, '—')),
-    { c: 'mono', v: g.mark_code || '' },
-    rowActions(
-      () => { editing.games = g; render(root); },
-      () => { if (confirm(`Remove game "${g.id}"? OT registry rows that reference it will lose their origin imagery.`)) { if (editing.games === g) editing.games = null; removeGame(g.id); render(root); } },
-    ),
-  ]);
+  const headers = ['Id', 'Icon', 'Mark', ''];
+  const body = rows.map((g) => {
+    const mark = findMark(g.mark_id);
+    return [
+      g.id || '',
+      el('td', {}, g.icon_url ? icon(g.icon_url, 'origin-icon', g.id) : el('span', { class: 'muted' }, '—')),
+      el('td', {}, mark
+        ? el('span', { class: 'asset-val' }, [mark.icon_url ? icon(mark.icon_url, 'origin-icon', mark.id) : null, el('span', { class: 'mono' }, mark.id)])
+        : el('span', { class: 'muted' }, '—')),
+      rowActions(
+        () => { editing.games = g; render(root); },
+        () => { if (confirm(`Remove game "${g.id}"? OT registry rows that reference it will lose their origin imagery.`)) { if (editing.games === g) editing.games = null; removeGame(g.id); render(root); } },
+      ),
+    ];
+  });
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
+}
+
+function markOptions(selected, placeholder) {
+  return el('select', { class: 'ctrl' }, [
+    el('option', { value: '' }, placeholder),
+    ...REF.marks.map((m) => el('option', { value: m.id, selected: m.id === selected ? '' : null }, m.id)),
+  ]);
 }
 
 function buildGameForm(root) {
   const p = editing.games || {};
   const id = el('input', { class: 'ctrl', placeholder: 'Id (e.g. Scarlet)', value: p.id || '' });
-  const markCode = el('input', { class: 'ctrl', placeholder: 'Mark code', value: p.mark_code || '' });
   const iconUrl = el('input', { class: 'ctrl wide', placeholder: 'Icon URL', value: p.icon_url || '' });
-  const markUrl = el('input', { class: 'ctrl wide', placeholder: 'Mark URL', value: p.mark_url || '' });
+  const markId = markOptions(p.mark_id, '— no mark —');
 
-  // Live preview of the icon + mark images for the typed URLs.
+  // Live preview of the icon + the selected mark's icon.
   const preview = el('span', { class: 'origin-preview' });
   const refresh = () => {
     clear(preview);
     if (iconUrl.value.trim()) preview.appendChild(icon(iconUrl.value.trim(), 'origin-icon', 'icon'));
-    if (markUrl.value.trim()) preview.appendChild(icon(markUrl.value.trim(), 'origin-icon', 'mark'));
-    if (!iconUrl.value.trim() && !markUrl.value.trim()) preview.appendChild(el('span', { class: 'muted small' }, 'No imagery'));
+    const mark = markId.value ? findMark(markId.value) : null;
+    if (mark && mark.icon_url) preview.appendChild(icon(mark.icon_url, 'origin-icon', 'mark'));
+    if (!iconUrl.value.trim() && !(mark && mark.icon_url)) preview.appendChild(el('span', { class: 'muted small' }, 'No imagery'));
   };
   iconUrl.addEventListener('input', refresh);
-  markUrl.addEventListener('input', refresh);
+  markId.addEventListener('change', refresh);
 
   const save = el('button', { class: 'btn primary', onclick: () => {
     if (!id.value.trim()) { alert('A game id is required.'); return; }
@@ -468,17 +487,74 @@ function buildGameForm(root) {
     upsertGame({
       id: id.value.trim(),
       icon_url: iconUrl.value.trim() || null,
-      mark_url: markUrl.value.trim() || null,
-      mark_code: markCode.value.trim() || null,
-    });
+      mark_id: markId.value || null,
+    }, editing.games);
     editing.games = null;
     render(root);
   } }, editing.games ? 'Save changes' : 'Add game');
 
   const card = formCard(
     editing.games ? `Edit ${p.id || ''}` : 'Add / update game',
-    [id, markCode, iconUrl, markUrl],
+    [id, iconUrl, labeled('Mark', markId)],
     save, () => { editing.games = null; render(root); }, !!editing.games, preview,
+  );
+  refresh();
+  return card;
+}
+
+// ---- Marks --------------------------------------------------------------------
+function renderMarks(wrap, root) {
+  wrap.appendChild(buildMarkForm(root));
+
+  const q = filters.marks.trim().toLowerCase();
+  const all = REF.marks;
+  const matched = q ? all.filter((m) => (m.id || '').toLowerCase().includes(q)) : all;
+  const { rows, pager } = paginate(matched, root);
+
+  wrap.appendChild(el('div', { class: 'dev-filter' }, [filterInput(root), pager]));
+
+  const headers = ['Id (mark code)', 'Icon', ''];
+  const body = rows.map((m) => [
+    { c: 'mono', v: m.id || '' },
+    el('td', {}, m.icon_url ? icon(m.icon_url, 'origin-icon', m.id) : el('span', { class: 'muted' }, '—')),
+    rowActions(
+      () => { editing.marks = m; render(root); },
+      () => { if (confirm(`Remove mark "${m.id}"?`)) { if (editing.marks === m) editing.marks = null; removeMark(m.id); render(root); } },
+    ),
+  ]);
+  wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
+}
+
+function buildMarkForm(root) {
+  const p = editing.marks || {};
+  const id = el('input', { class: 'ctrl', placeholder: 'Id / mark code (e.g. SV)', value: p.id || '' });
+  const iconUrl = el('input', { class: 'ctrl wide', placeholder: 'Icon URL', value: p.icon_url || '' });
+
+  // Live preview of the icon for the typed URL.
+  const preview = el('span', { class: 'origin-preview' });
+  const refresh = () => {
+    clear(preview);
+    preview.appendChild(iconUrl.value.trim() ? icon(iconUrl.value.trim(), 'origin-icon', 'mark') : el('span', { class: 'muted small' }, 'No imagery'));
+  };
+  iconUrl.addEventListener('input', refresh);
+
+  const save = el('button', { class: 'btn primary', onclick: () => {
+    if (!id.value.trim()) { alert('A mark id is required.'); return; }
+    if (editing.marks && editing.marks.id !== id.value.trim() && REF.marks.some((m) => m.id === id.value.trim())) {
+      alert('Another mark already uses that id.'); return;
+    }
+    upsertMark({
+      id: id.value.trim(),
+      icon_url: iconUrl.value.trim() || null,
+    }, editing.marks);
+    editing.marks = null;
+    render(root);
+  } }, editing.marks ? 'Save changes' : 'Add mark');
+
+  const card = formCard(
+    editing.marks ? `Edit ${p.id || ''}` : 'Add / update mark',
+    [id, iconUrl],
+    save, () => { editing.marks = null; render(root); }, !!editing.marks, preview,
   );
   refresh();
   return card;

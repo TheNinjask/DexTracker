@@ -1,6 +1,6 @@
 // Derived/computed logic (SPEC §5). All recomputed from user data + seed data.
 
-import { REF, idx, spriteUrl, speciesName, findGame } from './data.js';
+import { REF, idx, spriteUrl, speciesName, findGame, findMark } from './data.js';
 import * as store from './store.js';
 
 // Resolve a slot's (OT,TID) to rich origin metadata via the OT registry + Game Ref.
@@ -8,20 +8,20 @@ export function resolveOrigin(ot, tid) {
   const reg = store.getOtEntry(ot, tid);
   if (!reg) return { game: null, gameId: null, iconUrl: null, markUrl: null, markCode: null, isMine: null, isGo: null, description: null, registered: false };
   const game = findGame(reg.game);
-  // Per-entry overrides: the origin icon and mark can each be borrowed from a
-  // different reference game (reg.icon_game / reg.mark_game), defaulting to the
-  // entry's own game. This lets entries whose game has no icon/mark (e.g.
-  // "Event") display a chosen game's assets without changing the recorded origin.
+  // Per-entry overrides: the origin icon can be borrowed from a different
+  // reference game (reg.icon_game), defaulting to the entry's own game. The mark
+  // override (reg.mark_id) instead references a REF.marks entry directly — marks
+  // are their own reference table now, not just borrowed via another game.
   const iconSrc = (reg.icon_game && findGame(reg.icon_game)) || game;
-  const markSrc = (reg.mark_game && findGame(reg.mark_game)) || game;
+  const mark = (reg.mark_id && findMark(reg.mark_id)) || (game ? findMark(game.mark_id) : null);
   return {
     game: reg.game,
     gameId: reg.game,
     iconUrl: iconSrc ? iconSrc.icon_url : null,
-    markUrl: markSrc ? markSrc.mark_url : null,
-    markCode: markSrc ? markSrc.mark_code : null,
+    markUrl: mark ? mark.icon_url : null,
+    markCode: mark ? mark.id : null,
     iconGame: reg.icon_game || null,
-    markGame: reg.mark_game || null,
+    markId: reg.mark_id || null,
     isMine: reg.is_mine,
     isGo: reg.is_go,
     profile: reg.profile,

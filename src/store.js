@@ -1,8 +1,14 @@
 // Savefile state: all user-created data (SPEC §10). Lives in localStorage,
 // importable/exportable as one portable JSON document. Never bundled with the app.
+// Deliberately independent of data.js: migrations below never read live reference
+// data (REF.games etc.) or call its helpers (findGame etc.) — that data's shape and
+// content can both change later (a game can be renamed in the Dev tab, a field can
+// be restructured), but a migration must keep transforming old savefiles exactly as
+// it did the day it was written. Each migration instead bakes in whatever frozen
+// snapshot of reference data it actually needs, as a literal constant.
 
 const LS_KEY = 'dextracker.savefile.v1';
-const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 const listeners = new Set();
 export function onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); }
@@ -70,14 +76,20 @@ export function load() {
   try {
     const raw = localStorage.getItem(LS_KEY);
     if (raw) {
-      state = normalize(JSON.parse(raw));
+      const parsed = JSON.parse(raw);
+      const { data, fromVersion, updated } = updateSaveFile(parsed);
+      state = normalize(data);
       reindex();
-      return true;
+      // Persist the migrated shape right away so localStorage itself moves off the
+      // old schema — otherwise every future load would see v1 again and re-offer
+      // the backup prompt on every visit instead of just once.
+      if (updated) persist();
+      return { hadSave: true, updateInfo: updated ? { fromVersion, toVersion: SCHEMA_VERSION, backupJson: raw } : null };
     }
   } catch (e) { console.warn('Failed to load savefile from localStorage', e); }
   state = emptySave();
   reindex();
-  return false;
+  return { hadSave: false, updateInfo: null };
 }
 
 export function persist() {
@@ -86,10 +98,46 @@ export function persist() {
   } catch (e) { console.warn('Failed to persist savefile', e); }
 }
 
+// v1 -> v2: ot_registry's mark override now points at a mark id (REF.marks)
+// directly instead of a game id whose mark got borrowed. This table is a frozen
+// snapshot of REF.games' id -> mark_id mapping as it stood the day this migration
+// was written (captured from reference_data.json, not read live) — a game can be
+// renamed or re-keyed in the Dev tab at any point afterward without affecting how
+// old v1 saves get translated.
+const V1_GAME_MARK_ID = {
+  'Go': 'GO', 'Home/Go': 'GO', 'Scarlet': 'SV', 'Violet': 'SV', 'Legends: Arceus': 'LA',
+  'Brilliant Diamond': 'BDSP', 'Shining Pearl': 'BDSP', 'Shield': 'SWSH', 'Sword': 'SWSH',
+  "Let's Go Eevee": 'LGPE', 'Ultra Sun': 'USUM', 'Sun': 'SM', 'Alpha Sapphire': 'ORAS',
+  'Y': 'XY', 'White 2': '', 'White': '', 'Heart Gold': '', 'Soul Silver': '', 'Platinum': '',
+  'Emerald': '', 'Silver': 'GS', 'Yellow': 'RBY', 'Home': '', 'Bank': '', 'Home(PLA)': 'LA',
+  'Home(BDSP)': 'BDSP', 'Home(SV)': 'SV', 'Event(SwSh)': 'SWSH', 'Home(SwSh)': 'SWSH',
+  'Home(LGPE)': 'LGPE', "Let's Go Pikachu": 'LGPE', 'Legends: ZA': 'LZA', 'HOME (PLZA)': 'LZA',
+};
+function migrateV1toV2(data) {
+  return {
+    ...data,
+    ot_registry: (data.ot_registry || []).map((r) => {
+      if (!('mark_game' in r)) return r;
+      const { mark_game, ...rest } = r;
+      return { ...rest, mark_id: mark_game ? (V1_GAME_MARK_ID[mark_game] ?? '') : '' };
+    }),
+  };
+}
+
+// Version-gated migration entry point. `obj.meta.schema_version` missing entirely
+// means pre-versioning data — treated as v1. Chains forward to SCHEMA_VERSION so a
+// save several versions behind still ends up fully current in one call.
+export function updateSaveFile(obj) {
+  const fromVersion = (obj.meta && obj.meta.schema_version) || 1;
+  let data = obj;
+  if (fromVersion < 2) data = migrateV1toV2(data);
+  return { data, fromVersion, updated: fromVersion < SCHEMA_VERSION };
+}
+
 function normalize(obj) {
   const base = emptySave();
   return {
-    meta: obj.meta || base.meta,
+    meta: { ...(obj.meta || base.meta), schema_version: SCHEMA_VERSION },
     species_ownership: obj.species_ownership || [],
     form_ownership: obj.form_ownership || [],
     per_game_ownership: obj.per_game_ownership || {},
@@ -107,10 +155,12 @@ function normalize(obj) {
 }
 
 export function importSave(obj) {
-  state = normalize(obj);
+  const { data, fromVersion, updated } = updateSaveFile(obj);
+  state = normalize(data);
   reindex();
   persist();
   emit();
+  return updated ? { fromVersion, toVersion: SCHEMA_VERSION, backupJson: JSON.stringify(obj) } : null;
 }
 
 export function resetSave() {

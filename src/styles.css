@@ -42,6 +42,13 @@ body {
 .app-body { padding-left: 234px; transition: padding-left .2s ease; }
 .app-body.sidebar-collapsed { padding-left: 0; }
 
+/* Box View's own bottom padding is part of the budget box.js (sizeGrid) sizes
+   the box against — the normal 48px is breathing room meant for pages that
+   scroll, which the box no longer does, so most of it is just wasted height
+   there. Scoped to when .box-layout is actually present (no app.js change
+   needed) rather than to every other tab, which still wants the full 48px. */
+#app:has(.box-layout) { padding-bottom: 8px; }
+
 /* Phones: there's no width to spare, so reserving 234px for the sidebar just
    squeezes content until something with a min-width (a card grid, a table
    row) can't shrink any further and forces a horizontal scroll. Below this
@@ -142,16 +149,18 @@ body.tab-fill #content { flex: 1; min-height: 0; display: flex; }
 }
 .nav-tab:hover { color: var(--accent-deep); background: #00000008; }
 .nav-tab.active { color: var(--accent-deep); background: #e3f6f4; border-left-color: var(--accent); }
-/* Save-bar: status chips + action group. Both halves wrap independently via
-   flex-wrap, so the bar adapts from a single right-aligned row on desktop down
-   to stacked, full-width rows on narrow screens without fixed breakpoints. */
+/* Save-bar: status chips + action group. .header-top is a fixed 34px tall (see
+   its own comment — needed for pixel-alignment with the sidebar's copy), so
+   this must never wrap to a 2nd line or that line spills outside the header
+   pill instead of the box growing to fit it. Chips just disappear below the
+   width where they'd stop fitting alongside the Data menu, rather than wrap. */
 .savebar {
   display: flex; align-items: center; justify-content: flex-end;
-  gap: 6px 10px; flex-wrap: wrap; margin-left: auto;
+  gap: 6px 10px; flex-wrap: nowrap; margin-left: auto; min-width: 0;
 }
-.save-status { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.save-status { display: flex; flex-wrap: nowrap; gap: 4px 6px; min-width: 0; }
 /* On phones the top row is just brand + Data menu; counts stay in the Stats tab. */
-@media (max-width: 560px) { .save-status { display: none; } }
+@media (max-width: 620px) { .save-status { display: none; } }
 .stat-chip {
   display: inline-flex; align-items: baseline; gap: 4px;
   background: #ffffffcc; border: 1px solid var(--border); border-radius: 999px;
@@ -266,6 +275,18 @@ select.ctrl { border-radius: 999px; }
   display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px;
   background: #ffffff5c; backdrop-filter: blur(6px);
   padding: 12px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+/* Above 860px box.js (sizeGrid) sets an explicit px width/height so the box's
+   max size fits the viewport; explicit 1fr rows are what let that height
+   actually divide evenly into 5 square rows instead of just clipping. Below
+   860px this is untouched — cells fall back to their own aspect-ratio (below).
+   Centered (not left-aligned) since staying square can leave the box narrower
+   than its column — splits that gap evenly on both sides instead of dumping
+   it all on the right; the pager centers the same way so it stays lined up
+   with the box under it. */
+@media (min-width: 861px) {
+  .box-grid { grid-template-rows: repeat(5, 1fr); margin: 0 auto; }
+  .grid-header { margin-left: auto; margin-right: auto; }
 }
 .cell {
   position: relative; aspect-ratio: 1; border-radius: 14px;
