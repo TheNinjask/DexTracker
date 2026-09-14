@@ -2,10 +2,16 @@
 // the transferable National Dex #1-386 and see which of the 5 Pal Park areas
 // each lands in, placed on a map of the park. Area data is fixed game data
 // (palpark_data.json) — every #1-386 species belongs to exactly one area.
-import { PALPARK, palparkIdx, speciesName, spriteUrl } from '../data.js';
-import { el, clear, icon } from '../dom.js';
+import { PALPARK, palparkIdx, speciesName, spriteUrl, exportPalParkData } from '../data.js';
+import * as store from '../store.js';
+import { el, clear, icon, downloadJson } from '../dom.js';
 
 const MAX_SELECTED = 6;
+
+// Dev-mode-only slot editor (gated the same way app.js gates the Dev tab).
+function devOn() { return !!(store.state.meta && store.state.meta.dev_mode); }
+
+const AREA_COLORS = { field: '#4caf50', forest: '#2e7d32', mountain: '#8d6e63', pond: '#29b6f6', ocean: '#1565c0' };
 
 // Each area's on-map icon positions are hand-configured data, not computed —
 // palpark_data.json's areas each carry a `slots` list of {x,y} points (% of
@@ -69,6 +75,8 @@ let suggestionsHost = null;
 let selectedHost = null;
 let countEl = null;
 let monsHost = null; // holds the individually positioned on-map icons
+let slotsHost = null; // dev mode: holds the draggable numbered slot dots
+let slotEditOn = false;
 
 function ensureSearch() {
   if (searchInputEl) return;
@@ -164,6 +172,62 @@ function refreshAll() {
   refreshMap();
 }
 
+// --- Dev mode: slot position editor ----------------------------------------
+// Shows every configured slot (every area, not just occupied ones) as a
+// draggable numbered dot instead of the normal picked-Pokémon icons — dev
+// mode is about editing the raw palpark_data.json layout, not the picker, so
+// dragging replaces (rather than adds to) the click-to-remove mon icons.
+function refreshSlotDots() {
+  if (!slotsHost) return;
+  clear(slotsHost);
+  if (!slotEditOn) return;
+  PALPARK.areas.forEach((area) => {
+    (area.slots || []).forEach((slot, i) => {
+      const dot = el('button', {
+        class: 'pp-slot-dot', title: `${area.name} slot ${i + 1}`,
+        style: `left:${slot.x}%; top:${slot.y}%; background:${AREA_COLORS[area.id] || '#e91e63'};`,
+      }, String(i + 1));
+      attachDrag(dot, slot);
+      slotsHost.appendChild(dot);
+    });
+  });
+}
+
+// Drag a slot dot to a new position, updating the live PALPARK slot object
+// (the same object refreshMap() and exportPalParkData() both read) directly —
+// no separate "editor state" to sync back later.
+function attachDrag(dot, slot) {
+  dot.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    dot.setPointerCapture(e.pointerId);
+    const map = currentRoot && currentRoot.querySelector('.pp-map');
+    if (!map) return;
+    const move = (ev) => {
+      const rect = map.getBoundingClientRect();
+      const x = Math.min(100, Math.max(0, ((ev.clientX - rect.left) / rect.width) * 100));
+      const y = Math.min(100, Math.max(0, ((ev.clientY - rect.top) / rect.height) * 100));
+      slot.x = Math.round(x * 100) / 100;
+      slot.y = Math.round(y * 100) / 100;
+      dot.style.left = `${slot.x}%`;
+      dot.style.top = `${slot.y}%`;
+    };
+    const up = () => {
+      dot.releasePointerCapture(e.pointerId);
+      dot.removeEventListener('pointermove', move);
+      dot.removeEventListener('pointerup', up);
+    };
+    dot.addEventListener('pointermove', move);
+    dot.addEventListener('pointerup', up);
+  });
+}
+
+function toggleSlotEdit(on) {
+  slotEditOn = on;
+  if (monsHost) monsHost.style.display = on ? 'none' : '';
+  if (slotsHost) slotsHost.style.display = on ? '' : 'none';
+  refreshSlotDots();
+}
+
 // A snug border/frame around the map — like .tool-pick-box's fixed padding
 // around its icon — rather than a full-width card with the (smaller, aspect-
 // bounded) map centered inside it and lots of leftover card background
@@ -176,8 +240,10 @@ function buildMap() {
   const frame = el('div', { class: 'pp-map-frame' });
   const map = el('div', { class: 'pp-map' });
   map.appendChild(el('img', { class: 'pp-map-img', src: `${base}icons/palpark-map.png`, alt: 'Pal Park overworld map' }));
-  monsHost = el('div', { class: 'pp-map-mons' });
+  monsHost = el('div', { class: 'pp-map-mons', style: slotEditOn ? 'display:none;' : null });
   map.appendChild(monsHost);
+  slotsHost = el('div', { class: 'pp-map-slots', style: slotEditOn ? null : 'display:none;' });
+  map.appendChild(slotsHost);
   frame.appendChild(map);
   return frame;
 }
@@ -208,10 +274,20 @@ export function render(root) {
   pickerCard.appendChild(suggestionsHost);
   selectedHost = el('div', { class: 'pp-selected-list' });
   pickerCard.appendChild(selectedHost);
+
+  if (devOn()) {
+    const chk = el('input', { type: 'checkbox', checked: slotEditOn ? '' : null });
+    chk.addEventListener('change', (e) => toggleSlotEdit(e.target.checked));
+    pickerCard.appendChild(el('div', { class: 'pp-dev-row' }, [
+      el('label', { class: 'toggle' }, [chk, el('span', {}, 'Dev: edit slot positions')]),
+      el('button', { class: 'btn tiny', onclick: () => downloadJson('palpark_data.json', exportPalParkData()) }, 'Export palpark_data.json'),
+    ]));
+  }
   layout.appendChild(pickerCard);
 
   root.appendChild(layout);
   refreshAll();
+  refreshSlotDots();
   currentRoot = root;
   requestAnimationFrame(() => sizeMap());
   watchResize();

@@ -682,6 +682,21 @@ select.ctrl { border-radius: 999px; }
    looking oversized on a small map or undersized on a large one. */
 .pp-zone-mon .pp-mon-img { width: 6.5cqw; height: 6.5cqw; }
 
+/* Dev-mode slot editor — draggable numbered dots, one per configured slot
+   across every area, replacing the normal mon-icon layer while active. */
+.pp-map-slots { position: absolute; inset: 0; pointer-events: none; }
+.pp-dev-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+.pp-slot-dot {
+  position: absolute; transform: translate(-50%, -50%);
+  width: 3.4cqw; height: 3.4cqw; min-width: 22px; min-height: 22px;
+  border-radius: 50%; color: #fff; border: 2px solid #fff;
+  font-size: 11px; font-weight: 700; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab; pointer-events: auto; touch-action: none; user-select: none;
+  box-shadow: 0 1px 4px #0006;
+}
+.pp-slot-dot:active { cursor: grabbing; }
+
 /* Cooking */
 /* Table | graph layout. Side-by-side (50/50) only while the window is wide enough
    that each half clears the berry table's ~473px no-scroll width (the full

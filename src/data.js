@@ -325,6 +325,14 @@ export function exportReferenceData() {
   }, null, 4);
 }
 
+// Serialize the current in-memory Pal Park data (areas + their hand-tuned
+// `slots`, plus the species-to-area table) back to palpark_data.json's shape.
+// Slot positions are edited in place on PALPARK.areas by the dev-mode slot
+// editor (palpark.js) — this just snapshots whatever's there now.
+export function exportPalParkData() {
+  return JSON.stringify({ areas: PALPARK.areas, species: PALPARK.species }, null, 2);
+}
+
 // Berry sprite URL. The source workbook composed berry images as
 //   IMAGE(CONCAT("https://serebii.net/itemdex/sprites/za/th/", id, ".png"))
 // where id is the space-stripped lowercase berry name — exactly our berry id
