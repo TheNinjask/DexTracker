@@ -15,7 +15,7 @@ import {
   setImageVariant, removeImageVariant,
   exportReferenceData,
 } from '../data.js';
-import { el, clear, dataTable, icon, downloadJson } from '../dom.js';
+import { el, clear, dataTable, icon, downloadJson, alertDialog, confirmDialog, promptDialog } from '../dom.js';
 
 const SECTIONS = [
   { id: 'species', label: 'Species' },
@@ -149,7 +149,7 @@ function renderSpecies(wrap, root) {
     s.type2 || '',
     rowActions(
       () => { editing.species = s; render(root); },
-      () => { if (confirm(`Remove species ${s.national_no} ${s.name}? Forms and dex mappings referencing it will dangle.`)) { if (editing.species === s) editing.species = null; removeSpecies(s.national_no); render(root); } },
+      async () => { if (await confirmDialog(`Remove species ${s.national_no} ${s.name}? Forms and dex mappings referencing it will dangle.`)) { if (editing.species === s) editing.species = null; removeSpecies(s.national_no); render(root); } },
     ),
   ]);
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
@@ -166,8 +166,8 @@ function buildSpeciesForm(root) {
 
   const save = el('button', { class: 'btn primary', onclick: () => {
     const key = pad4(nat.value);
-    if (!key) { alert('A national number is required.'); return; }
-    if (!name.value.trim()) { alert('A name is required.'); return; }
+    if (!key) { alertDialog('A national number is required.'); return; }
+    if (!name.value.trim()) { alertDialog('A name is required.'); return; }
     upsertSpecies({
       national_no: key,
       generation: gen.value.trim() ? parseInt(gen.value, 10) : null,
@@ -214,7 +214,7 @@ function renderForms(wrap, root) {
     { c: 'muted small', v: f.box_group || '' },
     rowActions(
       () => { editing.forms = f; render(root); },
-      () => { if (confirm(`Remove form ${f.name} (${f.form}${f.form_code_base ? ` · base ${f.form_code_base}` : ''})?`)) { if (editing.forms === f) editing.forms = null; removeForm(f.national_no, f.form_code, f.form, f.form_code_base); render(root); } },
+      async () => { if (await confirmDialog(`Remove form ${f.name} (${f.form}${f.form_code_base ? ` · base ${f.form_code_base}` : ''})?`)) { if (editing.forms === f) editing.forms = null; removeForm(f.national_no, f.form_code, f.form, f.form_code_base); render(root); } },
     ),
   ]);
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
@@ -245,8 +245,8 @@ function buildFormForm(root) {
 
   const save = el('button', { class: 'btn primary', onclick: () => {
     const key = pad4(nat.value);
-    if (!key) { alert('A national number is required.'); return; }
-    if (!form.value.trim()) { alert('A form name is required.'); return; }
+    if (!key) { alertDialog('A national number is required.'); return; }
+    if (!form.value.trim()) { alertDialog('A form name is required.'); return; }
     upsertForm({
       national_no: key,
       generation: gen.value.trim() ? parseInt(gen.value, 10) : null,
@@ -291,7 +291,7 @@ function renderDexes(wrap, root) {
     d.other_variant || '',
     rowActions(
       () => { editing.dexes = d; render(root); },
-      () => { if (confirm(`Remove dex "${d.id}"? Its dex_mappings will be deleted too.`)) { if (editing.dexes === d) editing.dexes = null; removeDex(d.id); render(root); } },
+      async () => { if (await confirmDialog(`Remove dex "${d.id}"? Its dex_mappings will be deleted too.`)) { if (editing.dexes === d) editing.dexes = null; removeDex(d.id); render(root); } },
     ),
   ]);
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
@@ -325,9 +325,9 @@ function buildDexForm(root) {
   sprite.addEventListener('change', () => { fillVariants(mainV, mainV.value); fillVariants(otherV, otherV.value); });
 
   const save = el('button', { class: 'btn primary', onclick: () => {
-    if (!id.value.trim()) { alert('A dex id is required.'); return; }
+    if (!id.value.trim()) { alertDialog('A dex id is required.'); return; }
     if (editing.dexes && editing.dexes.id !== id.value.trim() && REF.dexes.some((d) => d.id === id.value.trim())) {
-      alert('Another dex already uses that id.'); return;
+      alertDialog('Another dex already uses that id.'); return;
     }
     upsertDex({
       id: id.value.trim(),
@@ -388,7 +388,7 @@ function renderMappings(wrap, root) {
     speciesName(m.national_no),
     rowActions(
       () => { editing.mappings = m; render(root); },
-      () => { if (confirm(`Remove ${m.regional_no} → ${m.national_no} from ${mappingDex}?`)) { if (editing.mappings === m) editing.mappings = null; removeMappingRow(mappingDex, m.national_no); render(root); } },
+      async () => { if (await confirmDialog(`Remove ${m.regional_no} → ${m.national_no} from ${mappingDex}?`)) { if (editing.mappings === m) editing.mappings = null; removeMappingRow(mappingDex, m.national_no); render(root); } },
     ),
   ]);
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
@@ -409,8 +409,8 @@ function buildMappingForm(root) {
 
   const save = el('button', { class: 'btn primary', onclick: () => {
     const key = pad4(nat.value);
-    if (!key) { alert('A national number is required.'); return; }
-    if (!pad4(regional.value)) { alert('A regional number is required.'); return; }
+    if (!key) { alertDialog('A national number is required.'); return; }
+    if (!pad4(regional.value)) { alertDialog('A regional number is required.'); return; }
     upsertMappingRow(mappingDex, { regional_no: regional.value, national_no: key });
     editing.mappings = null;
     render(root);
@@ -447,7 +447,7 @@ function renderGames(wrap, root) {
         : el('span', { class: 'muted' }, '—')),
       rowActions(
         () => { editing.games = g; render(root); },
-        () => { if (confirm(`Remove game "${g.id}"? OT registry rows that reference it will lose their origin imagery.`)) { if (editing.games === g) editing.games = null; removeGame(g.id); render(root); } },
+        async () => { if (await confirmDialog(`Remove game "${g.id}"? OT registry rows that reference it will lose their origin imagery.`)) { if (editing.games === g) editing.games = null; removeGame(g.id); render(root); } },
       ),
     ];
   });
@@ -480,9 +480,9 @@ function buildGameForm(root) {
   markId.addEventListener('change', refresh);
 
   const save = el('button', { class: 'btn primary', onclick: () => {
-    if (!id.value.trim()) { alert('A game id is required.'); return; }
+    if (!id.value.trim()) { alertDialog('A game id is required.'); return; }
     if (editing.games && editing.games.id !== id.value.trim() && REF.games.some((g) => g.id === id.value.trim())) {
-      alert('Another game already uses that id.'); return;
+      alertDialog('Another game already uses that id.'); return;
     }
     upsertGame({
       id: id.value.trim(),
@@ -519,7 +519,7 @@ function renderMarks(wrap, root) {
     el('td', {}, m.icon_url ? icon(m.icon_url, 'origin-icon', m.id) : el('span', { class: 'muted' }, '—')),
     rowActions(
       () => { editing.marks = m; render(root); },
-      () => { if (confirm(`Remove mark "${m.id}"?`)) { if (editing.marks === m) editing.marks = null; removeMark(m.id); render(root); } },
+      async () => { if (await confirmDialog(`Remove mark "${m.id}"?`)) { if (editing.marks === m) editing.marks = null; removeMark(m.id); render(root); } },
     ),
   ]);
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
@@ -539,9 +539,9 @@ function buildMarkForm(root) {
   iconUrl.addEventListener('input', refresh);
 
   const save = el('button', { class: 'btn primary', onclick: () => {
-    if (!id.value.trim()) { alert('A mark id is required.'); return; }
+    if (!id.value.trim()) { alertDialog('A mark id is required.'); return; }
     if (editing.marks && editing.marks.id !== id.value.trim() && REF.marks.some((m) => m.id === id.value.trim())) {
-      alert('Another mark already uses that id.'); return;
+      alertDialog('Another mark already uses that id.'); return;
     }
     upsertMark({
       id: id.value.trim(),
@@ -572,16 +572,16 @@ function renderSources(wrap, root) {
   const newName = el('input', { class: 'ctrl', placeholder: 'New source name' });
   wrap.appendChild(el('div', { class: 'card dev-mapping-head' }, [
     el('span', { class: 'field-label' }, 'Source'), picker,
-    srcName ? el('button', { class: 'btn tiny', title: 'Rename source', onclick: () => {
-      const nn = prompt('Rename sprite source', srcName);
+    srcName ? el('button', { class: 'btn tiny', title: 'Rename source', onclick: async () => {
+      const nn = await promptDialog('Rename sprite source', srcName);
       if (nn && nn.trim() && nn.trim() !== srcName) {
-        if (REF.imageSources[nn.trim()]) { alert('A source with that name already exists.'); return; }
+        if (REF.imageSources[nn.trim()]) { alertDialog('A source with that name already exists.'); return; }
         renameImageSource(srcName, nn.trim()); srcName = nn.trim(); render(root);
       }
     } }, '✎ rename') : null,
-    srcName ? el('button', { class: 'btn tiny', title: 'Delete source', onclick: () => {
+    srcName ? el('button', { class: 'btn tiny', title: 'Delete source', onclick: async () => {
       const used = REF.dexes.filter((d) => d.sprite_source === srcName).map((d) => d.id);
-      if (confirm(`Delete sprite source "${srcName}"?` + (used.length ? `\nDexes still using it: ${used.join(', ')}` : ''))) {
+      if (await confirmDialog(`Delete sprite source "${srcName}"?` + (used.length ? `\nDexes still using it: ${used.join(', ')}` : ''))) {
         removeImageSource(srcName); srcName = null; editing.sources = null; render(root);
       }
     } }, '✕ delete') : null,
@@ -592,8 +592,8 @@ function renderSources(wrap, root) {
     newName,
     el('button', { class: 'btn', onclick: () => {
       const n = newName.value.trim();
-      if (!n) { alert('Enter a source name.'); return; }
-      if (REF.imageSources[n]) { alert('That source already exists.'); return; }
+      if (!n) { alertDialog('Enter a source name.'); return; }
+      if (REF.imageSources[n]) { alertDialog('That source already exists.'); return; }
       addImageSource(n); srcName = n; render(root);
     } }, '＋ Add source'),
   ]));
@@ -616,7 +616,7 @@ function renderSources(wrap, root) {
     el('td', {}, url ? el('img', { class: 'hof-img preview', src: url, alt: '', title: `#${pad3(sampleNo)} sample` }) : el('span', { class: 'muted' }, '—')),
     rowActions(
       () => { editing.sources = { variant: v, ...tpl }; render(root); },
-      () => { if (confirm(`Remove variant "${v}" from ${srcName}?`)) { if (editing.sources && editing.sources.variant === v) editing.sources = null; removeImageVariant(srcName, v); render(root); } },
+      async () => { if (await confirmDialog(`Remove variant "${v}" from ${srcName}?`)) { if (editing.sources && editing.sources.variant === v) editing.sources = null; removeImageVariant(srcName, v); render(root); } },
     ),
     ];
   });
@@ -644,7 +644,7 @@ function buildVariantForm(root) {
   suffix.addEventListener('input', refresh);
 
   const save = el('button', { class: 'btn primary', onclick: () => {
-    if (!variant.value.trim()) { alert('A variant name is required.'); return; }
+    if (!variant.value.trim()) { alertDialog('A variant name is required.'); return; }
     setImageVariant(srcName, variant.value.trim(), prefix.value.trim(), suffix.value.trim());
     editing.sources = null;
     render(root);

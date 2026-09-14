@@ -1,8 +1,8 @@
 // OT registry editor (SPEC §4.4). The join table turning (OT,TID) into origin metadata.
 import { REF, findGame, findMark, gamesAlpha } from '../data.js';
-import { resolveOrigin } from '../compute.js';
+import { resolveOriginById } from '../compute.js';
 import * as store from '../store.js';
-import { el, clear, icon, dataTable } from '../dom.js';
+import { el, clear, icon, dataTable, alertDialog, confirmDialog } from '../dom.js';
 
 // Row currently loaded into the form for editing (null = add mode).
 let editing = null;
@@ -17,7 +17,7 @@ export function render(root) {
   const rows = store.state.ot_registry || [];
   const headers = ['OT', 'TID', 'Game', 'Origin', 'Mark', 'isMine', 'isGo', 'Profile', 'Description', ''];
   const body = rows.map((r) => {
-    const o = resolveOrigin(r.ot, r.tid);
+    const o = resolveOriginById(r.id);
     return [
       { c: 'mono', v: r.ot },
       { c: 'mono', v: r.tid },
@@ -30,7 +30,7 @@ export function render(root) {
       { c: 'muted small', v: r.description || '' },
       el('td', { class: 'row-actions' }, [
         el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = r; render(root); } }, '✎'),
-        el('button', { class: 'btn tiny', title: 'Remove', onclick: () => { if (confirm(`Remove ${r.ot}/${r.tid}?`)) { if (editing === r) editing = null; store.removeOtEntry(r.ot, r.tid); render(root); } } }, '✕'),
+        el('button', { class: 'btn tiny', title: 'Remove', onclick: async () => { if (await confirmDialog(`Remove ${r.ot}/${r.tid}?`)) { if (editing === r) editing = null; store.removeOtEntry(r.id); render(root); } } }, '✕'),
       ]),
     ];
   });
@@ -102,13 +102,13 @@ function buildForm(root) {
   [game, iconGame, markId].forEach((s) => s.addEventListener('change', refresh));
 
   const save = el('button', { class: 'btn primary', onclick: () => {
-    if (!ot.value.trim() || !tid.value.trim()) { alert('OT and TID are required.'); return; }
+    if (!ot.value.trim() || !tid.value.trim()) { alertDialog('OT and TID are required.'); return; }
     store.upsertOtEntry({
       ot: ot.value.trim(), tid: tid.value.trim(), game: game.value.trim(),
       is_mine: mine.checked, is_go: go.checked,
       profile: profile.value.trim() || 'N/A', description: desc.value.trim(),
       icon_game: iconGame.value || '', mark_id: markId.value || '',
-    });
+    }, editing ? editing.id : null);
     editing = null;
     render(root);
   } }, editing ? 'Save changes' : 'Save');

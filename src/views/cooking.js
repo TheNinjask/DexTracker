@@ -1,7 +1,7 @@
 // Legends Z-A cooking planner (SPEC §9). Berry pantry + recipe builder + saved recipes.
 import { REF, idx, berrySpriteUrl } from '../data.js';
 import * as store from '../store.js';
-import { el, clear, icon } from '../dom.js';
+import { el, clear, icon, confirmDialog, promptDialog } from '../dom.js';
 
 // Berry sprite thumbnail. Goes through icon() so its concurrency gate paces the
 // 66-image burst the pantry mounts (Serebii rate-limits bursts like Bulbagarden).
@@ -112,8 +112,8 @@ function buildPicker(root, t) {
     list,
     el('div', { class: 'cook-actions' }, [
       el('button', { class: 'btn', disabled: filled ? null : true, onclick: () => { slots = new Array(MAX_BERRIES).fill(null); render(root); } }, 'Clear'),
-      el('button', { class: 'btn primary', disabled: filled ? null : true, onclick: () => {
-        const name = prompt('Recipe name?');
+      el('button', { class: 'btn primary', disabled: filled ? null : true, onclick: async () => {
+        const name = await promptDialog('Recipe name?');
         if (name == null) return;
         store.state.cooking_recipes.push({ name: name || null, note: null, berries: slots.filter(Boolean), totals: t, time: null });
         store.commit();
@@ -262,7 +262,7 @@ function buildSaved(root) {
         t.stars ? el('span', { class: 'badge' }, '★ ' + t.stars) : null,
         t.flavour_score ? el('span', { class: 'muted small' }, 'Score ' + t.flavour_score) : null,
         el('button', { class: 'btn tiny', onclick: () => { slots = padTo8(r.berries || []); render(root); } }, 'Load'),
-        el('button', { class: 'btn tiny', onclick: () => { if (confirm('Delete recipe?')) { store.state.cooking_recipes.splice(i, 1); store.commit(); render(root); } } }, '✕'),
+        el('button', { class: 'btn tiny', onclick: async () => { if (await confirmDialog('Delete recipe?')) { store.state.cooking_recipes.splice(i, 1); store.commit(); render(root); } } }, '✕'),
       ]),
       r.note ? el('div', { class: 'muted small' }, r.note) : null,
       el('div', { class: 'recipe-berries' }, (r.berries || []).map((id) => {

@@ -4,7 +4,7 @@ import { loadReferenceData } from './data.js';
 import { preloadIcons } from './preload.js';
 import * as store from './store.js';
 import { computeStats } from './compute.js';
-import { el, clear, getPrefs, setPref, downloadJson, modal } from './dom.js';
+import { el, clear, getPrefs, setPref, downloadJson, modal, alertDialog, confirmDialog } from './dom.js';
 import { startHost, startJoin, STATUS_TEXT, parseSyncId } from './sync.js';
 import * as boxView from './views/box.js';
 import * as statsView from './views/stats.js';
@@ -134,7 +134,7 @@ function buildSaveBar() {
       const reader = new FileReader();
       reader.onload = () => {
         try { offerBackup(store.importSave(JSON.parse(reader.result))); updateSaveStatus(); renderTab(); }
-        catch (err) { alert('Invalid savefile: ' + err.message); }
+        catch (err) { alertDialog('Invalid savefile: ' + err.message); }
       };
       reader.readAsText(f);
       e.target.value = '';
@@ -163,8 +163,8 @@ function buildSaveBar() {
   return el('div', { class: 'savebar' }, [status, menu]);
 }
 
-function newSave() {
-  if (confirm('Start a new empty savefile? This replaces the data currently loaded (export first if needed).')) {
+async function newSave() {
+  if (await confirmDialog('Start a new empty savefile? This replaces the data currently loaded (export first if needed).')) {
     store.resetSave(); updateSaveStatus(); renderTab();
   }
 }
@@ -173,10 +173,10 @@ function newSave() {
 // store.importSave return non-null updateInfo), the data is already migrated in
 // memory — this just offers a safety-net copy of the pre-migration data before
 // the old shape is gone for good.
-function offerBackup(updateInfo) {
+async function offerBackup(updateInfo) {
   if (!updateInfo) return;
   const { fromVersion, toVersion, backupJson } = updateInfo;
-  if (confirm(`Your savefile is being updated (v${fromVersion} → v${toVersion}). Back up the old version first?`)) {
+  if (await confirmDialog(`Your savefile is being updated (v${fromVersion} → v${toVersion}). Back up the old version first?`)) {
     downloadJson(`savefile-backup-v${fromVersion}.json`, backupJson);
   }
 }
@@ -200,11 +200,11 @@ function openSyncDialog() {
 
 // Apply a received savefile (shared by both directions of receiving), with a
 // confirm so an incoming save never silently replaces local data.
-function applyReceived(data, status, m) {
+async function applyReceived(data, status, m) {
   let obj;
   try { obj = JSON.parse(data); }
   catch { status.textContent = 'Received invalid data.'; return; }
-  if (confirm('Received a savefile from the other device. Import it? This replaces the data currently loaded (export first if needed).')) {
+  if (await confirmDialog('Received a savefile from the other device. Import it? This replaces the data currently loaded (export first if needed).')) {
     offerBackup(store.importSave(obj));
     updateSaveStatus();
     renderTab();
@@ -254,9 +254,9 @@ function openHostDialog(role) {
 }
 
 // Joiner side (opened a sync link): run `role`, the opposite of the host.
-function openJoinDialog(hostId, role) {
+async function openJoinDialog(hostId, role) {
   const sending = role === 'send';
-  if (sending && !confirm('Another device wants to import a savefile. Send this device\'s savefile to it?')) return;
+  if (sending && !(await confirmDialog('Another device wants to import a savefile. Send this device\'s savefile to it?'))) return;
   const status = el('div', { class: 'sync-status muted' }, 'Connecting…');
   let session = null;
   const m = modal(sending ? 'Sending savefile' : 'Receiving savefile', [

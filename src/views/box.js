@@ -1,8 +1,27 @@
 // Primary interface — HOME-style box grid (SPEC §7).
-import { REF, idx } from '../data.js';
+import { REF, idx, findGame } from '../data.js';
 import * as store from '../store.js';
-import { buildDexEntries, entrySlot, entryOwned, entrySprite, resolveOrigin } from '../compute.js';
-import { el, clear, getPrefs, setPref, icon } from '../dom.js';
+import { buildDexEntries, entrySlot, entryOwned, entrySprite, resolveOriginById } from '../compute.js';
+import { el, clear, getPrefs, setPref, icon, alertDialog, selectDialog } from '../dom.js';
+
+// One row of the "pick a trainer" disambiguation dialog — OT/TID plus the row's
+// own effective game + mark imagery, same resolution resolveOriginById uses
+// everywhere else, so a duplicate ot+tid pair is still visually distinguishable.
+function otCandidateRow(c) {
+  const o = resolveOriginById(c.id);
+  // Game icon + text both come from whichever game the icon is actually sourced
+  // from (icon_game override, falling back to the row's own game) — the same
+  // source o.iconUrl resolves from, so label and icon never disagree even when
+  // the row's own game field is blank but an override is set.
+  const gameId = o.iconGame || c.game;
+  const game = gameId ? findGame(gameId) : null;
+  return [
+    el('span', {}, `OT: ${c.ot}`),
+    el('span', {}, `TID: ${c.tid}`),
+    el('span', { class: 'select-field' }, ['Game:', game && game.icon_url ? icon(game.icon_url, 'origin-icon', gameId) : null, gameId || '—']),
+    el('span', { class: 'select-field' }, ['Mark:', o.markUrl ? icon(o.markUrl, 'origin-icon', o.markCode || '') : null, o.markCode || '—']),
+  ];
+}
 
 const vs = {
   dexId: getPrefs().boxDex || 'Nat Dex',
@@ -123,7 +142,7 @@ function nextToCatch() {
     if (!entryOwned(e)) return true;
     if (!vs.ntcTraded && !vs.ntcGo) return false;
     const slot = entrySlot(e);
-    const o = resolveOrigin(slot.ot, slot.tid);
+    const o = resolveOriginById(slot.ot_id);
     return (vs.ntcTraded && o.isMine === false) || (vs.ntcGo && o.isGo === true);
   });
   return { missing, total: entries.length };
@@ -347,7 +366,7 @@ function buildCell(root, e, i) {
   const owned = entryOwned(e);
   const selected = vs.selectedKey === keyOf(e);
   // Resolve origin up front so GO-sourced catches can tint the cell blue.
-  const o = owned ? resolveOrigin(entrySlot(e).ot, entrySlot(e).tid) : null;
+  const o = owned ? resolveOriginById(entrySlot(e).ot_id) : null;
   const fromGo = owned && o && o.isGo === true;
   const cell = el('div', {
     class: `cell ${owned ? 'owned' : 'missing'} ${fromGo ? 'from-go' : ''} ${selected ? 'selected' : ''}`,
@@ -426,7 +445,7 @@ function buildDetail(root, e) {
 
   const slot = entrySlot(e) || {};
   const owned = store.isOwned(slot);
-  const o = owned ? resolveOrigin(slot.ot, slot.tid) : null;
+  const o = owned ? resolveOriginById(slot.ot_id) : null;
 
   card.appendChild(el('div', { class: 'detail-head' }, [
     el('img', { class: 'detail-img', src: entrySprite(e, spriteVariant()), alt: e.name }),
@@ -437,8 +456,8 @@ function buildDetail(root, e) {
     ]),
   ]));
 
-  const otIn = el('input', { class: 'ctrl', value: slot.ot || '', placeholder: 'OT' });
-  const tidIn = el('input', { class: 'ctrl', value: slot.tid || '', placeholder: 'TID' });
+  const otIn = el('input', { class: 'ctrl', value: (o && o.ot) || '', placeholder: 'OT' });
+  const tidIn = el('input', { class: 'ctrl', value: (o && o.tid) || '', placeholder: 'TID' });
   const form = el('div', { class: 'edit-form' }, [
     field('OT', otIn), field('TID', tidIn),
   ]);
@@ -460,40 +479,44 @@ function buildDetail(root, e) {
     }
     card.appendChild(orow);
     if (!o.registered) {
-      card.appendChild(el('div', { class: 'warn' }, `OT "${slot.ot}/${slot.tid}" not in registry → origin N/A. Add it in the Registry tab.`));
+      card.appendChild(el('div', { class: 'warn' }, 'Origin registry entry missing → origin N/A. Re-link this Pokémon\'s OT/TID below.'));
     }
   }
 
+  // Ownership is only ever linked to an existing OT Registry entry — never a raw
+  // OT/TID string. Typing narrows via the OT/TID datalists above (a List of
+  // Values, same pattern as the Game field elsewhere), and on save: an exact
+  // single match links silently, an ambiguous match (blank TID, reused OT name)
+  // asks which trainer via a picker, and no match blocks the save — the user adds
+  // the trainer in the Registry tab first, same as the "Add it in the Registry
+  // tab" guidance this replaces.
+  const finish = (otId) => {
+    if (e.slotKind === 'species') store.setSpeciesSlot(e.national_no, e.shiny, otId);
+    else if (e.slotKind === 'form') store.setFormSlot(e.national_no, e.formCode, e.form, e.shiny, otId, e.formCodeBase);
+    else {
+      const reg = otId ? store.getOtEntryById(otId) : null;
+      store.setPerGameSlot(e.dexId, e.national_no, e.regional_no, otId, reg ? reg.is_mine !== false : true);
+    }
+    refresh(root);
+  };
+
   card.appendChild(el('div', { class: 'detail-actions' }, [
-    el('button', { class: 'btn primary', onclick: () => {
+    el('button', { class: 'btn primary', onclick: async () => {
       const ot = otIn.value.trim(), tid = tidIn.value.trim();
-      if (e.slotKind === 'species') store.setSpeciesSlot(e.national_no, e.shiny, ot, tid);
-      else if (e.slotKind === 'form') store.setFormSlot(e.national_no, e.formCode, e.form, e.shiny, ot, tid, e.formCodeBase);
-      else {
-        // is_mine is no longer user-set — derive it from the OT+TID registry entry.
-        const reg = store.getOtEntry(ot, tid);
-        store.setPerGameSlot(e.dexId, e.national_no, e.regional_no, ot, tid, reg ? reg.is_mine !== false : true);
+      if (!ot && !tid) { finish(null); return; }
+      const candidates = store.matchOtEntries(ot, tid);
+      if (candidates.length === 1) { finish(candidates[0].id); return; }
+      if (candidates.length > 1) {
+        const picked = await selectDialog('Multiple trainers match — pick one', candidates, otCandidateRow);
+        if (picked) finish(picked.id);
+        return;
       }
-      maybePromptRegistry(ot, tid);
-      refresh(root);
+      alertDialog(`OT "${ot}" / TID "${tid}" isn't in your trainer registry.\nAdd it in the Registry tab first.`);
     } }, 'Save'),
-    owned ? el('button', { class: 'btn', onclick: () => {
-      if (e.slotKind === 'species') store.setSpeciesSlot(e.national_no, e.shiny, '', '');
-      else if (e.slotKind === 'form') store.setFormSlot(e.national_no, e.formCode, e.form, e.shiny, '', '', e.formCodeBase);
-      else store.setPerGameSlot(e.dexId, e.national_no, e.regional_no, '', '', false);
-      refresh(root);
-    } }, 'Clear') : null,
+    owned ? el('button', { class: 'btn', onclick: () => finish(null) }, 'Clear') : null,
     e.formCount > 0 ? el('button', { class: 'btn', title: `View this species' ${e.formCount} alternate form${e.formCount > 1 ? 's' : ''}`,
       onclick: () => goToForms(root, e) }, `Forms (${e.formCount}) →`) : null,
     e.serebii_link ? el('a', { class: 'btn link', href: e.serebii_link, target: '_blank', rel: 'noopener' }, 'Serebii ↗') : null,
   ]));
   return card;
-}
-
-function maybePromptRegistry(ot, tid) {
-  if (!ot || !tid) return;
-  if (store.getOtEntry(ot, tid)) return;
-  if (confirm(`OT "${ot}" / TID "${tid}" isn't in your trainer registry.\nAdd it now so origin resolves?`)) {
-    store.upsertOtEntry({ ot, tid, is_mine: true, is_go: false, profile: 'N/A', game: '', description: '' });
-  }
 }
