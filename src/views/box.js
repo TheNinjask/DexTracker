@@ -4,11 +4,6 @@ import * as store from '../store.js';
 import { buildDexEntries, entrySlot, entryOwned, entrySprite, resolveOriginById } from '../compute.js';
 import { el, clear, getPrefs, setPref, icon, alertDialog, selectDialog } from '../dom.js';
 
-const OT_LIST_ID = 'box-ot-list';
-const TID_LIST_ID = 'box-tid-list';
-function otNames() { return [...new Set((store.state.ot_registry || []).map((r) => r.ot).filter(Boolean))]; }
-function tidValues() { return [...new Set((store.state.ot_registry || []).map((r) => r.tid).filter(Boolean))]; }
-
 // One row of the "pick a trainer" disambiguation dialog — OT/TID plus the row's
 // own effective game + mark imagery, same resolution resolveOriginById uses
 // everywhere else, so a duplicate ot+tid pair is still visually distinguishable.
@@ -461,10 +456,8 @@ function buildDetail(root, e) {
     ]),
   ]));
 
-  card.appendChild(el('datalist', { id: OT_LIST_ID }, otNames().map((v) => el('option', { value: v }))));
-  card.appendChild(el('datalist', { id: TID_LIST_ID }, tidValues().map((v) => el('option', { value: v }))));
-  const otIn = el('input', { class: 'ctrl', value: (o && o.ot) || '', placeholder: 'OT', list: OT_LIST_ID });
-  const tidIn = el('input', { class: 'ctrl', value: (o && o.tid) || '', placeholder: 'TID', list: TID_LIST_ID });
+  const otIn = el('input', { class: 'ctrl', value: (o && o.ot) || '', placeholder: 'OT' });
+  const tidIn = el('input', { class: 'ctrl', value: (o && o.tid) || '', placeholder: 'TID' });
   const form = el('div', { class: 'edit-form' }, [
     field('OT', otIn), field('TID', tidIn),
   ]);

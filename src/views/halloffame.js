@@ -10,10 +10,6 @@ import { el, clear, icon, alertDialog, confirmDialog, selectDialog } from '../do
 let formCtx = null;
 
 const GAME_LIST_ID = 'hof-game-list';
-const OT_LIST_ID = 'hof-ot-list';
-const TID_LIST_ID = 'hof-tid-list';
-function otNames() { return [...new Set((store.state.ot_registry || []).map((r) => r.ot).filter(Boolean))]; }
-function tidValues() { return [...new Set((store.state.ot_registry || []).map((r) => r.tid).filter(Boolean))]; }
 
 // One row of the "pick a trainer" disambiguation dialog — OT/TID plus the row's
 // own effective game + mark imagery, same resolution resolveOriginById uses
@@ -129,8 +125,8 @@ function buildForm(root) {
   const game = el('input', { class: 'ctrl', placeholder: 'Game', value: p.game || '', list: GAME_LIST_ID });
   const nat = el('input', { class: 'ctrl', placeholder: 'Nat #', value: editing && editing.national_no ? String(parseInt(editing.national_no, 10)) : '' });
   const nickname = el('input', { class: 'ctrl', placeholder: 'Nickname (optional)', value: (editing && editing.nickname) || '' });
-  const ot = el('input', { class: 'ctrl', placeholder: 'OT', value: (prefillOrigin && prefillOrigin.ot) || '', list: OT_LIST_ID });
-  const tid = el('input', { class: 'ctrl', placeholder: 'TID', value: (prefillOrigin && prefillOrigin.tid) || '', list: TID_LIST_ID });
+  const ot = el('input', { class: 'ctrl', placeholder: 'OT', value: (prefillOrigin && prefillOrigin.ot) || '' });
+  const tid = el('input', { class: 'ctrl', placeholder: 'TID', value: (prefillOrigin && prefillOrigin.tid) || '' });
   const formSel = el('select', { class: 'ctrl', title: 'Form' });
   const shiny = el('input', { type: 'checkbox', checked: editing && editing.shiny ? '' : null });
 
@@ -214,8 +210,6 @@ function buildForm(root) {
 
   const card = el('div', { class: 'card add-form' }, [
     el('datalist', { id: GAME_LIST_ID }, gamesAlpha().map((g) => el('option', { value: g.id }))),
-    el('datalist', { id: OT_LIST_ID }, otNames().map((v) => el('option', { value: v }))),
-    el('datalist', { id: TID_LIST_ID }, tidValues().map((v) => el('option', { value: v }))),
     el('h3', {}, heading),
     el('div', { class: 'add-grid' }, [
       game, nat, formSel, nickname, ot, tid,
