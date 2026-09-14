@@ -6,7 +6,7 @@
 // Serebii's own per-game icon set, so they match the rest of the app.
 import { CHALLENGES, RESEARCH, researchIdx, spriteUrl } from '../data.js';
 import * as store from '../store.js';
-import { el, clear, icon, pct, modal } from '../dom.js';
+import { el, clear, icon, pct, modal, pickIcon } from '../dom.js';
 
 let mode = null; // null = picker, 'home' = Challenges, else = a Research Tasks game id
 let challengeFilter = 'all'; // 'all' | 'done' | 'undone' — kept separate per view
@@ -19,25 +19,9 @@ export function render(root) {
   root.appendChild(buildResearch(root, mode));
 }
 
-// Icon box: a single icon, or two side-by-side halves sharing one square for a
-// paired release (e.g. Scarlet & Violet). Each half is its own flex child, so
-// its icon is centered within that half (via cover's default centering)
-// rather than cropped from a full-box image.
-function pickBox(icons, title) {
-  const dual = icons.length > 1;
-  const box = el('span', { class: 'tool-pick-box' + (dual ? ' dual' : '') });
-  if (dual) {
-    box.appendChild(el('span', { class: 'dual-half' }, [icon(icons[0], 'tool-pick-img', title)]));
-    box.appendChild(el('span', { class: 'dual-half' }, [icon(icons[1], 'tool-pick-img', title)]));
-  } else {
-    box.appendChild(icon(icons[0], 'tool-pick-img', title));
-  }
-  return box;
-}
-
 function pickButton(root, name, icons, onSelect) {
   return el('button', { class: 'tool-pick', onclick: () => { onSelect(); render(root); } }, [
-    pickBox(icons, name),
+    pickIcon(icons, name),
     el('span', { class: 'tool-pick-label' }, name),
   ]);
 }

@@ -47,6 +47,12 @@ export const RESEARCH = { games: [], tasks: [] };
 export const challengeIdx = { byId: new Map() };
 export const researchIdx = { gameById: new Map(), byId: new Map() };
 
+// Pal Park Pokéfinder data (Gen 4 HG/SS "PalPark" tool): every transferable
+// Gen 1-3 species (#1-386) belongs to exactly one of 5 areas. Its own file/
+// singleton — same reasoning as TOOLS/HYPERSPACE above.
+export const PALPARK = { areas: [], species: [] };
+export const palparkIdx = { areaByNat: new Map() };
+
 // Resolve a game by id, tolerating case differences between user-entered
 // registry game names (e.g. "Home/GO") and reference ids ("Home/Go").
 export function findGame(id) {
@@ -97,13 +103,14 @@ export async function loadReferenceData() {
   // and '/<repo>/' in the GitHub Pages build. Cooking (berry) and Tools data each ship
   // as their own file since they're separate domains from the dex/species reference data.
   const base = import.meta.env.BASE_URL;
-  const [refRes, cookingRes, toolsRes, hyperspaceRes, challengeRes, researchRes] = await Promise.all([
+  const [refRes, cookingRes, toolsRes, hyperspaceRes, challengeRes, researchRes, palparkRes] = await Promise.all([
     fetch(`${base}data/reference_data.json`),
     fetch(`${base}data/cooking_data.json`),
     fetch(`${base}data/tools_data.json`),
     fetch(`${base}data/hyperspace_wild_zone.json`),
     fetch(`${base}data/challenge_data.json`),
     fetch(`${base}data/reasearch_task_data.json`),
+    fetch(`${base}data/palpark_data.json`),
   ]);
   if (!refRes.ok) throw new Error('Failed to load reference_data.json: ' + refRes.status);
   if (!cookingRes.ok) throw new Error('Failed to load cooking_data.json: ' + cookingRes.status);
@@ -111,12 +118,14 @@ export async function loadReferenceData() {
   if (!hyperspaceRes.ok) throw new Error('Failed to load hyperspace_wild_zone.json: ' + hyperspaceRes.status);
   if (!challengeRes.ok) throw new Error('Failed to load challenge_data.json: ' + challengeRes.status);
   if (!researchRes.ok) throw new Error('Failed to load reasearch_task_data.json: ' + researchRes.status);
+  if (!palparkRes.ok) throw new Error('Failed to load palpark_data.json: ' + palparkRes.status);
   const data = await refRes.json();
   const cooking = await cookingRes.json();
   const tools = await toolsRes.json();
   const hyperspace = await hyperspaceRes.json();
   const challenge = await challengeRes.json();
   const research = await researchRes.json();
+  const palpark = await palparkRes.json();
   REF.meta = data.meta;
   REF.species = data.species || [];
   REF.forms = data.forms || [];
@@ -147,6 +156,11 @@ export async function loadReferenceData() {
   researchIdx.byId.clear();
   RESEARCH.games.forEach((g) => researchIdx.gameById.set(g.id, g));
   RESEARCH.tasks.forEach((t) => researchIdx.byId.set(t.id, t));
+
+  PALPARK.areas = palpark.areas || [];
+  PALPARK.species = palpark.species || [];
+  palparkIdx.areaByNat.clear();
+  PALPARK.species.forEach((s) => palparkIdx.areaByNat.set(s.national_no, s.area));
 
   rebuildIndexes();
   return REF;

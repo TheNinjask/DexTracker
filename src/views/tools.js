@@ -2,12 +2,13 @@
 // there's only Legends Z-A's Donut Maker, which is the existing cooking view
 // under a player-facing name — the module stays "cooking.js" internally.
 import { TOOLS, toolIdx } from '../data.js';
-import { el, clear, icon } from '../dom.js';
+import { el, clear, pickIcon } from '../dom.js';
 import * as cookingView from './cooking.js';
 import * as hyperspaceView from './hyperspace.js';
+import * as palparkView from './palpark.js';
 
 // Maps a tool's `view` key (tools_data.json) to its renderer.
-const TOOL_VIEWS = { cooking: cookingView.render, hyperspace: hyperspaceView.render };
+const TOOL_VIEWS = { cooking: cookingView.render, hyperspace: hyperspaceView.render, palpark: palparkView.render };
 
 let gameId = null;
 let toolId = null;
@@ -32,8 +33,9 @@ export function render(root) {
 }
 
 function pickButton(root, item, onSelect) {
+  const icons = (Array.isArray(item.icon_url) ? item.icon_url : [item.icon_url]).map(toolIconUrl);
   return el('button', { class: 'tool-pick', onclick: () => { onSelect(); render(root); } }, [
-    el('span', { class: 'tool-pick-box' }, icon(toolIconUrl(item.icon_url), 'tool-pick-img', item.name)),
+    pickIcon(icons, item.name),
     el('span', { class: 'tool-pick-label' }, item.name),
   ]);
 }

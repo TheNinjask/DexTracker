@@ -427,6 +427,18 @@ select.ctrl { border-radius: 999px; }
 .tool-pick-box.dual .tool-pick-img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
 .tool-pick-box.dual .dual-half:first-child .tool-pick-img { border-radius: 8px 0 0 8px; }
 .tool-pick-box.dual .dual-half:last-child .tool-pick-img { border-radius: 0 8px 8px 0; }
+.tool-pick-box.penta { position: relative; }
+/* inset matches .tool-pick-box's own 7px padding — an absolutely positioned
+   child's inset is relative to the padding edge, not the content edge, so
+   inset:0 here would cover that padding entirely and erase the white border
+   every other variant (single icon, dual) keeps around its image. */
+/* border-radius (same 8px single/dual round their image to) rounds each
+   slice's own box before its clip-path wedge is carved out of it — for the 4
+   of 5 slices whose wedge touches one of the box's own corners, that corner
+   comes out rounded to match; the 1 slice with no corner (its edges are only
+   the pointed wedge seams, which should stay sharp) is unaffected. */
+.penta-slice { position: absolute; inset: 7px; overflow: hidden; border-radius: 8px; }
+.penta-slice .tool-pick-img { position: absolute; object-fit: cover; border-radius: 0; }
 
 .chal-progress { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
 .chal-filter { display: flex; gap: 6px; margin-bottom: 14px; }
@@ -591,6 +603,57 @@ select.ctrl { border-radius: 999px; }
 }
 .hwz-zone-species-btn:hover { background: #00000010; }
 .hwz-zone-species-img { width: 28px; height: 28px; object-fit: contain; }
+
+/* PalPark - Pokéfinder */
+/* Map (large, primary) left, picker (search + selections) right — same
+   flexible/fixed-column split as Box View's .box-main, collapsing to a single
+   stacked column (map above picker) only below the shared 860px breakpoint. */
+.pp-layout { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
+@media (max-width: 860px) { .pp-layout { grid-template-columns: 1fr; } }
+.pp-map-card { min-width: 0; }
+.pp-map-wrap { width: 100%; }
+.pp-search-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.pp-suggestions {
+  display: flex; flex-direction: column; gap: 2px; max-height: 240px; overflow-y: auto;
+  margin-bottom: 10px;
+}
+.pp-suggestion {
+  display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 8px; cursor: pointer;
+}
+.pp-suggestion:hover { background: #1d4a3a14; }
+.pp-suggestion.disabled { opacity: .45; cursor: not-allowed; }
+.pp-dex { color: var(--muted); font-size: 11px; width: 36px; flex: none; }
+.pp-mon-img { width: 32px; height: 32px; object-fit: contain; flex: none; }
+.pp-selected-list { display: flex; flex-direction: column; gap: 6px; }
+.pp-selected-row {
+  display: flex; align-items: center; gap: 10px; background: #ffffff8c; border: 1px solid var(--border);
+  border-radius: 10px; padding: 5px 10px;
+}
+.pp-selected-name { flex: 1; font-weight: 600; }
+/* Sized in px by JS (palpark.js: sizeMap) above the desktop breakpoint, which
+   can leave it narrower than its grid column when height is the binding
+   constraint — centered so that leftover space splits evenly on both sides
+   instead of all landing on the right (same reasoning as box.js's own
+   .box-grid centering). container-type lets the Pokémon icons inside scale
+   in cqw units off the map's own rendered width, so they stay proportional
+   at every size instead of a fixed px that only suits one size. */
+.pp-map { position: relative; line-height: 0; border-radius: 14px; overflow: hidden; margin: 0 auto; container-type: inline-size; }
+.pp-map-img { display: block; width: 100%; height: auto; }
+.pp-zone { position: absolute; min-width: 90px; min-height: 60px; }
+.pp-zone-mons {
+  display: flex; flex-wrap: wrap; align-content: flex-start; justify-content: center;
+  gap: 3px; width: 100%; height: 100%; overflow: visible;
+}
+.pp-zone-mon {
+  background: none; border: none; padding: 0; line-height: 0; cursor: pointer;
+  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 3px #fff);
+  transition: transform .1s ease;
+}
+.pp-zone-mon:hover { transform: scale(1.15); }
+/* cqw (not px) so icon size tracks the map's own rendered width at every
+   size (JS-sized above the breakpoint, responsive below it) instead of
+   looking oversized on a small map or undersized on a large one. */
+.pp-zone-mon .pp-mon-img { width: 4.2cqw; height: 4.2cqw; }
 
 /* Cooking */
 /* Table | graph layout. Side-by-side (50/50) only while the window is wide enough
