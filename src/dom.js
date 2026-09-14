@@ -138,6 +138,14 @@ function hostOf(url) {
 // without a gap; 80% leaves a small safety margin above that minimum.
 const PENTA_ZOOM = 80;
 
+// Reference-data JSON stores either a full external URL or a path relative to
+// the app's own public/ (e.g. "tools/gen4/palpark/palpark-map.png") — resolve
+// the latter against BASE_URL ('/' in dev, '/<repo>/' on GitHub Pages).
+export function assetUrl(path) {
+  if (!path) return '';
+  return /^https?:\/\//i.test(path) ? path : import.meta.env.BASE_URL + path;
+}
+
 export function pickIcon(icons, title, imgClass = 'tool-pick-img') {
   const list = Array.isArray(icons) ? icons : [icons];
   const box = el('span', { class: 'tool-pick-box' });
