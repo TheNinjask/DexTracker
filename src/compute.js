@@ -1,34 +1,42 @@
 // Derived/computed logic (SPEC §5). All recomputed from user data + seed data.
 
-import { REF, idx, spriteUrl, speciesName, findGame } from './data.js';
+import { REF, idx, spriteUrl, speciesName, findGame, findMark } from './data.js';
 import * as store from './store.js';
 
-// Resolve a slot's (OT,TID) to rich origin metadata via the OT registry + Game Ref.
-export function resolveOrigin(ot, tid) {
-  const reg = store.getOtEntry(ot, tid);
-  if (!reg) return { game: null, gameId: null, iconUrl: null, markUrl: null, markCode: null, isMine: null, isGo: null, description: null, registered: false };
+// Resolve an OT registry row to rich origin metadata via the Game Ref.
+function resolveFromRow(reg) {
+  if (!reg) return { game: null, gameId: null, iconUrl: null, markUrl: null, markCode: null,
+    iconGame: null, markId: null, isMine: null, isGo: null, profile: null, description: null,
+    registered: false, ot: null, tid: null, otId: null };
   const game = findGame(reg.game);
-  // Per-entry overrides: the origin icon and mark can each be borrowed from a
-  // different reference game (reg.icon_game / reg.mark_game), defaulting to the
-  // entry's own game. This lets entries whose game has no icon/mark (e.g.
-  // "Event") display a chosen game's assets without changing the recorded origin.
+  // Per-entry overrides: the origin icon can be borrowed from a different
+  // reference game (reg.icon_game), defaulting to the entry's own game. The mark
+  // override (reg.mark_id) instead references a REF.marks entry directly — marks
+  // are their own reference table now, not just borrowed via another game.
   const iconSrc = (reg.icon_game && findGame(reg.icon_game)) || game;
-  const markSrc = (reg.mark_game && findGame(reg.mark_game)) || game;
+  const mark = (reg.mark_id && findMark(reg.mark_id)) || (game ? findMark(game.mark_id) : null);
   return {
     game: reg.game,
     gameId: reg.game,
     iconUrl: iconSrc ? iconSrc.icon_url : null,
-    markUrl: markSrc ? markSrc.mark_url : null,
-    markCode: markSrc ? markSrc.mark_code : null,
+    markUrl: mark ? mark.icon_url : null,
+    markCode: mark ? mark.id : null,
     iconGame: reg.icon_game || null,
-    markGame: reg.mark_game || null,
+    markId: reg.mark_id || null,
     isMine: reg.is_mine,
     isGo: reg.is_go,
     profile: reg.profile,
     description: reg.description,
     registered: true,
+    ot: reg.ot,
+    tid: reg.tid,
+    otId: reg.id,
   };
 }
+// Resolve by the OT registry row's stable id — every ownership slot (species/form/
+// per-game/Hall of Fame) and the registry's own table stores/uses this id rather
+// than raw ot/tid text (which is no longer unique — duplicates are allowed).
+export function resolveOriginById(otId) { return resolveFromRow(otId ? store.getOtEntryById(otId) : null); }
 
 // Build the ordered entry list for a given dex.
 // Returns { dex, entries:[ {national_no, regional_no, name, source, shiny, formCode, formCodeShiny, slotKind, dexId, group} ], hasRegional, isForm }
@@ -137,7 +145,7 @@ function tallySpecies(shiny) {
     const slot = store.getSpeciesSlot(s.national_no, shiny);
     if (store.isOwned(slot)) {
       owned++;
-      const o = resolveOrigin(slot.ot, slot.tid);
+      const o = resolveOriginById(slot.ot_id);
       if (o.isGo) go++;
     }
   });
@@ -151,7 +159,7 @@ function tallyForms(shiny) {
     const slot = store.getFormSlot(f.national_no, f.form_code, f.form, shiny, f.form_code_base);
     if (store.isOwned(slot)) {
       owned++;
-      const o = resolveOrigin(slot.ot, slot.tid);
+      const o = resolveOriginById(slot.ot_id);
       if (o.isGo) go++;
     }
   });
@@ -168,9 +176,9 @@ function bySource() {
   };
   REF.species.forEach((s) => {
     const n = store.getSpeciesSlot(s.national_no, false);
-    if (store.isOwned(n)) add(resolveOrigin(n.ot, n.tid).game || 'N/A', false);
+    if (store.isOwned(n)) add(resolveOriginById(n.ot_id).game || 'N/A', false);
     const sh = store.getSpeciesSlot(s.national_no, true);
-    if (store.isOwned(sh)) add(resolveOrigin(sh.ot, sh.tid).game || 'N/A', true);
+    if (store.isOwned(sh)) add(resolveOriginById(sh.ot_id).game || 'N/A', true);
   });
   const total = REF.species.length;
   return [...rows.values()]

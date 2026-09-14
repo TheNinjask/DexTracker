@@ -7,6 +7,7 @@ export const REF = {
   forms: [],
   types: [],
   games: [],
+  marks: [],
   dexes: [],
   dexMappings: {},
   imageSources: {},
@@ -19,6 +20,7 @@ export const idx = {
   typeByName: new Map(),
   gameById: new Map(),
   gameByIdLower: new Map(), // case-insensitive fallback for registry game names
+  markById: new Map(),
   dexById: new Map(),
   berryById: new Map(),
 };
@@ -52,6 +54,12 @@ export function findGame(id) {
   return idx.gameById.get(id) || idx.gameByIdLower.get(String(id).toLowerCase()) || null;
 }
 
+// Resolve a mark by id.
+export function findMark(id) {
+  if (id == null) return null;
+  return idx.markById.get(id) || null;
+}
+
 // Games sorted alphabetically by id, for the game pickers in the OT Registry,
 // Hall of Fame and Profiles. Returns a copy so the canonical REF.games order
 // (used elsewhere, e.g. stats) is left untouched.
@@ -68,11 +76,13 @@ export function rebuildIndexes() {
   idx.typeByName.clear();
   idx.gameById.clear();
   idx.gameByIdLower.clear();
+  idx.markById.clear();
   idx.dexById.clear();
   idx.berryById.clear();
   REF.species.forEach((s) => idx.speciesByNat.set(s.national_no, s));
   REF.types.forEach((t) => idx.typeByName.set(t.name, t));
   REF.games.forEach((g) => { idx.gameById.set(g.id, g); idx.gameByIdLower.set(String(g.id).toLowerCase(), g); });
+  REF.marks.forEach((m) => idx.markById.set(m.id, m));
   REF.dexes.forEach((d) => idx.dexById.set(d.id, d));
   REF.berries.forEach((b) => idx.berryById.set(b.id, b));
 }
@@ -107,6 +117,7 @@ export async function loadReferenceData() {
   REF.forms = data.forms || [];
   REF.types = data.types || [];
   REF.games = data.games || [];
+  REF.marks = data.marks || [];
   REF.dexes = data.dexes || [];
   REF.dexMappings = data.dex_mappings || {};
   REF.imageSources = data.image_sources || {};
@@ -162,11 +173,17 @@ export function removeSpecies(nationalNo) {
 }
 
 // form_code alone isn't always unique per species (e.g. Gigantamax Toxtricity), so match form + form_code_base too.
-export function upsertForm(row) {
+// When editing an existing row, `original` (the pre-edit row, by reference) is used
+// to find it instead of re-deriving a key from the (possibly just-changed) new
+// values — otherwise editing a row's own form_code_base wouldn't find itself and
+// would push a duplicate instead of updating in place.
+export function upsertForm(row, original) {
   const nat = pad4(row.national_no);
   const next = { ...row, national_no: nat };
-  const i = REF.forms.findIndex((f) => f.national_no === nat && f.form_code === row.form_code
-    && f.form === row.form && (f.form_code_base || '') === (row.form_code_base || ''));
+  const i = original
+    ? REF.forms.indexOf(original)
+    : REF.forms.findIndex((f) => f.national_no === nat && f.form_code === row.form_code
+      && f.form === row.form && (f.form_code_base || '') === (row.form_code_base || ''));
   if (i >= 0) REF.forms[i] = { ...REF.forms[i], ...next };
   else REF.forms.push(next);
   rebuildIndexes();
@@ -209,15 +226,35 @@ export function removeMappingRow(dexId, nationalNo) {
   if (arr) REF.dexMappings[dexId] = arr.filter((m) => m.national_no !== nat);
 }
 
-// Games carry origin icon/mark imagery (OT registry, HoF, profiles). Key: id.
-export function upsertGame(row) {
-  const i = REF.games.findIndex((g) => g.id === row.id);
+// Games carry an origin icon + a mark_id pointing at REF.marks (OT registry, HoF,
+// profiles). Key: id. `original` (the pre-edit row, by reference) locates the row
+// being edited so renaming its id updates in place instead of leaving the old id
+// behind as an orphaned duplicate — see upsertForm/upsertMark for the same pattern.
+export function upsertGame(row, original) {
+  const i = original ? REF.games.indexOf(original) : REF.games.findIndex((g) => g.id === row.id);
   if (i >= 0) REF.games[i] = { ...REF.games[i], ...row };
   else REF.games.push({ ...row });
   rebuildIndexes();
 }
 export function removeGame(id) {
   REF.games = REF.games.filter((g) => g.id !== id);
+  rebuildIndexes();
+}
+
+// Marks: standalone origin-mark badges (id, icon_url) — id doubles as the mark
+// code (e.g. "SV"), not yet referenced by games/OT registry — a normalized
+// table to point them at later.
+// `original` (the pre-edit row, by reference) locates the row being edited so
+// renaming its id updates in place instead of leaving the old id behind as an
+// orphaned duplicate.
+export function upsertMark(row, original) {
+  const i = original ? REF.marks.indexOf(original) : REF.marks.findIndex((m) => m.id === row.id);
+  if (i >= 0) REF.marks[i] = { ...REF.marks[i], ...row };
+  else REF.marks.push({ ...row });
+  rebuildIndexes();
+}
+export function removeMark(id) {
+  REF.marks = REF.marks.filter((m) => m.id !== id);
   rebuildIndexes();
 }
 
@@ -257,6 +294,7 @@ export function exportReferenceData() {
     forms: REF.forms,
     types: REF.types,
     games: REF.games,
+    marks: REF.marks,
     dexes: REF.dexes,
     dex_mappings: REF.dexMappings,
     image_sources: REF.imageSources,

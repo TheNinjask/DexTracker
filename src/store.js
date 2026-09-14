@@ -1,8 +1,21 @@
 // Savefile state: all user-created data (SPEC §10). Lives in localStorage,
 // importable/exportable as one portable JSON document. Never bundled with the app.
+// Deliberately independent of data.js: migrations below never read live reference
+// data (REF.games etc.) or call its helpers (findGame etc.) — that data's shape and
+// content can both change later (a game can be renamed in the Dev tab, a field can
+// be restructured), but a migration must keep transforming old savefiles exactly as
+// it did the day it was written. Each migration instead bakes in whatever frozen
+// snapshot of reference data it actually needs, as a literal constant.
 
 const LS_KEY = 'dextracker.savefile.v1';
-const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 3;
+
+// Pure, dependency-free id generator (no reference-data or app-logic coupling) —
+// safe to use identically from both live code and migrations.
+function newId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  return `id_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+}
 
 const listeners = new Set();
 export function onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); }
@@ -33,7 +46,7 @@ const index = {
   species: new Map(),   // national_no -> ownership row
   forms: new Map(),     // key -> ownership row
   perGame: new Map(),   // dexId -> Map(national_no -> row)
-  ot: new Map(),        // "ot|tid" -> registry row
+  otById: new Map(),    // id -> registry row (ot/tid are descriptive, not a key — duplicates are allowed)
   challengesDone: new Set(), // "<challengeId>::<tierIndex>"
   monsDone: new Set(),       // "<researchTaskId>::<pokemonIndex>"
 };
@@ -43,15 +56,11 @@ const index = {
 export function formKey(nat, formCode, form, formCodeBase) {
   return `${nat || ''}|${formCode || ''}|${form || ''}${formCodeBase ? `|${formCodeBase}` : ''}`;
 }
-export function otKey(ot, tid) {
-  return `${(ot || '').trim()}|${(tid || '').trim()}`;
-}
-
 function reindex() {
   index.species.clear();
   index.forms.clear();
   index.perGame.clear();
-  index.ot.clear();
+  index.otById.clear();
   index.challengesDone.clear();
   index.monsDone.clear();
   (state.species_ownership || []).forEach((r) => index.species.set(r.national_no, r));
@@ -61,7 +70,7 @@ function reindex() {
     (rows || []).forEach((r) => m.set(r.national_no, r));
     index.perGame.set(dexId, m);
   });
-  (state.ot_registry || []).forEach((r) => index.ot.set(otKey(r.ot, r.tid), r));
+  (state.ot_registry || []).forEach((r) => index.otById.set(r.id, r));
   (state.challenges_completed || []).forEach((k) => index.challengesDone.add(k));
   (state.research_mons_completed || []).forEach((k) => index.monsDone.add(k));
 }
@@ -70,14 +79,20 @@ export function load() {
   try {
     const raw = localStorage.getItem(LS_KEY);
     if (raw) {
-      state = normalize(JSON.parse(raw));
+      const parsed = JSON.parse(raw);
+      const { data, fromVersion, updated } = updateSaveFile(parsed);
+      state = normalize(data);
       reindex();
-      return true;
+      // Persist the migrated shape right away so localStorage itself moves off the
+      // old schema — otherwise every future load would see v1 again and re-offer
+      // the backup prompt on every visit instead of just once.
+      if (updated) persist();
+      return { hadSave: true, updateInfo: updated ? { fromVersion, toVersion: SCHEMA_VERSION, backupJson: raw } : null };
     }
   } catch (e) { console.warn('Failed to load savefile from localStorage', e); }
   state = emptySave();
   reindex();
-  return false;
+  return { hadSave: false, updateInfo: null };
 }
 
 export function persist() {
@@ -86,10 +101,97 @@ export function persist() {
   } catch (e) { console.warn('Failed to persist savefile', e); }
 }
 
+// v1 -> v2: ot_registry's mark override now points at a mark id (REF.marks)
+// directly instead of a game id whose mark got borrowed. This table is a frozen
+// snapshot of REF.games' id -> mark_id mapping as it stood the day this migration
+// was written (captured from reference_data.json, not read live) — a game can be
+// renamed or re-keyed in the Dev tab at any point afterward without affecting how
+// old v1 saves get translated.
+const V1_GAME_MARK_ID = {
+  'Go': 'GO', 'Home/Go': 'GO', 'Scarlet': 'SV', 'Violet': 'SV', 'Legends: Arceus': 'LA',
+  'Brilliant Diamond': 'BDSP', 'Shining Pearl': 'BDSP', 'Shield': 'SWSH', 'Sword': 'SWSH',
+  "Let's Go Eevee": 'LGPE', 'Ultra Sun': 'USUM', 'Sun': 'SM', 'Alpha Sapphire': 'ORAS',
+  'Y': 'XY', 'White 2': '', 'White': '', 'Heart Gold': '', 'Soul Silver': '', 'Platinum': '',
+  'Emerald': '', 'Silver': 'GS', 'Yellow': 'RBY', 'Home': '', 'Bank': '', 'Home(PLA)': 'LA',
+  'Home(BDSP)': 'BDSP', 'Home(SV)': 'SV', 'Event(SwSh)': 'SWSH', 'Home(SwSh)': 'SWSH',
+  'Home(LGPE)': 'LGPE', "Let's Go Pikachu": 'LGPE', 'Legends: ZA': 'LZA', 'HOME (PLZA)': 'LZA',
+};
+function migrateV1toV2(data) {
+  return {
+    ...data,
+    ot_registry: (data.ot_registry || []).map((r) => {
+      if (!('mark_game' in r)) return r;
+      const { mark_game, ...rest } = r;
+      return { ...rest, mark_id: mark_game ? (V1_GAME_MARK_ID[mark_game] ?? '') : '' };
+    }),
+  };
+}
+
+// v2 -> v3: every ot_registry row gets a stable unique id, and every place that
+// records *whose* a catch is (species/form/per-game ownership, Hall of Fame)
+// references that id instead of duplicating raw ot/tid text. Any ot/tid pair
+// found in those tables with no matching registry row gets one auto-created here
+// (grandfathering historical data) — self-contained, no calls into live
+// getOtEntry/matchOtEntries, since migrations must not depend on logic that can
+// change shape later.
+function migrateV2toV3(data) {
+  const registry = (data.ot_registry || []).map((r) => ('id' in r ? r : { id: newId(), ...r }));
+  const byKey = new Map(registry.map((r) => [`${(r.ot || '').trim()}|${(r.tid || '').trim()}`, r]));
+  const resolve = (ot, tid, fallbackIsMine) => {
+    const o = (ot || '').trim(), t = (tid || '').trim();
+    if (!o && !t) return null;
+    const key = `${o}|${t}`;
+    let row = byKey.get(key);
+    if (!row) {
+      row = { id: newId(), ot: o, tid: t, is_mine: fallbackIsMine !== undefined ? fallbackIsMine : true,
+        is_go: false, profile: 'N/A', game: '', description: '' };
+      registry.push(row);
+      byKey.set(key, row);
+    }
+    return row.id;
+  };
+  const migrateSlots = (rows) => (rows || []).map((r) => {
+    const out = { ...r };
+    ['normal', 'shiny'].forEach((k) => {
+      if (!out[k]) return;
+      const id = resolve(out[k].ot, out[k].tid);
+      if (id) out[k] = { ot_id: id }; else delete out[k];
+    });
+    return out;
+  });
+  return {
+    ...data,
+    ot_registry: registry,
+    species_ownership: migrateSlots(data.species_ownership),
+    form_ownership: migrateSlots(data.form_ownership),
+    per_game_ownership: Object.fromEntries(Object.entries(data.per_game_ownership || {}).map(
+      ([dexId, rows]) => [dexId, (rows || []).map((r) => {
+        const { ot, tid, is_mine, ...rest } = r;
+        return { ...rest, ot_id: resolve(ot, tid, is_mine), is_mine };
+      })]
+    )),
+    hall_of_fame: (data.hall_of_fame || []).map((r) => {
+      const { ot, tid, ...rest } = r;
+      return { ...rest, ot_id: resolve(ot, tid) };
+    }),
+  };
+}
+
+// Version-gated migration entry point. `obj.meta.schema_version` missing entirely
+// means pre-versioning data — treated as v1. Chains forward to SCHEMA_VERSION so a
+// save several versions behind still ends up fully current in one call.
+export function updateSaveFile(obj) {
+  const fromVersion = (obj.meta && obj.meta.schema_version) || 1;
+  let data = obj;
+  if (fromVersion < 2) data = migrateV1toV2(data);
+  if (fromVersion < 3) data = migrateV2toV3(data);
+  return { data, fromVersion, updated: fromVersion < SCHEMA_VERSION };
+}
+
 function normalize(obj) {
   const base = emptySave();
   return {
-    meta: obj.meta || base.meta,
+    meta: { ...(obj.meta || base.meta), schema_version: SCHEMA_VERSION },
     species_ownership: obj.species_ownership || [],
     form_ownership: obj.form_ownership || [],
     per_game_ownership: obj.per_game_ownership || {},
@@ -107,10 +209,12 @@ function normalize(obj) {
 }
 
 export function importSave(obj) {
-  state = normalize(obj);
+  const { data, fromVersion, updated } = updateSaveFile(obj);
+  state = normalize(data);
   reindex();
   persist();
   emit();
+  return updated ? { fromVersion, toVersion: SCHEMA_VERSION, backupJson: JSON.stringify(obj) } : null;
 }
 
 export function resetSave() {
@@ -134,7 +238,7 @@ export function commit({ reindex: doReindex = false } = {}) {
 
 // ---- Ownership accessors ----
 export function isOwned(slot) {
-  return !!(slot && String(slot.ot || '').trim() && String(slot.tid || '').trim());
+  return !!(slot && slot.ot_id);
 }
 
 export function getSpeciesRow(nat) { return index.species.get(nat); }
@@ -144,7 +248,7 @@ export function getSpeciesSlot(nat, shiny) {
   return shiny ? r.shiny : r.normal;
 }
 
-export function setSpeciesSlot(nat, shiny, ot, tid) {
+export function setSpeciesSlot(nat, shiny, otId) {
   let r = index.species.get(nat);
   if (!r) {
     r = { national_no: nat };
@@ -152,8 +256,8 @@ export function setSpeciesSlot(nat, shiny, ot, tid) {
     index.species.set(nat, r);
   }
   const key = shiny ? 'shiny' : 'normal';
-  if (!ot && !tid) delete r[key];
-  else r[key] = { ot: ot || '', tid: tid || '' };
+  if (!otId) delete r[key];
+  else r[key] = { ot_id: otId };
   commit();
 }
 
@@ -163,7 +267,7 @@ export function getFormSlot(nat, formCode, form, shiny, formCodeBase) {
   if (!r) return null;
   return shiny ? r.shiny : r.normal;
 }
-export function setFormSlot(nat, formCode, form, shiny, ot, tid, formCodeBase) {
+export function setFormSlot(nat, formCode, form, shiny, otId, formCodeBase) {
   const k = formKey(nat, formCode, form, formCodeBase);
   let r = index.forms.get(k);
   if (!r) {
@@ -173,8 +277,8 @@ export function setFormSlot(nat, formCode, form, shiny, ot, tid, formCodeBase) {
     index.forms.set(k, r);
   }
   const key = shiny ? 'shiny' : 'normal';
-  if (!ot && !tid) delete r[key];
-  else r[key] = { ot: ot || '', tid: tid || '' };
+  if (!otId) delete r[key];
+  else r[key] = { ot_id: otId };
   commit();
 }
 
@@ -182,7 +286,7 @@ export function getPerGameRow(dexId, nat) {
   const m = index.perGame.get(dexId);
   return m ? m.get(nat) : null;
 }
-export function setPerGameSlot(dexId, nat, regionalNo, ot, tid, isMine) {
+export function setPerGameSlot(dexId, nat, regionalNo, otId, isMine) {
   let m = index.perGame.get(dexId);
   if (!m) {
     m = new Map();
@@ -190,7 +294,7 @@ export function setPerGameSlot(dexId, nat, regionalNo, ot, tid, isMine) {
     state.per_game_ownership[dexId] = state.per_game_ownership[dexId] || [];
   }
   let r = m.get(nat);
-  if (!ot && !tid) {
+  if (!otId) {
     if (r) {
       state.per_game_ownership[dexId] = state.per_game_ownership[dexId].filter((x) => x !== r);
       m.delete(nat);
@@ -204,8 +308,7 @@ export function setPerGameSlot(dexId, nat, regionalNo, ot, tid, isMine) {
     state.per_game_ownership[dexId].push(r);
     m.set(nat, r);
   }
-  r.ot = ot || '';
-  r.tid = tid || '';
+  r.ot_id = otId;
   r.is_mine = !!isMine;
   commit();
 }
@@ -255,24 +358,36 @@ export function removeProfile(row) {
   commit();
 }
 
-export function getOtEntry(ot, tid) { return index.ot.get(otKey(ot, tid)); }
-export function upsertOtEntry(entry) {
-  const k = otKey(entry.ot, entry.tid);
-  const existing = index.ot.get(k);
+export function getOtEntryById(id) { return index.otById.get(id); }
+// Filter registry rows by whichever of ot/tid is non-blank (trimmed). Both blank ->
+// no candidates (caller treats that as "clear", not a match question). Duplicates
+// are a supported case — the same ot+tid can legitimately describe more than one
+// registry row (different game/mark context) — so this can return several
+// candidates; the caller disambiguates (picker) rather than guessing.
+export function matchOtEntries(ot, tid) {
+  const o = (ot || '').trim(), t = (tid || '').trim();
+  if (!o && !t) return [];
+  return (state.ot_registry || []).filter((r) => (!o || r.ot === o) && (!t || r.tid === t));
+}
+// id present -> edit that exact row in place (its ot/tid can change to anything,
+// including colliding with another row's — duplicates are allowed). No id -> always
+// create a new row; ot/tid are descriptive fields here, never a uniqueness key.
+export function upsertOtEntry(entry, id) {
+  const existing = id ? index.otById.get(id) : null;
   if (existing) {
-    Object.assign(existing, entry);
+    Object.assign(existing, entry, { id: existing.id });
   } else {
-    state.ot_registry.push(entry);
-    index.ot.set(k, entry);
+    const row = { id: newId(), ...entry };
+    state.ot_registry.push(row);
+    index.otById.set(row.id, row);
   }
   commit();
 }
-export function removeOtEntry(ot, tid) {
-  const k = otKey(ot, tid);
-  const existing = index.ot.get(k);
+export function removeOtEntry(id) {
+  const existing = index.otById.get(id);
   if (existing) {
     state.ot_registry = state.ot_registry.filter((x) => x !== existing);
-    index.ot.delete(k);
+    index.otById.delete(id);
     commit();
   }
 }
