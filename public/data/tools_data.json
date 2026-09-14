@@ -22,21 +22,21 @@
             "id": "donut-maker",
             "game_id": "legends-za",
             "name": "Donut Maker",
-            "icon_url": "tools/legends-za/donut.png",
+            "icon_url": "tools/legends-za/donut-maker/donut.png",
             "view": "cooking"
         },
         {
             "id": "hyperspace-searcher",
             "game_id": "legends-za",
             "name": "Searcher",
-            "icon_url": "tools/legends-za/Mega_Dimension.png",
+            "icon_url": "tools/legends-za/hyperspace-searcher/Mega_Dimension.png",
             "view": "hyperspace"
         },
         {
             "id": "palpark",
             "game_id": "gen4",
             "name": "PalPark - Pokéfinder",
-            "icon_url": "tools/gen4/palpark-map.png",
+            "icon_url": "tools/gen4/palpark/palpark-map.png",
             "view": "palpark"
         }
     ]
