@@ -3,17 +3,17 @@
         {
             "id": "legends-za",
             "name": "Pokémon Legends: Z-A",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/b/be/Legends_Z-A_Icon.jpg"
+            "icon_url": "tools/legends-za/Legends_Z-A_Icon.jpg"
         },
         {
             "id": "gen4",
             "name": "Pokémon Generation 4",
             "icon_url": [
-                "https://archives.bulbagarden.net/media/upload/5/5c/SoulSilver_EN_boxart.jpg",
-                "https://archives.bulbagarden.net/media/upload/a/af/Pearl_EN_boxart.jpg",
-                "https://archives.bulbagarden.net/media/upload/e/ee/Platinum_EU_boxart.jpg",
-                "https://archives.bulbagarden.net/media/upload/6/69/Diamond_EN_boxart.jpg",
-                "https://archives.bulbagarden.net/media/upload/6/6e/HeartGold_EN_boxart.jpg"
+                "tools/gen4/SoulSilver_EN_boxart.jpg",
+                "tools/gen4/Pearl_EN_boxart.jpg",
+                "tools/gen4/Platinum_EU_boxart.jpg",
+                "tools/gen4/Diamond_EN_boxart.jpg",
+                "tools/gen4/HeartGold_EN_boxart.jpg"
             ]
         }
     ],
@@ -22,21 +22,21 @@
             "id": "donut-maker",
             "game_id": "legends-za",
             "name": "Donut Maker",
-            "icon_url": "icons/donut.png",
+            "icon_url": "tools/legends-za/donut.png",
             "view": "cooking"
         },
         {
             "id": "hyperspace-searcher",
             "game_id": "legends-za",
             "name": "Searcher",
-            "icon_url": "icons/Mega_Dimension.png",
+            "icon_url": "tools/legends-za/Mega_Dimension.png",
             "view": "hyperspace"
         },
         {
             "id": "palpark",
             "game_id": "gen4",
             "name": "PalPark - Pokéfinder",
-            "icon_url": "icons/palpark-map.png",
+            "icon_url": "tools/gen4/palpark-map.png",
             "view": "palpark"
         }
     ]

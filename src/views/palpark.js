@@ -261,7 +261,7 @@ function buildMap() {
   const base = import.meta.env.BASE_URL;
   const frame = el('div', { class: 'pp-map-frame' });
   const map = el('div', { class: 'pp-map' });
-  map.appendChild(el('img', { class: 'pp-map-img', src: `${base}icons/palpark-map.png`, alt: 'Pal Park overworld map' }));
+  map.appendChild(el('img', { class: 'pp-map-img', src: `${base}tools/gen4/palpark-map.png`, alt: 'Pal Park overworld map' }));
   monsHost = el('div', { class: 'pp-map-mons', style: slotEditOn ? 'display:none;' : null });
   map.appendChild(monsHost);
   slotsHost = el('div', { class: 'pp-map-slots', style: slotEditOn ? null : 'display:none;' });
