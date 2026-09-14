@@ -12442,6 +12442,71 @@
             "id": "Pearl",
             "icon_url": "https://archives.bulbagarden.net/media/upload/f/fb/Pearl_icon.png",
             "mark_id": null
+        },
+        {
+            "id": "LeafGreen",
+            "icon_url": "https://cdn2.steamgriddb.com/icon_thumb/e736598ba2c84d7313c8614de041cae3.png",
+            "mark_id": null
+        },
+        {
+            "id": "FireRed",
+            "icon_url": "https://cdn2.steamgriddb.com/icon_thumb/2fbbc6323c4882fbac23831adefc628a.png",
+            "mark_id": null
+        },
+        {
+            "id": "Sapphire",
+            "icon_url": "https://cdn2.steamgriddb.com/icon_thumb/31482ea3105f2635db24a0077677930f.png",
+            "mark_id": null
+        },
+        {
+            "id": "Ruby",
+            "icon_url": "https://cdn2.steamgriddb.com/icon_thumb/243153b1d3e9aae08821d40e3b402ffe.png",
+            "mark_id": null
+        },
+        {
+            "id": "Colosseum",
+            "icon_url": "https://cdn2.steamgriddb.com/icon_thumb/77dc68150533b73cb67b7e2cedf911b0.png",
+            "mark_id": null
+        },
+        {
+            "id": "XD: Gale of Darkness",
+            "icon_url": "https://cdn2.steamgriddb.com/icon/debf48b09b591ef018c9d51f90a2a4d3/32/256x256.png",
+            "mark_id": null
+        },
+        {
+            "id": "Black",
+            "icon_url": "https://serebii.net/Toolbar/icon/black.png",
+            "mark_id": null
+        },
+        {
+            "id": "Black 2",
+            "icon_url": "https://serebii.net/Toolbar/icon/black2.png",
+            "mark_id": null
+        },
+        {
+            "id": "Champions",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/6/65/HOME_Champions_icon.png",
+            "mark_id": null
+        },
+        {
+            "id": "X",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/7/73/HOME_X_icon.png",
+            "mark_id": "XY"
+        },
+        {
+            "id": "Moon",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/2/25/HOME_Moon_icon.png",
+            "mark_id": "SM"
+        },
+        {
+            "id": "Ultra Moon",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/b/bb/HOME_Ultra_Moon_icon.png",
+            "mark_id": "USUM"
+        },
+        {
+            "id": "Omega Ruby",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/b/b7/HOME_Omega_Ruby_icon.png",
+            "mark_id": "ORAS"
         }
     ],
     "marks": [
