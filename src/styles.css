@@ -607,11 +607,20 @@ select.ctrl { border-radius: 999px; }
 /* PalPark - Pokéfinder */
 /* Map (large, primary) left, picker (search + selections) right — same
    flexible/fixed-column split as Box View's .box-main, collapsing to a single
-   stacked column (map above picker) only below the shared 860px breakpoint. */
+   stacked column only below the shared 860px breakpoint — there, `order`
+   puts the picker on top (DOM order, and the desktop left/right layout
+   above, both stay map-then-picker). */
 .pp-layout { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
-@media (max-width: 860px) { .pp-layout { grid-template-columns: 1fr; } }
+@media (max-width: 860px) {
+  .pp-layout { grid-template-columns: 1fr; }
+  .pp-picker-card { order: -1; }
+}
 .pp-map-card { min-width: 0; }
-.pp-map-wrap { width: 100%; }
+/* .pp-map-frame is inline-block (see below) — text-align centers it within
+   the column when it's narrower than the available width, instead of
+   sitting flush against the left edge. No effect below the breakpoint,
+   where the frame is a full-width block instead. */
+.pp-map-wrap { width: 100%; text-align: center; }
 .pp-search-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .pp-suggestions {
   display: flex; flex-direction: column; gap: 2px; max-height: 240px; overflow-y: auto;
@@ -630,14 +639,30 @@ select.ctrl { border-radius: 999px; }
   border-radius: 10px; padding: 5px 10px;
 }
 .pp-selected-name { flex: 1; font-weight: 600; }
-/* Sized in px by JS (palpark.js: sizeMap) above the desktop breakpoint, which
-   can leave it narrower than its grid column when height is the binding
-   constraint — centered so that leftover space splits evenly on both sides
-   instead of all landing on the right (same reasoning as box.js's own
-   .box-grid centering). container-type lets the Pokémon icons inside scale
-   in cqw units off the map's own rendered width, so they stay proportional
-   at every size instead of a fixed px that only suits one size. */
-.pp-map { position: relative; line-height: 0; border-radius: 14px; overflow: hidden; margin: 0 auto; container-type: inline-size; }
+/* .pp-map-frame is a snug border around the map — shrink-wraps to whatever
+   size .pp-map itself is (JS-sized above the breakpoint, 100%-wide below it)
+   instead of a full-width card with a lot of leftover background showing
+   around a smaller, aspect-bounded map. Same visual language as .card, just
+   sized to content rather than stretched — like .tool-pick-box's fixed
+   padding around its own (differently sized) icon. */
+.pp-map-frame {
+  display: inline-block; background: var(--card); backdrop-filter: blur(8px);
+  border: 1px solid var(--border); border-radius: 14px; padding: 6px; box-shadow: var(--shadow);
+  box-sizing: border-box;
+}
+/* Below the breakpoint .pp-map has no JS-set width to shrink-wrap around (see
+   sizeMap in palpark.js) — inline-block's shrink-to-fit sizing then has
+   nothing concrete to size against (.pp-map-img is width:100% of .pp-map,
+   which is width:auto of this frame, which is shrink-to-fit of... itself),
+   collapsing the whole map down to a sliver. Forcing a normal filling block
+   here matches how it worked before the frame existed. */
+@media (max-width: 860px) { .pp-map-frame { display: block; width: 100%; } }
+/* .pp-map itself stays unpadded so its bounds exactly match the image — zone
+   overlays are positioned as % of .pp-map, so padding here would misalign
+   them against the actual image content. container-type lets the Pokémon
+   icons inside scale in cqw units off the map's own rendered width, so they
+   stay proportional at every size instead of a fixed px that only suits one. */
+.pp-map { position: relative; line-height: 0; border-radius: 8px; overflow: hidden; container-type: inline-size; }
 .pp-map-img { display: block; width: 100%; height: auto; }
 .pp-zone { position: absolute; min-width: 90px; min-height: 60px; }
 .pp-zone-mons {
@@ -653,7 +678,7 @@ select.ctrl { border-radius: 999px; }
 /* cqw (not px) so icon size tracks the map's own rendered width at every
    size (JS-sized above the breakpoint, responsive below it) instead of
    looking oversized on a small map or undersized on a large one. */
-.pp-zone-mon .pp-mon-img { width: 4.2cqw; height: 4.2cqw; }
+.pp-zone-mon .pp-mon-img { width: 6.5cqw; height: 6.5cqw; }
 
 /* Cooking */
 /* Table | graph layout. Side-by-side (50/50) only while the window is wide enough

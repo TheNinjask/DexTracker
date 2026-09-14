@@ -151,8 +151,16 @@ function refreshAll() {
   refreshMap();
 }
 
+// A snug border/frame around the map — like .tool-pick-box's fixed padding
+// around its icon — rather than a full-width card with the (smaller, aspect-
+// bounded) map centered inside it and lots of leftover card background
+// showing around it. The frame (.pp-map-frame) shrink-wraps to whatever size
+// .pp-map itself is; .pp-map stays unpadded so its own bounds exactly match
+// the image (zone overlays are positioned as % of .pp-map, so padding there
+// would misalign them against the actual image content).
 function buildMap() {
   const base = import.meta.env.BASE_URL;
+  const frame = el('div', { class: 'pp-map-frame' });
   const map = el('div', { class: 'pp-map' });
   map.appendChild(el('img', { class: 'pp-map-img', src: `${base}icons/palpark-map.png`, alt: 'Pal Park overworld map' }));
   zoneHosts = {};
@@ -165,7 +173,8 @@ function buildMap() {
     zone.appendChild(zoneHosts[areaId]);
     map.appendChild(zone);
   });
-  return map;
+  frame.appendChild(map);
+  return frame;
 }
 
 export function render(root) {
@@ -174,16 +183,18 @@ export function render(root) {
 
   const layout = el('div', { class: 'pp-layout' });
 
-  // Map first/left (the large, primary content) — mirrors Box View's own
-  // main-content/sidebar split (grid col 1 flexible, col 2 fixed width),
-  // stacking to a single column (map above data) only on narrow screens.
-  const mapCard = el('div', { class: 'card pp-map-card' });
+  // Map left, picker right on desktop — mirrors Box View's own main-content/
+  // sidebar split (grid col 1 flexible, col 2 fixed width). Below the
+  // breakpoint they stack into a single column; CSS `order` there (not DOM
+  // order, which stays map-then-picker for the desktop layout above) puts
+  // the picker on top, since picking is the first thing to do.
+  const mapCard = el('div', { class: 'pp-map-card' });
   const mapWrap = el('div', { class: 'pp-map-wrap' });
   mapWrap.appendChild(buildMap());
   mapCard.appendChild(mapWrap);
   layout.appendChild(mapCard);
 
-  const pickerCard = el('div', { class: 'card' });
+  const pickerCard = el('div', { class: 'card pp-picker-card' });
   pickerCard.appendChild(el('h3', {}, 'PalPark - Pokéfinder'));
   pickerCard.appendChild(el('p', { class: 'muted small' },
     'Pick up to 6 Pokémon (National Dex #1-386) to see which Pal Park area each lands in.'));
@@ -216,19 +227,21 @@ export function render(root) {
 // registration time that a later visit would silently orphan. ---
 const MAP_ASPECT = 1022 / 844; // native palpark-map.png dimensions
 const DESKTOP_BREAKPOINT = 860; // matches .pp-layout's own media query
+const FRAME_PADDING = 6; // must match .pp-map-frame's own CSS padding
 let currentRoot = null;
 
 function sizeMap() {
   if (!currentRoot) return;
   const wrap = currentRoot.querySelector('.pp-map-wrap');
+  const frame = currentRoot.querySelector('.pp-map-frame');
   const map = currentRoot.querySelector('.pp-map');
-  if (!wrap || !map) return;
+  if (!wrap || !frame || !map) return;
   map.style.width = ''; map.style.height = '';
   if (window.innerWidth <= DESKTOP_BREAKPOINT) return;
-  const availW = wrap.clientWidth;
+  const availW = wrap.clientWidth - FRAME_PADDING * 2;
   const sidebar = document.getElementById('sidebar');
   const bottomBound = sidebar ? sidebar.getBoundingClientRect().bottom : window.innerHeight;
-  const availH = bottomBound - wrap.getBoundingClientRect().top - 10;
+  const availH = bottomBound - frame.getBoundingClientRect().top - 10 - FRAME_PADDING * 2;
   let w = availW, h = w / MAP_ASPECT;
   if (h > availH) { h = Math.max(1, availH); w = h * MAP_ASPECT; }
   map.style.width = `${Math.round(w)}px`;
