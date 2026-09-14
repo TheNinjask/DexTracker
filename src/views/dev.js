@@ -4,7 +4,7 @@
 // reference_data.json to commit to the repo. Nothing here is persisted — edits live
 // for the session only (export to keep them).
 import {
-  REF, speciesName, spriteUrl, pad3, pad4, findMark,
+  REF, speciesName, spriteUrl, pad3, pad4, findMark, NO_MARK,
   upsertSpecies, removeSpecies,
   upsertForm, removeForm,
   upsertDex, removeDex,
@@ -540,6 +540,7 @@ function buildMarkForm(root) {
 
   const save = el('button', { class: 'btn primary', onclick: () => {
     if (!id.value.trim()) { alertDialog('A mark id is required.'); return; }
+    if (id.value.trim() === NO_MARK) { alertDialog(`"${NO_MARK}" is reserved for the registry's "no mark" override and can't be used as a mark id.`); return; }
     if (editing.marks && editing.marks.id !== id.value.trim() && REF.marks.some((m) => m.id === id.value.trim())) {
       alertDialog('Another mark already uses that id.'); return;
     }

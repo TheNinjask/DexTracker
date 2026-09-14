@@ -1,6 +1,6 @@
 // Derived/computed logic (SPEC §5). All recomputed from user data + seed data.
 
-import { REF, idx, spriteUrl, speciesName, findGame, findMark } from './data.js';
+import { REF, idx, spriteUrl, speciesName, findGame, findMark, NO_MARK } from './data.js';
 import * as store from './store.js';
 
 // Resolve an OT registry row to rich origin metadata via the Game Ref.
@@ -13,8 +13,11 @@ function resolveFromRow(reg) {
   // reference game (reg.icon_game), defaulting to the entry's own game. The mark
   // override (reg.mark_id) instead references a REF.marks entry directly — marks
   // are their own reference table now, not just borrowed via another game.
+  // NO_MARK is a distinct sentinel forcing no mark at all, instead of falling
+  // back to the game's default mark (which a blank mark_id does).
   const iconSrc = (reg.icon_game && findGame(reg.icon_game)) || game;
-  const mark = (reg.mark_id && findMark(reg.mark_id)) || (game ? findMark(game.mark_id) : null);
+  const mark = reg.mark_id === NO_MARK ? null
+    : (reg.mark_id && findMark(reg.mark_id)) || (game ? findMark(game.mark_id) : null);
   return {
     game: reg.game,
     gameId: reg.game,

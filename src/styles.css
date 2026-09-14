@@ -702,6 +702,7 @@ select.ctrl { border-radius: 999px; }
 .origin-preview { display: inline-flex; align-items: center; gap: 4px; }
 .override-note { white-space: nowrap; }
 .row-actions { display: flex; gap: 4px; }
+.registry-head { margin-bottom: 10px; }
 .profiles-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 .add-form { background: var(--card2); }
 
@@ -732,6 +733,7 @@ select.ctrl { border-radius: 999px; }
 .modal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .modal-actions .btn { flex: 1; }
 .select-modal { width: max-content; max-width: min(92vw, 560px); }
+.form-modal { width: max-content; max-width: min(92vw, 640px); }
 .select-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 10px; border: 1px solid var(--border-soft); border-radius: 10px; cursor: pointer; }
 .select-row:hover { background: #1d4a3a14; }
 .select-field { display: inline-flex; align-items: center; gap: 4px; }

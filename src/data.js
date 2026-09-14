@@ -60,6 +60,11 @@ export function findMark(id) {
   return idx.markById.get(id) || null;
 }
 
+// Sentinel OT registry mark_id override meaning "no mark", distinct from a
+// blank mark_id (which means "use the game's default mark"). Reserved — a
+// real mark may never use this as its id.
+export const NO_MARK = 'none';
+
 // Games sorted alphabetically by id, for the game pickers in the OT Registry,
 // Hall of Fame and Profiles. Returns a copy so the canonical REF.games order
 // (used elsewhere, e.g. stats) is left untouched.
