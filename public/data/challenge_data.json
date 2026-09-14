@@ -2,7 +2,7 @@
     "meta": {
         "id": "home",
         "name": "Pokémon HOME",
-        "icon": "https://archives.bulbagarden.net/media/upload/2/20/HOME_Icon_Switch.jpg"
+        "icon": "challenges/home/HOME_Icon_Switch.jpg"
     },
     "sections": [
         {

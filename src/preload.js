@@ -13,7 +13,7 @@ function uniqueIconUrls() {
   const urls = new Set();
   REF.games.forEach((g) => { if (g.icon_url) urls.add(g.icon_url); });
   REF.marks.forEach((m) => { if (m.icon_url) urls.add(m.icon_url); });
-  REF.types.forEach((t) => { if (t.icon_url) urls.add(t.icon_url); if (t.tera_icon_url) urls.add(t.tera_icon_url); });
+  REF.types.forEach((t) => { if (t.icon_url) urls.add(t.icon_url); });
   return [...urls];
 }
 

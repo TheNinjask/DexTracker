@@ -39,7 +39,7 @@ export default defineConfig({
       },
       workbox: {
         // Precache the app shell + bundled assets + seed data for offline use.
-        globPatterns: ['**/*.{js,css,html,svg,png,json}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,jpg,json}'],
         // reference_data.json is ~0.5 MB; allow it past the default 2 MB cap anyway.
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         navigateFallback: `${base}index.html`,
