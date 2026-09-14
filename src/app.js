@@ -314,7 +314,7 @@ async function main() {
     content().appendChild(el('div', { class: 'error' }, 'Failed to load reference data. ' + e.message));
     return;
   }
-  const { hadSave, updateInfo } = store.load();
+  const { updateInfo } = store.load();
   offerBackup(updateInfo);
   updateSaveStatus();
   refreshNav(); // savefile is loaded now → reflect its dev_mode in the nav
@@ -326,22 +326,11 @@ async function main() {
   if (sync) {
     history.replaceState(null, '', location.href.split('#')[0]);
     openJoinDialog(sync.id, sync.role);
-  } else if (!hadSave) showWelcome();
+  }
   // Warm the shared game/type icons into the cache (paced, off the critical path)
   // so the box grid stops bursting the image host. Fire-and-forget.
   preloadIcons();
   // Service worker is registered automatically by vite-plugin-pwa (injectRegister: 'auto').
-}
-
-function showWelcome() {
-  const c = content();
-  const banner = el('div', { class: 'welcome' }, [
-    el('strong', {}, 'Welcome to DexTracker. '),
-    el('span', {}, 'No savefile found. Import an existing '),
-    el('code', {}, 'savefile.json'),
-    el('span', {}, ' (Import button, top-right) or just start recording catches — everything autosaves to this browser.'),
-  ]);
-  c.insertBefore(banner, c.firstChild);
 }
 
 main();

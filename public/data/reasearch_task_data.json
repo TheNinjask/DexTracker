@@ -4,46 +4,46 @@
             "id": "za",
             "name": "Pokémon Legends: Z-A",
             "icons": [
-                "https://archives.bulbagarden.net/media/upload/b/be/Legends_Z-A_Icon.jpg"
+                "challenges/za/Legends_Z-A_Icon.jpg"
             ]
         },
         {
             "id": "sv",
             "name": "Pokémon Scarlet & Violet",
             "icons": [
-                "https://archives.bulbagarden.net/media/upload/f/f3/Scarlet_Icon.jpg",
-                "https://archives.bulbagarden.net/media/upload/5/53/Violet_Icon.jpg"
+                "challenges/sv/Scarlet_Icon.jpg",
+                "challenges/sv/Violet_Icon.jpg"
             ]
         },
         {
             "id": "pla",
             "name": "Pokémon Legends: Arceus",
             "icons": [
-                "https://archives.bulbagarden.net/media/upload/7/70/Legends_Arceus_Icon.jpg"
+                "challenges/pla/Legends_Arceus_Icon.jpg"
             ]
         },
         {
             "id": "bdsp",
             "name": "Pokémon Brilliant Diamond & Shining Pearl",
             "icons": [
-                "https://archives.bulbagarden.net/media/upload/2/2f/Brilliant_Diamond_Icon.jpg",
-                "https://archives.bulbagarden.net/media/upload/3/3b/Shining_Pearl_Icon.jpg"
+                "challenges/bdsp/Brilliant_Diamond_Icon.jpg",
+                "challenges/bdsp/Shining_Pearl_Icon.jpg"
             ]
         },
         {
             "id": "swsh",
             "name": "Pokémon Sword & Shield",
             "icons": [
-                "https://archives.bulbagarden.net/media/upload/a/ac/Sword_Icon.jpg",
-                "https://archives.bulbagarden.net/media/upload/f/f1/Shield_Icon.jpg"
+                "challenges/swsh/Sword_Icon.jpg",
+                "challenges/swsh/Shield_Icon.jpg"
             ]
         },
         {
             "id": "lgpe",
             "name": "Pokémon Let's Go, Pikachu! & Let's Go, Eevee!",
             "icons": [
-                "https://archives.bulbagarden.net/media/upload/c/c2/Let%27s_Go_Pikachu_Icon.jpg",
-                "https://archives.bulbagarden.net/media/upload/8/83/Let%27s_Go_Eevee_Icon.jpg"
+                "challenges/lgpe/Lets_Go_Pikachu_Icon.jpg",
+                "challenges/lgpe/Lets_Go_Eevee_Icon.jpg"
             ]
         }
     ],

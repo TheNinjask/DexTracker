@@ -6,7 +6,7 @@
 // Serebii's own per-game icon set, so they match the rest of the app.
 import { CHALLENGES, RESEARCH, researchIdx, spriteUrl } from '../data.js';
 import * as store from '../store.js';
-import { el, clear, icon, pct, modal, pickIcon } from '../dom.js';
+import { el, clear, icon, pct, modal, pickIcon, assetUrl } from '../dom.js';
 
 let mode = null; // null = picker, 'home' = Challenges, else = a Research Tasks game id
 let challengeFilter = 'all'; // 'all' | 'done' | 'undone' — kept separate per view
@@ -21,7 +21,7 @@ export function render(root) {
 
 function pickButton(root, name, icons, onSelect) {
   return el('button', { class: 'tool-pick', onclick: () => { onSelect(); render(root); } }, [
-    pickIcon(icons, name),
+    pickIcon(icons.map(assetUrl), name),
     el('span', { class: 'tool-pick-label' }, name),
   ]);
 }

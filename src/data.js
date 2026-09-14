@@ -336,11 +336,11 @@ export function exportPalParkData() {
 // Berry sprite URL. The source workbook composed berry images as
 //   IMAGE(CONCAT("https://serebii.net/itemdex/sprites/za/th/", id, ".png"))
 // where id is the space-stripped lowercase berry name — exactly our berry id
-// (e.g. "cheriberry", "hypercheriberry"). Serebii has no CORS header, so these
-// load as plain (opaque) images via icon() (see dom.js).
-const BERRY_SPRITE_BASE = 'https://serebii.net/itemdex/sprites/za/th/';
+// (e.g. "cheriberry", "hypercheriberry"). Mirrored locally (donut-maker is the
+// only consumer) under the tool's own asset folder, same convention as the
+// other tool icons.
 export function berrySpriteUrl(id) {
-  return id ? `${BERRY_SPRITE_BASE}${id}.png` : '';
+  return id ? `${import.meta.env.BASE_URL}tools/legends-za/donut-maker/berries/${id}.png` : '';
 }
 
 export function speciesName(nat) {
