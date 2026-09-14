@@ -2,14 +2,18 @@
 // Each team is one champion run; the same game can have several distinct teams.
 import { REF, spriteUrl, speciesName, findGame, gamesAlpha } from '../data.js';
 import * as store from '../store.js';
-import { resolveOrigin } from '../compute.js';
-import { el, clear, icon } from '../dom.js';
+import { resolveOriginById } from '../compute.js';
+import { el, clear, icon, modal } from '../dom.js';
 
 // Form context: null = add a brand-new team; { type:'edit', row } edits a mon;
 // { type:'add', team } adds a mon to an existing team.
 let formCtx = null;
 
 const GAME_LIST_ID = 'hof-game-list';
+const OT_LIST_ID = 'hof-ot-list';
+const TID_LIST_ID = 'hof-tid-list';
+function otNames() { return [...new Set((store.state.ot_registry || []).map((r) => r.ot).filter(Boolean))]; }
+function tidValues() { return [...new Set((store.state.ot_registry || []).map((r) => r.tid).filter(Boolean))]; }
 
 let teamSeq = 0;
 function newTeamId() { return `t_${Date.now().toString(36)}_${(teamSeq++).toString(36)}`; }
@@ -21,12 +25,12 @@ function padNat(v) {
 }
 
 // Group rows into teams by team_id, preserving first-seen order. Each team's
-// header info (game/ot/tid) comes from its first member.
+// header info (game) comes from its first member.
 function groupTeams(rows) {
   const order = [], byId = new Map();
   rows.forEach((r) => {
     const id = r.team_id || `g:${r.game || 'Unknown'}`;
-    if (!byId.has(id)) { byId.set(id, { team_id: id, game: r.game, ot: r.ot, tid: r.tid, members: [] }); order.push(id); }
+    if (!byId.has(id)) { byId.set(id, { team_id: id, game: r.game, members: [] }); order.push(id); }
     byId.get(id).members.push(r);
   });
   return order.map((id) => byId.get(id));
@@ -62,7 +66,7 @@ export function render(root) {
     ]));
     const team = el('div', { class: 'hof-roster' });
     t.members.forEach((m, mi) => {
-      const o = resolveOrigin(m.ot, m.tid);
+      const o = resolveOriginById(m.ot_id);
       team.appendChild(el('div', { class: 'hof-mon' }, [
         el('div', { class: 'hof-mon-actions' }, [
           el('button', { class: 'btn tiny', title: 'Move earlier', disabled: mi === 0 || null, onclick: () => { store.swapHofEntries(m, t.members[mi - 1]); render(root); } }, '◀'),
@@ -76,7 +80,7 @@ export function render(root) {
           m.shiny ? el('span', { class: 'badge shiny' }, '✦') : null,
         ]),
         el('div', { class: 'muted small' }, `#${parseInt(m.national_no, 10)} · ${m.form ? m.form + ' ' : ''}${m.species}`),
-        el('div', { class: 'muted small' }, `OT ${m.ot || '—'} / ${m.tid || '—'}`),
+        el('div', { class: 'muted small' }, `OT ${o.ot || '—'} / ${o.tid || '—'}`),
         o.markUrl ? icon(o.markUrl, 'cell-mark inline', o.markCode || '') : null,
       ]));
     });
@@ -97,11 +101,17 @@ function buildForm(root) {
   // Prefill from the edited row, or from the team we're adding to.
   const p = editing || addTeam || {};
 
+  // Prefilled OT/TID text comes from the linked registry row — editing a mon
+  // resolves its own ot_id, adding to an existing team resolves the team's first
+  // member's (teammates are almost always the same trainer).
+  const prefillOrigin = editing ? resolveOriginById(editing.ot_id)
+    : (addTeam && addTeam.members.length ? resolveOriginById(addTeam.members[0].ot_id) : null);
+
   const game = el('input', { class: 'ctrl', placeholder: 'Game', value: p.game || '', list: GAME_LIST_ID });
   const nat = el('input', { class: 'ctrl', placeholder: 'Nat #', value: editing && editing.national_no ? String(parseInt(editing.national_no, 10)) : '' });
   const nickname = el('input', { class: 'ctrl', placeholder: 'Nickname (optional)', value: (editing && editing.nickname) || '' });
-  const ot = el('input', { class: 'ctrl', placeholder: 'OT', value: p.ot || '' });
-  const tid = el('input', { class: 'ctrl', placeholder: 'TID', value: p.tid || '' });
+  const ot = el('input', { class: 'ctrl', placeholder: 'OT', value: (prefillOrigin && prefillOrigin.ot) || '', list: OT_LIST_ID });
+  const tid = el('input', { class: 'ctrl', placeholder: 'TID', value: (prefillOrigin && prefillOrigin.tid) || '', list: TID_LIST_ID });
   const formSel = el('select', { class: 'ctrl', title: 'Form' });
   const shiny = el('input', { type: 'checkbox', checked: editing && editing.shiny ? '' : null });
 
@@ -143,27 +153,41 @@ function buildForm(root) {
     const species = speciesName(key);
     const formCode = formSel.value;
     const formObj = formCode ? REF.forms.find((f) => f.national_no === key && f.form_code === formCode) : null;
-    const fields = {
-      game: game.value.trim(),
-      national_no: key,
-      name: species,
-      species,
-      nickname: nickname.value.trim() || null,
-      ot: ot.value.trim(),
-      tid: tid.value.trim(),
-      form: formObj ? formObj.form : '',
-      form_code: formCode,
-      shiny: shiny.checked,
+    // Ownership only ever links to an existing OT Registry entry — same
+    // match/disambiguate/block flow as the Box detail panel.
+    const finish = (otId) => {
+      const fields = {
+        game: game.value.trim(),
+        national_no: key,
+        name: species,
+        species,
+        nickname: nickname.value.trim() || null,
+        ot_id: otId,
+        form: formObj ? formObj.form : '',
+        form_code: formCode,
+        shiny: shiny.checked,
+      };
+      if (editing) {
+        store.updateHofEntry(editing, fields);
+      } else {
+        // Reuse the target team's id when adding to one; otherwise start a new team.
+        fields.team_id = addTeam ? addTeam.team_id : newTeamId();
+        store.addHofEntry(fields);
+      }
+      formCtx = null;
+      render(root);
     };
-    if (editing) {
-      store.updateHofEntry(editing, fields);
-    } else {
-      // Reuse the target team's id when adding to one; otherwise start a new team.
-      fields.team_id = addTeam ? addTeam.team_id : newTeamId();
-      store.addHofEntry(fields);
+    const otVal = ot.value.trim(), tidVal = tid.value.trim();
+    if (!otVal && !tidVal) { finish(null); return; }
+    const candidates = store.matchOtEntries(otVal, tidVal);
+    if (candidates.length === 1) { finish(candidates[0].id); return; }
+    if (candidates.length > 1) {
+      const m = modal('Multiple trainers match — pick one', candidates.map((c) =>
+        el('div', { class: 'add-form', style: 'cursor:pointer', onclick: () => { m.close(); finish(c.id); } },
+          `${c.ot} / ${c.tid}${c.game ? ' · ' + c.game : ''}`)));
+      return;
     }
-    formCtx = null;
-    render(root);
+    alert(`OT "${otVal}" / TID "${tidVal}" isn't in your trainer registry.\nAdd it in the Registry tab first.`);
   } }, editing ? 'Save changes' : 'Add to Hall of Fame');
 
   const heading = editing ? `Edit ${p.species || ''}`
@@ -172,6 +196,8 @@ function buildForm(root) {
 
   const card = el('div', { class: 'card add-form' }, [
     el('datalist', { id: GAME_LIST_ID }, gamesAlpha().map((g) => el('option', { value: g.id }))),
+    el('datalist', { id: OT_LIST_ID }, otNames().map((v) => el('option', { value: v }))),
+    el('datalist', { id: TID_LIST_ID }, tidValues().map((v) => el('option', { value: v }))),
     el('h3', {}, heading),
     el('div', { class: 'add-grid' }, [
       game, nat, formSel, nickname, ot, tid,

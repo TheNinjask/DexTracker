@@ -1,6 +1,6 @@
 // OT registry editor (SPEC §4.4). The join table turning (OT,TID) into origin metadata.
 import { REF, findGame, findMark, gamesAlpha } from '../data.js';
-import { resolveOrigin } from '../compute.js';
+import { resolveOriginById } from '../compute.js';
 import * as store from '../store.js';
 import { el, clear, icon, dataTable } from '../dom.js';
 
@@ -17,7 +17,7 @@ export function render(root) {
   const rows = store.state.ot_registry || [];
   const headers = ['OT', 'TID', 'Game', 'Origin', 'Mark', 'isMine', 'isGo', 'Profile', 'Description', ''];
   const body = rows.map((r) => {
-    const o = resolveOrigin(r.ot, r.tid);
+    const o = resolveOriginById(r.id);
     return [
       { c: 'mono', v: r.ot },
       { c: 'mono', v: r.tid },

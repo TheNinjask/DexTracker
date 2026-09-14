@@ -47,6 +47,7 @@ const index = {
   forms: new Map(),     // key -> ownership row
   perGame: new Map(),   // dexId -> Map(national_no -> row)
   ot: new Map(),        // "ot|tid" -> registry row
+  otById: new Map(),    // id -> registry row
   challengesDone: new Set(), // "<challengeId>::<tierIndex>"
   monsDone: new Set(),       // "<researchTaskId>::<pokemonIndex>"
 };
@@ -65,6 +66,7 @@ function reindex() {
   index.forms.clear();
   index.perGame.clear();
   index.ot.clear();
+  index.otById.clear();
   index.challengesDone.clear();
   index.monsDone.clear();
   (state.species_ownership || []).forEach((r) => index.species.set(r.national_no, r));
@@ -74,7 +76,7 @@ function reindex() {
     (rows || []).forEach((r) => m.set(r.national_no, r));
     index.perGame.set(dexId, m);
   });
-  (state.ot_registry || []).forEach((r) => index.ot.set(otKey(r.ot, r.tid), r));
+  (state.ot_registry || []).forEach((r) => { index.ot.set(otKey(r.ot, r.tid), r); index.otById.set(r.id, r); });
   (state.challenges_completed || []).forEach((k) => index.challengesDone.add(k));
   (state.research_mons_completed || []).forEach((k) => index.monsDone.add(k));
 }
@@ -131,13 +133,53 @@ function migrateV1toV2(data) {
   };
 }
 
-// v2 -> v3: every ot_registry row gets a stable unique id. Rows were previously
-// identified solely by (ot, tid) — that stays the uniqueness key for now, this
-// just gives each row an identity that survives an ot/tid edit.
+// v2 -> v3: every ot_registry row gets a stable unique id, and every place that
+// records *whose* a catch is (species/form/per-game ownership, Hall of Fame)
+// references that id instead of duplicating raw ot/tid text. Any ot/tid pair
+// found in those tables with no matching registry row gets one auto-created here
+// (grandfathering historical data) — self-contained, no calls into live
+// getOtEntry/matchOtEntries, since migrations must not depend on logic that can
+// change shape later.
 function migrateV2toV3(data) {
+  const registry = (data.ot_registry || []).map((r) => ('id' in r ? r : { id: newId(), ...r }));
+  const byKey = new Map(registry.map((r) => [`${(r.ot || '').trim()}|${(r.tid || '').trim()}`, r]));
+  const resolve = (ot, tid, fallbackIsMine) => {
+    const o = (ot || '').trim(), t = (tid || '').trim();
+    if (!o && !t) return null;
+    const key = `${o}|${t}`;
+    let row = byKey.get(key);
+    if (!row) {
+      row = { id: newId(), ot: o, tid: t, is_mine: fallbackIsMine !== undefined ? fallbackIsMine : true,
+        is_go: false, profile: 'N/A', game: '', description: '' };
+      registry.push(row);
+      byKey.set(key, row);
+    }
+    return row.id;
+  };
+  const migrateSlots = (rows) => (rows || []).map((r) => {
+    const out = { ...r };
+    ['normal', 'shiny'].forEach((k) => {
+      if (!out[k]) return;
+      const id = resolve(out[k].ot, out[k].tid);
+      if (id) out[k] = { ot_id: id }; else delete out[k];
+    });
+    return out;
+  });
   return {
     ...data,
-    ot_registry: (data.ot_registry || []).map((r) => ('id' in r ? r : { id: newId(), ...r })),
+    ot_registry: registry,
+    species_ownership: migrateSlots(data.species_ownership),
+    form_ownership: migrateSlots(data.form_ownership),
+    per_game_ownership: Object.fromEntries(Object.entries(data.per_game_ownership || {}).map(
+      ([dexId, rows]) => [dexId, (rows || []).map((r) => {
+        const { ot, tid, is_mine, ...rest } = r;
+        return { ...rest, ot_id: resolve(ot, tid, is_mine), is_mine };
+      })]
+    )),
+    hall_of_fame: (data.hall_of_fame || []).map((r) => {
+      const { ot, tid, ...rest } = r;
+      return { ...rest, ot_id: resolve(ot, tid) };
+    }),
   };
 }
 
@@ -202,7 +244,7 @@ export function commit({ reindex: doReindex = false } = {}) {
 
 // ---- Ownership accessors ----
 export function isOwned(slot) {
-  return !!(slot && String(slot.ot || '').trim() && String(slot.tid || '').trim());
+  return !!(slot && slot.ot_id);
 }
 
 export function getSpeciesRow(nat) { return index.species.get(nat); }
@@ -212,7 +254,7 @@ export function getSpeciesSlot(nat, shiny) {
   return shiny ? r.shiny : r.normal;
 }
 
-export function setSpeciesSlot(nat, shiny, ot, tid) {
+export function setSpeciesSlot(nat, shiny, otId) {
   let r = index.species.get(nat);
   if (!r) {
     r = { national_no: nat };
@@ -220,8 +262,8 @@ export function setSpeciesSlot(nat, shiny, ot, tid) {
     index.species.set(nat, r);
   }
   const key = shiny ? 'shiny' : 'normal';
-  if (!ot && !tid) delete r[key];
-  else r[key] = { ot: ot || '', tid: tid || '' };
+  if (!otId) delete r[key];
+  else r[key] = { ot_id: otId };
   commit();
 }
 
@@ -231,7 +273,7 @@ export function getFormSlot(nat, formCode, form, shiny, formCodeBase) {
   if (!r) return null;
   return shiny ? r.shiny : r.normal;
 }
-export function setFormSlot(nat, formCode, form, shiny, ot, tid, formCodeBase) {
+export function setFormSlot(nat, formCode, form, shiny, otId, formCodeBase) {
   const k = formKey(nat, formCode, form, formCodeBase);
   let r = index.forms.get(k);
   if (!r) {
@@ -241,8 +283,8 @@ export function setFormSlot(nat, formCode, form, shiny, ot, tid, formCodeBase) {
     index.forms.set(k, r);
   }
   const key = shiny ? 'shiny' : 'normal';
-  if (!ot && !tid) delete r[key];
-  else r[key] = { ot: ot || '', tid: tid || '' };
+  if (!otId) delete r[key];
+  else r[key] = { ot_id: otId };
   commit();
 }
 
@@ -250,7 +292,7 @@ export function getPerGameRow(dexId, nat) {
   const m = index.perGame.get(dexId);
   return m ? m.get(nat) : null;
 }
-export function setPerGameSlot(dexId, nat, regionalNo, ot, tid, isMine) {
+export function setPerGameSlot(dexId, nat, regionalNo, otId, isMine) {
   let m = index.perGame.get(dexId);
   if (!m) {
     m = new Map();
@@ -258,7 +300,7 @@ export function setPerGameSlot(dexId, nat, regionalNo, ot, tid, isMine) {
     state.per_game_ownership[dexId] = state.per_game_ownership[dexId] || [];
   }
   let r = m.get(nat);
-  if (!ot && !tid) {
+  if (!otId) {
     if (r) {
       state.per_game_ownership[dexId] = state.per_game_ownership[dexId].filter((x) => x !== r);
       m.delete(nat);
@@ -272,8 +314,7 @@ export function setPerGameSlot(dexId, nat, regionalNo, ot, tid, isMine) {
     state.per_game_ownership[dexId].push(r);
     m.set(nat, r);
   }
-  r.ot = ot || '';
-  r.tid = tid || '';
+  r.ot_id = otId;
   r.is_mine = !!isMine;
   commit();
 }
@@ -324,6 +365,16 @@ export function removeProfile(row) {
 }
 
 export function getOtEntry(ot, tid) { return index.ot.get(otKey(ot, tid)); }
+export function getOtEntryById(id) { return index.otById.get(id); }
+// Filter registry rows by whichever of ot/tid is non-blank (trimmed, same equality
+// otKey() uses). Both blank -> no candidates (caller treats that as "clear", not a
+// match question). A blank TID against a reused OT name can yield >1 candidate — the
+// caller shows a picker rather than guessing.
+export function matchOtEntries(ot, tid) {
+  const o = (ot || '').trim(), t = (tid || '').trim();
+  if (!o && !t) return [];
+  return (state.ot_registry || []).filter((r) => (!o || r.ot === o) && (!t || r.tid === t));
+}
 export function upsertOtEntry(entry) {
   const k = otKey(entry.ot, entry.tid);
   const existing = index.ot.get(k);
@@ -333,6 +384,7 @@ export function upsertOtEntry(entry) {
     const row = { id: newId(), ...entry };
     state.ot_registry.push(row);
     index.ot.set(k, row);
+    index.otById.set(row.id, row);
   }
   commit();
 }
@@ -342,6 +394,7 @@ export function removeOtEntry(ot, tid) {
   if (existing) {
     state.ot_registry = state.ot_registry.filter((x) => x !== existing);
     index.ot.delete(k);
+    index.otById.delete(existing.id);
     commit();
   }
 }

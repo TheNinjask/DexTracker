@@ -3,10 +3,13 @@
 import { REF, idx, spriteUrl, speciesName, findGame, findMark } from './data.js';
 import * as store from './store.js';
 
-// Resolve a slot's (OT,TID) to rich origin metadata via the OT registry + Game Ref.
-export function resolveOrigin(ot, tid) {
-  const reg = store.getOtEntry(ot, tid);
-  if (!reg) return { game: null, gameId: null, iconUrl: null, markUrl: null, markCode: null, isMine: null, isGo: null, description: null, registered: false };
+// Resolve an OT registry row to rich origin metadata via the Game Ref. Shared body
+// for resolveOrigin (looked up by raw ot/tid text) and resolveOriginById (looked up
+// by the registry row's stable id).
+function resolveFromRow(reg) {
+  if (!reg) return { game: null, gameId: null, iconUrl: null, markUrl: null, markCode: null,
+    iconGame: null, markId: null, isMine: null, isGo: null, profile: null, description: null,
+    registered: false, ot: null, tid: null, otId: null };
   const game = findGame(reg.game);
   // Per-entry overrides: the origin icon can be borrowed from a different
   // reference game (reg.icon_game), defaulting to the entry's own game. The mark
@@ -27,8 +30,16 @@ export function resolveOrigin(ot, tid) {
     profile: reg.profile,
     description: reg.description,
     registered: true,
+    ot: reg.ot,
+    tid: reg.tid,
+    otId: reg.id,
   };
 }
+// Resolve by raw OT/TID text (registry.js's own row-identity lookups).
+export function resolveOrigin(ot, tid) { return resolveFromRow(store.getOtEntry(ot, tid)); }
+// Resolve by the OT registry row's stable id — every ownership slot (species/form/
+// per-game/Hall of Fame) stores this id rather than duplicating ot/tid text.
+export function resolveOriginById(otId) { return resolveFromRow(otId ? store.getOtEntryById(otId) : null); }
 
 // Build the ordered entry list for a given dex.
 // Returns { dex, entries:[ {national_no, regional_no, name, source, shiny, formCode, formCodeShiny, slotKind, dexId, group} ], hasRegional, isForm }
@@ -137,7 +148,7 @@ function tallySpecies(shiny) {
     const slot = store.getSpeciesSlot(s.national_no, shiny);
     if (store.isOwned(slot)) {
       owned++;
-      const o = resolveOrigin(slot.ot, slot.tid);
+      const o = resolveOriginById(slot.ot_id);
       if (o.isGo) go++;
     }
   });
@@ -151,7 +162,7 @@ function tallyForms(shiny) {
     const slot = store.getFormSlot(f.national_no, f.form_code, f.form, shiny, f.form_code_base);
     if (store.isOwned(slot)) {
       owned++;
-      const o = resolveOrigin(slot.ot, slot.tid);
+      const o = resolveOriginById(slot.ot_id);
       if (o.isGo) go++;
     }
   });
@@ -168,9 +179,9 @@ function bySource() {
   };
   REF.species.forEach((s) => {
     const n = store.getSpeciesSlot(s.national_no, false);
-    if (store.isOwned(n)) add(resolveOrigin(n.ot, n.tid).game || 'N/A', false);
+    if (store.isOwned(n)) add(resolveOriginById(n.ot_id).game || 'N/A', false);
     const sh = store.getSpeciesSlot(s.national_no, true);
-    if (store.isOwned(sh)) add(resolveOrigin(sh.ot, sh.tid).game || 'N/A', true);
+    if (store.isOwned(sh)) add(resolveOriginById(sh.ot_id).game || 'N/A', true);
   });
   const total = REF.species.length;
   return [...rows.values()]
