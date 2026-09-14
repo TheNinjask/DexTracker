@@ -132,6 +132,20 @@ function refreshSelected() {
   });
 }
 
+// Every current pick, grouped by area and kept in pick order — the Nth pick
+// in an area maps to that area's Nth configured slot. Shared by refreshMap()
+// (which places mon icons) and refreshSlotDots() (which shows, per slot,
+// whichever mon icon — if any — currently occupies it).
+function groupSelectedByArea() {
+  const byArea = new Map();
+  selected.forEach((nat) => {
+    const areaId = palparkIdx.areaByNat.get(nat);
+    if (!byArea.has(areaId)) byArea.set(areaId, []);
+    byArea.get(areaId).push(nat);
+  });
+  return byArea;
+}
+
 // A small deterministic nudge (% of map) for picks beyond an area's defined
 // slot count, so they fan out instead of stacking exactly on top of the last
 // slot and hiding each other — still expected to be rare (each area should
@@ -140,12 +154,7 @@ const SLOT_OVERFLOW_NUDGE = 1.5;
 
 function refreshMap() {
   clear(monsHost);
-  const byArea = new Map();
-  selected.forEach((nat) => {
-    const areaId = palparkIdx.areaByNat.get(nat);
-    if (!byArea.has(areaId)) byArea.set(areaId, []);
-    byArea.get(areaId).push(nat);
-  });
+  const byArea = groupSelectedByArea();
   byArea.forEach((nats, areaId) => {
     const area = palparkIdx.areaById.get(areaId);
     const slots = (area && area.slots) || [];
@@ -170,23 +179,36 @@ function refreshAll() {
   refreshSuggestions();
   refreshSelected();
   refreshMap();
+  refreshSlotDots(); // keep dev-mode dots' occupant icons in sync with picks
 }
 
 // --- Dev mode: slot position editor ----------------------------------------
 // Shows every configured slot (every area, not just occupied ones) as a
-// draggable numbered dot instead of the normal picked-Pokémon icons — dev
-// mode is about editing the raw palpark_data.json layout, not the picker, so
-// dragging replaces (rather than adds to) the click-to-remove mon icons.
+// draggable dot instead of the normal picked-Pokémon icons — dev mode is
+// about editing the raw palpark_data.json layout, not the picker, so
+// dragging replaces (rather than adds to) the click-to-remove mon icons. A
+// slot currently occupied by a pick (same rule refreshMap() uses: the Nth
+// pick in an area goes to its Nth slot) shows that Pokémon's own icon
+// instead of a bare number, so you can see exactly what would render there.
 function refreshSlotDots() {
   if (!slotsHost) return;
   clear(slotsHost);
   if (!slotEditOn) return;
+  const byArea = groupSelectedByArea();
   PALPARK.areas.forEach((area) => {
+    const nats = byArea.get(area.id) || [];
     (area.slots || []).forEach((slot, i) => {
+      const occupant = i < nats.length ? monInfo(nats[i]) : null;
+      // Inline background wins over the .occupied CSS rule's own background,
+      // so pick it here instead: white behind a sprite (so it reads clearly),
+      // the area's color behind a bare number (so empty slots stay grouped
+      // by area at a glance).
+      const bg = occupant ? '#fff' : (AREA_COLORS[area.id] || '#e91e63');
       const dot = el('button', {
-        class: 'pp-slot-dot', title: `${area.name} slot ${i + 1}`,
-        style: `left:${slot.x}%; top:${slot.y}%; background:${AREA_COLORS[area.id] || '#e91e63'};`,
-      }, String(i + 1));
+        class: 'pp-slot-dot' + (occupant ? ' occupied' : ''),
+        title: occupant ? `${occupant.name} — ${area.name} slot ${i + 1}` : `${area.name} slot ${i + 1}`,
+        style: `left:${slot.x}%; top:${slot.y}%; background:${bg};`,
+      }, occupant ? icon(occupant.sprite, 'pp-slot-dot-img', occupant.name) : String(i + 1));
       attachDrag(dot, slot);
       slotsHost.appendChild(dot);
     });
@@ -287,7 +309,6 @@ export function render(root) {
 
   root.appendChild(layout);
   refreshAll();
-  refreshSlotDots();
   currentRoot = root;
   requestAnimationFrame(() => sizeMap());
   watchResize();

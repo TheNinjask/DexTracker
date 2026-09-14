@@ -696,6 +696,11 @@ select.ctrl { border-radius: 999px; }
   box-shadow: 0 1px 4px #0006;
 }
 .pp-slot-dot:active { cursor: grabbing; }
+/* An occupied slot (a pick currently lands there) swaps the plain numbered
+   dot for that Pokémon's own icon, sized up a bit since a species sprite
+   needs to read clearly, unlike a single digit. */
+.pp-slot-dot.occupied { width: 6.5cqw; height: 6.5cqw; min-width: 30px; min-height: 30px; background: #fff; }
+.pp-slot-dot-img { width: 100%; height: 100%; object-fit: contain; }
 
 /* Cooking */
 /* Table | graph layout. Side-by-side (50/50) only while the window is wide enough
