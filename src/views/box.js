@@ -2,12 +2,26 @@
 import { REF, idx } from '../data.js';
 import * as store from '../store.js';
 import { buildDexEntries, entrySlot, entryOwned, entrySprite, resolveOriginById } from '../compute.js';
-import { el, clear, getPrefs, setPref, icon, modal, alertDialog } from '../dom.js';
+import { el, clear, getPrefs, setPref, icon, alertDialog, selectDialog } from '../dom.js';
 
 const OT_LIST_ID = 'box-ot-list';
 const TID_LIST_ID = 'box-tid-list';
 function otNames() { return [...new Set((store.state.ot_registry || []).map((r) => r.ot).filter(Boolean))]; }
 function tidValues() { return [...new Set((store.state.ot_registry || []).map((r) => r.tid).filter(Boolean))]; }
+
+// One row of the "pick a trainer" disambiguation dialog — OT/TID plus the row's
+// own effective game + mark imagery, same resolution resolveOriginById uses
+// everywhere else, so a duplicate ot+tid pair is still visually distinguishable.
+function otCandidateRow(c) {
+  const o = resolveOriginById(c.id);
+  return [
+    el('span', {}, `OT: ${c.ot} | TID: ${c.tid} | Game: `),
+    o.iconUrl ? icon(o.iconUrl, 'origin-icon', c.game || '') : null,
+    el('span', {}, `${c.game || '—'} | Mark: `),
+    o.markUrl ? icon(o.markUrl, 'origin-icon', o.markCode || '') : null,
+    el('span', {}, o.markCode || '—'),
+  ];
+}
 
 const vs = {
   dexId: getPrefs().boxDex || 'Nat Dex',
@@ -489,15 +503,14 @@ function buildDetail(root, e) {
   };
 
   card.appendChild(el('div', { class: 'detail-actions' }, [
-    el('button', { class: 'btn primary', onclick: () => {
+    el('button', { class: 'btn primary', onclick: async () => {
       const ot = otIn.value.trim(), tid = tidIn.value.trim();
       if (!ot && !tid) { finish(null); return; }
       const candidates = store.matchOtEntries(ot, tid);
       if (candidates.length === 1) { finish(candidates[0].id); return; }
       if (candidates.length > 1) {
-        const m = modal('Multiple trainers match — pick one', candidates.map((c) =>
-          el('div', { class: 'add-form', style: 'cursor:pointer', onclick: () => { m.close(); finish(c.id); } },
-            `${c.ot} / ${c.tid}${c.game ? ' · ' + c.game : ''}`)));
+        const picked = await selectDialog('Multiple trainers match — pick one', candidates, otCandidateRow);
+        if (picked) finish(picked.id);
         return;
       }
       alertDialog(`OT "${ot}" / TID "${tid}" isn't in your trainer registry.\nAdd it in the Registry tab first.`);

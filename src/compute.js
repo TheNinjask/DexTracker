@@ -3,9 +3,7 @@
 import { REF, idx, spriteUrl, speciesName, findGame, findMark } from './data.js';
 import * as store from './store.js';
 
-// Resolve an OT registry row to rich origin metadata via the Game Ref. Shared body
-// for resolveOrigin (looked up by raw ot/tid text) and resolveOriginById (looked up
-// by the registry row's stable id).
+// Resolve an OT registry row to rich origin metadata via the Game Ref.
 function resolveFromRow(reg) {
   if (!reg) return { game: null, gameId: null, iconUrl: null, markUrl: null, markCode: null,
     iconGame: null, markId: null, isMine: null, isGo: null, profile: null, description: null,
@@ -35,10 +33,9 @@ function resolveFromRow(reg) {
     otId: reg.id,
   };
 }
-// Resolve by raw OT/TID text (registry.js's own row-identity lookups).
-export function resolveOrigin(ot, tid) { return resolveFromRow(store.getOtEntry(ot, tid)); }
 // Resolve by the OT registry row's stable id — every ownership slot (species/form/
-// per-game/Hall of Fame) stores this id rather than duplicating ot/tid text.
+// per-game/Hall of Fame) and the registry's own table stores/uses this id rather
+// than raw ot/tid text (which is no longer unique — duplicates are allowed).
 export function resolveOriginById(otId) { return resolveFromRow(otId ? store.getOtEntryById(otId) : null); }
 
 // Build the ordered entry list for a given dex.

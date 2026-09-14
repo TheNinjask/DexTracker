@@ -30,7 +30,7 @@ export function render(root) {
       { c: 'muted small', v: r.description || '' },
       el('td', { class: 'row-actions' }, [
         el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = r; render(root); } }, '✎'),
-        el('button', { class: 'btn tiny', title: 'Remove', onclick: async () => { if (await confirmDialog(`Remove ${r.ot}/${r.tid}?`)) { if (editing === r) editing = null; store.removeOtEntry(r.ot, r.tid); render(root); } } }, '✕'),
+        el('button', { class: 'btn tiny', title: 'Remove', onclick: async () => { if (await confirmDialog(`Remove ${r.ot}/${r.tid}?`)) { if (editing === r) editing = null; store.removeOtEntry(r.id); render(root); } } }, '✕'),
       ]),
     ];
   });
@@ -108,7 +108,7 @@ function buildForm(root) {
       is_mine: mine.checked, is_go: go.checked,
       profile: profile.value.trim() || 'N/A', description: desc.value.trim(),
       icon_game: iconGame.value || '', mark_id: markId.value || '',
-    });
+    }, editing ? editing.id : null);
     editing = null;
     render(root);
   } }, editing ? 'Save changes' : 'Save');

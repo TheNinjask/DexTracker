@@ -203,6 +203,17 @@ export function promptDialog(message, defaultValue = '', title = 'Input') {
   });
 }
 
+// "Pick one of several" dialog — same Promise pattern as the above. `renderRow(opt)`
+// returns the DOM content for one clickable row (the caller controls what a row
+// shows). Resolves the picked option, or null if dismissed without picking.
+export function selectDialog(title, options, renderRow) {
+  return new Promise((resolve) => {
+    const m = modal(title, options.map((opt) =>
+      el('div', { class: 'select-row', onclick: () => { resolve(opt); m.close(); } }, renderRow(opt))
+    ), () => resolve(null));
+  });
+}
+
 // Trigger a client-side download of a text/JSON document (savefile export, dev
 // reference-data export). Revokes the object URL after the click settles.
 export function downloadJson(filename, text) {

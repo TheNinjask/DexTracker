@@ -731,6 +731,8 @@ select.ctrl { border-radius: 999px; }
 .modal-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 .modal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .modal-actions .btn { flex: 1; }
+.select-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--border-soft); border-radius: 10px; cursor: pointer; }
+.select-row:hover { background: #1d4a3a14; }
 .btn.icon { padding: 2px 8px; line-height: 1; box-shadow: none; }
 .qr-wrap { display: flex; justify-content: center; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 10px; }
 .qr-canvas { display: block; width: 240px; height: 240px; }

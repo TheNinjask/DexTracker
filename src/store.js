@@ -46,8 +46,7 @@ const index = {
   species: new Map(),   // national_no -> ownership row
   forms: new Map(),     // key -> ownership row
   perGame: new Map(),   // dexId -> Map(national_no -> row)
-  ot: new Map(),        // "ot|tid" -> registry row
-  otById: new Map(),    // id -> registry row
+  otById: new Map(),    // id -> registry row (ot/tid are descriptive, not a key — duplicates are allowed)
   challengesDone: new Set(), // "<challengeId>::<tierIndex>"
   monsDone: new Set(),       // "<researchTaskId>::<pokemonIndex>"
 };
@@ -57,15 +56,10 @@ const index = {
 export function formKey(nat, formCode, form, formCodeBase) {
   return `${nat || ''}|${formCode || ''}|${form || ''}${formCodeBase ? `|${formCodeBase}` : ''}`;
 }
-export function otKey(ot, tid) {
-  return `${(ot || '').trim()}|${(tid || '').trim()}`;
-}
-
 function reindex() {
   index.species.clear();
   index.forms.clear();
   index.perGame.clear();
-  index.ot.clear();
   index.otById.clear();
   index.challengesDone.clear();
   index.monsDone.clear();
@@ -76,7 +70,7 @@ function reindex() {
     (rows || []).forEach((r) => m.set(r.national_no, r));
     index.perGame.set(dexId, m);
   });
-  (state.ot_registry || []).forEach((r) => { index.ot.set(otKey(r.ot, r.tid), r); index.otById.set(r.id, r); });
+  (state.ot_registry || []).forEach((r) => index.otById.set(r.id, r));
   (state.challenges_completed || []).forEach((k) => index.challengesDone.add(k));
   (state.research_mons_completed || []).forEach((k) => index.monsDone.add(k));
 }
@@ -364,37 +358,36 @@ export function removeProfile(row) {
   commit();
 }
 
-export function getOtEntry(ot, tid) { return index.ot.get(otKey(ot, tid)); }
 export function getOtEntryById(id) { return index.otById.get(id); }
-// Filter registry rows by whichever of ot/tid is non-blank (trimmed, same equality
-// otKey() uses). Both blank -> no candidates (caller treats that as "clear", not a
-// match question). A blank TID against a reused OT name can yield >1 candidate — the
-// caller shows a picker rather than guessing.
+// Filter registry rows by whichever of ot/tid is non-blank (trimmed). Both blank ->
+// no candidates (caller treats that as "clear", not a match question). Duplicates
+// are a supported case — the same ot+tid can legitimately describe more than one
+// registry row (different game/mark context) — so this can return several
+// candidates; the caller disambiguates (picker) rather than guessing.
 export function matchOtEntries(ot, tid) {
   const o = (ot || '').trim(), t = (tid || '').trim();
   if (!o && !t) return [];
   return (state.ot_registry || []).filter((r) => (!o || r.ot === o) && (!t || r.tid === t));
 }
-export function upsertOtEntry(entry) {
-  const k = otKey(entry.ot, entry.tid);
-  const existing = index.ot.get(k);
+// id present -> edit that exact row in place (its ot/tid can change to anything,
+// including colliding with another row's — duplicates are allowed). No id -> always
+// create a new row; ot/tid are descriptive fields here, never a uniqueness key.
+export function upsertOtEntry(entry, id) {
+  const existing = id ? index.otById.get(id) : null;
   if (existing) {
     Object.assign(existing, entry, { id: existing.id });
   } else {
     const row = { id: newId(), ...entry };
     state.ot_registry.push(row);
-    index.ot.set(k, row);
     index.otById.set(row.id, row);
   }
   commit();
 }
-export function removeOtEntry(ot, tid) {
-  const k = otKey(ot, tid);
-  const existing = index.ot.get(k);
+export function removeOtEntry(id) {
+  const existing = index.otById.get(id);
   if (existing) {
     state.ot_registry = state.ot_registry.filter((x) => x !== existing);
-    index.ot.delete(k);
-    index.otById.delete(existing.id);
+    index.otById.delete(id);
     commit();
   }
 }

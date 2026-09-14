@@ -3,7 +3,7 @@
 import { REF, spriteUrl, speciesName, findGame, gamesAlpha } from '../data.js';
 import * as store from '../store.js';
 import { resolveOriginById } from '../compute.js';
-import { el, clear, icon, modal, alertDialog, confirmDialog } from '../dom.js';
+import { el, clear, icon, alertDialog, confirmDialog, selectDialog } from '../dom.js';
 
 // Form context: null = add a brand-new team; { type:'edit', row } edits a mon;
 // { type:'add', team } adds a mon to an existing team.
@@ -14,6 +14,20 @@ const OT_LIST_ID = 'hof-ot-list';
 const TID_LIST_ID = 'hof-tid-list';
 function otNames() { return [...new Set((store.state.ot_registry || []).map((r) => r.ot).filter(Boolean))]; }
 function tidValues() { return [...new Set((store.state.ot_registry || []).map((r) => r.tid).filter(Boolean))]; }
+
+// One row of the "pick a trainer" disambiguation dialog — OT/TID plus the row's
+// own effective game + mark imagery, same resolution resolveOriginById uses
+// everywhere else, so a duplicate ot+tid pair is still visually distinguishable.
+function otCandidateRow(c) {
+  const o = resolveOriginById(c.id);
+  return [
+    el('span', {}, `OT: ${c.ot} | TID: ${c.tid} | Game: `),
+    o.iconUrl ? icon(o.iconUrl, 'origin-icon', c.game || '') : null,
+    el('span', {}, `${c.game || '—'} | Mark: `),
+    o.markUrl ? icon(o.markUrl, 'origin-icon', o.markCode || '') : null,
+    el('span', {}, o.markCode || '—'),
+  ];
+}
 
 let teamSeq = 0;
 function newTeamId() { return `t_${Date.now().toString(36)}_${(teamSeq++).toString(36)}`; }
@@ -142,7 +156,7 @@ function buildForm(root) {
   formSel.addEventListener('change', refresh);
   shiny.addEventListener('change', refresh);
 
-  const save = el('button', { class: 'btn primary', onclick: () => {
+  const save = el('button', { class: 'btn primary', onclick: async () => {
     const key = padNat(nat.value);
     if (!key) { alertDialog('A national number is required.'); return; }
     if (!game.value.trim()) { alertDialog('A game is required.'); return; }
@@ -182,9 +196,8 @@ function buildForm(root) {
     const candidates = store.matchOtEntries(otVal, tidVal);
     if (candidates.length === 1) { finish(candidates[0].id); return; }
     if (candidates.length > 1) {
-      const m = modal('Multiple trainers match — pick one', candidates.map((c) =>
-        el('div', { class: 'add-form', style: 'cursor:pointer', onclick: () => { m.close(); finish(c.id); } },
-          `${c.ot} / ${c.tid}${c.game ? ' · ' + c.game : ''}`)));
+      const picked = await selectDialog('Multiple trainers match — pick one', candidates, otCandidateRow);
+      if (picked) finish(picked.id);
       return;
     }
     alertDialog(`OT "${otVal}" / TID "${tidVal}" isn't in your trainer registry.\nAdd it in the Registry tab first.`);
