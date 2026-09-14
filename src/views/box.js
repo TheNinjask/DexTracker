@@ -1,5 +1,5 @@
 // Primary interface — HOME-style box grid (SPEC §7).
-import { REF, idx } from '../data.js';
+import { REF, idx, findGame } from '../data.js';
 import * as store from '../store.js';
 import { buildDexEntries, entrySlot, entryOwned, entrySprite, resolveOriginById } from '../compute.js';
 import { el, clear, getPrefs, setPref, icon, alertDialog, selectDialog } from '../dom.js';
@@ -14,12 +14,17 @@ function tidValues() { return [...new Set((store.state.ot_registry || []).map((r
 // everywhere else, so a duplicate ot+tid pair is still visually distinguishable.
 function otCandidateRow(c) {
   const o = resolveOriginById(c.id);
+  // Game icon + text both come from whichever game the icon is actually sourced
+  // from (icon_game override, falling back to the row's own game) — the same
+  // source o.iconUrl resolves from, so label and icon never disagree even when
+  // the row's own game field is blank but an override is set.
+  const gameId = o.iconGame || c.game;
+  const game = gameId ? findGame(gameId) : null;
   return [
-    el('span', {}, `OT: ${c.ot} | TID: ${c.tid} | Game: `),
-    o.iconUrl ? icon(o.iconUrl, 'origin-icon', c.game || '') : null,
-    el('span', {}, `${c.game || '—'} | Mark: `),
-    o.markUrl ? icon(o.markUrl, 'origin-icon', o.markCode || '') : null,
-    el('span', {}, o.markCode || '—'),
+    el('span', {}, `OT: ${c.ot}`),
+    el('span', {}, `TID: ${c.tid}`),
+    el('span', { class: 'select-field' }, ['Game:', game && game.icon_url ? icon(game.icon_url, 'origin-icon', gameId) : null, gameId || '—']),
+    el('span', { class: 'select-field' }, ['Mark:', o.markUrl ? icon(o.markUrl, 'origin-icon', o.markCode || '') : null, o.markCode || '—']),
   ];
 }
 

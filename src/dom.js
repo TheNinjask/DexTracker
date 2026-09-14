@@ -211,6 +211,9 @@ export function selectDialog(title, options, renderRow) {
     const m = modal(title, options.map((opt) =>
       el('div', { class: 'select-row', onclick: () => { resolve(opt); m.close(); } }, renderRow(opt))
     ), () => resolve(null));
+    // Unlike alert/confirm/prompt, a row's content length varies a lot (icons +
+    // several fields) — size the box to fit it instead of the fixed narrow width.
+    m.box.classList.add('select-modal');
   });
 }
 
