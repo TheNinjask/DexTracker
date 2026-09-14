@@ -12314,11 +12314,6 @@
             "mark_id": "GO"
         },
         {
-            "id": "Home/Go",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/4/44/HOME_GO_icon.png",
-            "mark_id": "GO"
-        },
-        {
             "id": "Scarlet",
             "icon_url": "https://archives.bulbagarden.net/media/upload/2/29/HOME_Scarlet_icon.png",
             "mark_id": "SV"
@@ -12429,36 +12424,6 @@
             "mark_id": null
         },
         {
-            "id": "Home(PLA)",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_id": "LA"
-        },
-        {
-            "id": "Home(BDSP)",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_id": "BDSP"
-        },
-        {
-            "id": "Home(SV)",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_id": "SV"
-        },
-        {
-            "id": "Event(SwSh)",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_id": "SWSH"
-        },
-        {
-            "id": "Home(SwSh)",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_id": "SWSH"
-        },
-        {
-            "id": "Home(LGPE)",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_id": "LGPE"
-        },
-        {
             "id": "Let's Go Pikachu",
             "icon_url": "https://archives.bulbagarden.net/media/upload/1/19/HOME_Let%27s_Go_Pikachu_icon.png",
             "mark_id": "LGPE"
@@ -12469,9 +12434,14 @@
             "mark_id": "LZA"
         },
         {
-            "id": "HOME (PLZA)",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/c/cc/HOME_HOME_icon.png",
-            "mark_id": "LZA"
+            "id": "Diamond",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/5/5c/Diamond_icon.png",
+            "mark_id": null
+        },
+        {
+            "id": "Pearl",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/f/fb/Pearl_icon.png",
+            "mark_id": null
         }
     ],
     "marks": [

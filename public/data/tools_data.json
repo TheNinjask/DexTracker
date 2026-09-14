@@ -4,6 +4,17 @@
             "id": "legends-za",
             "name": "Pokémon Legends: Z-A",
             "icon_url": "https://archives.bulbagarden.net/media/upload/b/be/Legends_Z-A_Icon.jpg"
+        },
+        {
+            "id": "gen4",
+            "name": "Pokémon Generation 4",
+            "icon_url": [
+                "https://archives.bulbagarden.net/media/upload/5/5c/SoulSilver_EN_boxart.jpg",
+                "https://archives.bulbagarden.net/media/upload/a/af/Pearl_EN_boxart.jpg",
+                "https://archives.bulbagarden.net/media/upload/e/ee/Platinum_EU_boxart.jpg",
+                "https://archives.bulbagarden.net/media/upload/6/69/Diamond_EN_boxart.jpg",
+                "https://archives.bulbagarden.net/media/upload/6/6e/HeartGold_EN_boxart.jpg"
+            ]
         }
     ],
     "tools": [
@@ -20,6 +31,13 @@
             "name": "Searcher",
             "icon_url": "icons/Mega_Dimension.png",
             "view": "hyperspace"
+        },
+        {
+            "id": "palpark",
+            "game_id": "gen4",
+            "name": "PalPark - Pokéfinder",
+            "icon_url": "icons/palpark-map.png",
+            "view": "palpark"
         }
     ]
 }

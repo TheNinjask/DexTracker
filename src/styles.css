@@ -427,6 +427,18 @@ select.ctrl { border-radius: 999px; }
 .tool-pick-box.dual .tool-pick-img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
 .tool-pick-box.dual .dual-half:first-child .tool-pick-img { border-radius: 8px 0 0 8px; }
 .tool-pick-box.dual .dual-half:last-child .tool-pick-img { border-radius: 0 8px 8px 0; }
+.tool-pick-box.penta { position: relative; }
+/* inset matches .tool-pick-box's own 7px padding — an absolutely positioned
+   child's inset is relative to the padding edge, not the content edge, so
+   inset:0 here would cover that padding entirely and erase the white border
+   every other variant (single icon, dual) keeps around its image. */
+/* border-radius (same 8px single/dual round their image to) rounds each
+   slice's own box before its clip-path wedge is carved out of it — for the 4
+   of 5 slices whose wedge touches one of the box's own corners, that corner
+   comes out rounded to match; the 1 slice with no corner (its edges are only
+   the pointed wedge seams, which should stay sharp) is unaffected. */
+.penta-slice { position: absolute; inset: 7px; overflow: hidden; border-radius: 8px; }
+.penta-slice .tool-pick-img { position: absolute; object-fit: cover; border-radius: 0; }
 
 .chal-progress { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
 .chal-filter { display: flex; gap: 6px; margin-bottom: 14px; }
@@ -592,6 +604,105 @@ select.ctrl { border-radius: 999px; }
 .hwz-zone-species-btn:hover { background: #00000010; }
 .hwz-zone-species-img { width: 28px; height: 28px; object-fit: contain; }
 
+/* PalPark - Pokéfinder */
+/* Map (large, primary) left, picker (search + selections) right — same
+   flexible/fixed-column split as Box View's .box-main, collapsing to a single
+   stacked column only below the shared 860px breakpoint — there, `order`
+   puts the picker on top (DOM order, and the desktop left/right layout
+   above, both stay map-then-picker). */
+.pp-layout { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
+@media (max-width: 860px) {
+  .pp-layout { grid-template-columns: 1fr; }
+  .pp-picker-card { order: -1; }
+}
+.pp-map-card { min-width: 0; }
+/* .pp-map-frame is inline-block (see below) — text-align centers it within
+   the column when it's narrower than the available width, instead of
+   sitting flush against the left edge. No effect below the breakpoint,
+   where the frame is a full-width block instead. */
+.pp-map-wrap { width: 100%; text-align: center; }
+.pp-search-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.pp-suggestions {
+  display: flex; flex-direction: column; gap: 2px; max-height: 240px; overflow-y: auto;
+  margin-bottom: 10px;
+}
+.pp-suggestion {
+  display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 8px; cursor: pointer;
+}
+.pp-suggestion:hover { background: #1d4a3a14; }
+.pp-suggestion.disabled { opacity: .45; cursor: not-allowed; }
+.pp-dex { color: var(--muted); font-size: 11px; width: 36px; flex: none; }
+.pp-mon-img { width: 32px; height: 32px; object-fit: contain; flex: none; }
+.pp-selected-list { display: flex; flex-direction: column; gap: 6px; }
+.pp-selected-row {
+  display: flex; align-items: center; gap: 10px; background: #ffffff8c; border: 1px solid var(--border);
+  border-radius: 10px; padding: 5px 10px;
+}
+.pp-selected-name { flex: 1; font-weight: 600; }
+/* .pp-map-frame is a snug border around the map — shrink-wraps to whatever
+   size .pp-map itself is (JS-sized above the breakpoint, 100%-wide below it)
+   instead of a full-width card with a lot of leftover background showing
+   around a smaller, aspect-bounded map. Same visual language as .card, just
+   sized to content rather than stretched — like .tool-pick-box's fixed
+   padding around its own (differently sized) icon. */
+.pp-map-frame {
+  display: inline-block; background: var(--card); backdrop-filter: blur(8px);
+  border: 1px solid var(--border); border-radius: 14px; padding: 6px; box-shadow: var(--shadow);
+  box-sizing: border-box;
+}
+/* Below the breakpoint .pp-map has no JS-set width to shrink-wrap around (see
+   sizeMap in palpark.js) — inline-block's shrink-to-fit sizing then has
+   nothing concrete to size against (.pp-map-img is width:100% of .pp-map,
+   which is width:auto of this frame, which is shrink-to-fit of... itself),
+   collapsing the whole map down to a sliver. Forcing a normal filling block
+   here matches how it worked before the frame existed. */
+@media (max-width: 860px) { .pp-map-frame { display: block; width: 100%; } }
+/* .pp-map itself stays unpadded so its bounds exactly match the image — zone
+   overlays are positioned as % of .pp-map, so padding here would misalign
+   them against the actual image content. container-type lets the Pokémon
+   icons inside scale in cqw units off the map's own rendered width, so they
+   stay proportional at every size instead of a fixed px that only suits one. */
+.pp-map { position: relative; line-height: 0; border-radius: 8px; overflow: hidden; container-type: inline-size; }
+.pp-map-img { display: block; width: 100%; height: auto; }
+/* Icons are positioned individually (left/top % set inline per-pick from
+   palpark_data.json's per-area `slots`), not confined to a bounding zone box
+   — this layer just needs to span the map and let clicks fall through to
+   wherever an icon actually sits. */
+.pp-map-mons { position: absolute; inset: 0; pointer-events: none; }
+.pp-zone-mon {
+  position: absolute; transform: translate(-50%, -50%);
+  background: none; border: none; padding: 0; line-height: 0; cursor: pointer;
+  pointer-events: auto;
+  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 3px #fff);
+  transition: transform .1s ease;
+}
+.pp-zone-mon:hover { transform: translate(-50%, -50%) scale(1.15); }
+/* cqw (not px) so icon size tracks the map's own rendered width at every
+   size (JS-sized above the breakpoint, responsive below it) instead of
+   looking oversized on a small map or undersized on a large one. */
+.pp-zone-mon .pp-mon-img { width: 6.5cqw; height: 6.5cqw; }
+
+/* Dev-mode slot editor — draggable numbered dots, one per configured slot
+   across every area, replacing the normal mon-icon layer while active. */
+.pp-map-slots { position: absolute; inset: 0; pointer-events: none; }
+.pp-dev-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+/* Same footprint as an occupied slot's Pokémon icon (.pp-zone-mon's own
+   6.5cqw), so a slot doesn't visibly change size once a pick lands on it. */
+.pp-slot-dot {
+  position: absolute; transform: translate(-50%, -50%);
+  width: 6.5cqw; height: 6.5cqw; min-width: 30px; min-height: 30px;
+  border-radius: 50%; color: #fff; border: 2px solid #fff;
+  font-size: 13px; font-weight: 700; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab; pointer-events: auto; touch-action: none; user-select: none;
+  box-shadow: 0 1px 4px #0006;
+}
+.pp-slot-dot:active { cursor: grabbing; }
+/* An occupied slot (a pick currently lands there) swaps the plain numbered
+   dot for that Pokémon's own icon. */
+.pp-slot-dot.occupied { background: #fff; }
+.pp-slot-dot-img { width: 100%; height: 100%; object-fit: contain; }
+
 /* Cooking */
 /* Table | graph layout. Side-by-side (50/50) only while the window is wide enough
    that each half clears the berry table's ~473px no-scroll width (the full
@@ -702,6 +813,7 @@ select.ctrl { border-radius: 999px; }
 .origin-preview { display: inline-flex; align-items: center; gap: 4px; }
 .override-note { white-space: nowrap; }
 .row-actions { display: flex; gap: 4px; }
+.registry-head { margin-bottom: 10px; }
 .profiles-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 .add-form { background: var(--card2); }
 
@@ -732,6 +844,7 @@ select.ctrl { border-radius: 999px; }
 .modal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .modal-actions .btn { flex: 1; }
 .select-modal { width: max-content; max-width: min(92vw, 560px); }
+.form-modal { width: max-content; max-width: min(92vw, 640px); }
 .select-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 10px; border: 1px solid var(--border-soft); border-radius: 10px; cursor: pointer; }
 .select-row:hover { background: #1d4a3a14; }
 .select-field { display: inline-flex; align-items: center; gap: 4px; }

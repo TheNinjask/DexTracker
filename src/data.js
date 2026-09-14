@@ -47,6 +47,15 @@ export const RESEARCH = { games: [], tasks: [] };
 export const challengeIdx = { byId: new Map() };
 export const researchIdx = { gameById: new Map(), byId: new Map() };
 
+// Pal Park Pokéfinder data (Gen 4 HG/SS "PalPark" tool): every transferable
+// Gen 1-3 species (#1-386) belongs to exactly one of 5 areas; each area also
+// carries its own `slots` — {x,y} placement points (% of the whole map
+// image) hand-tuned per area in palpark_data.json, so a picked Pokémon's
+// on-map position is configured data, not computed from its area's rect.
+// Its own file/singleton — same reasoning as TOOLS/HYPERSPACE above.
+export const PALPARK = { areas: [], species: [] };
+export const palparkIdx = { areaByNat: new Map(), areaById: new Map() };
+
 // Resolve a game by id, tolerating case differences between user-entered
 // registry game names (e.g. "Home/GO") and reference ids ("Home/Go").
 export function findGame(id) {
@@ -59,6 +68,11 @@ export function findMark(id) {
   if (id == null) return null;
   return idx.markById.get(id) || null;
 }
+
+// Sentinel OT registry mark_id override meaning "no mark", distinct from a
+// blank mark_id (which means "use the game's default mark"). Reserved — a
+// real mark may never use this as its id.
+export const NO_MARK = 'none';
 
 // Games sorted alphabetically by id, for the game pickers in the OT Registry,
 // Hall of Fame and Profiles. Returns a copy so the canonical REF.games order
@@ -92,13 +106,14 @@ export async function loadReferenceData() {
   // and '/<repo>/' in the GitHub Pages build. Cooking (berry) and Tools data each ship
   // as their own file since they're separate domains from the dex/species reference data.
   const base = import.meta.env.BASE_URL;
-  const [refRes, cookingRes, toolsRes, hyperspaceRes, challengeRes, researchRes] = await Promise.all([
+  const [refRes, cookingRes, toolsRes, hyperspaceRes, challengeRes, researchRes, palparkRes] = await Promise.all([
     fetch(`${base}data/reference_data.json`),
     fetch(`${base}data/cooking_data.json`),
     fetch(`${base}data/tools_data.json`),
     fetch(`${base}data/hyperspace_wild_zone.json`),
     fetch(`${base}data/challenge_data.json`),
     fetch(`${base}data/reasearch_task_data.json`),
+    fetch(`${base}data/palpark_data.json`),
   ]);
   if (!refRes.ok) throw new Error('Failed to load reference_data.json: ' + refRes.status);
   if (!cookingRes.ok) throw new Error('Failed to load cooking_data.json: ' + cookingRes.status);
@@ -106,12 +121,14 @@ export async function loadReferenceData() {
   if (!hyperspaceRes.ok) throw new Error('Failed to load hyperspace_wild_zone.json: ' + hyperspaceRes.status);
   if (!challengeRes.ok) throw new Error('Failed to load challenge_data.json: ' + challengeRes.status);
   if (!researchRes.ok) throw new Error('Failed to load reasearch_task_data.json: ' + researchRes.status);
+  if (!palparkRes.ok) throw new Error('Failed to load palpark_data.json: ' + palparkRes.status);
   const data = await refRes.json();
   const cooking = await cookingRes.json();
   const tools = await toolsRes.json();
   const hyperspace = await hyperspaceRes.json();
   const challenge = await challengeRes.json();
   const research = await researchRes.json();
+  const palpark = await palparkRes.json();
   REF.meta = data.meta;
   REF.species = data.species || [];
   REF.forms = data.forms || [];
@@ -142,6 +159,13 @@ export async function loadReferenceData() {
   researchIdx.byId.clear();
   RESEARCH.games.forEach((g) => researchIdx.gameById.set(g.id, g));
   RESEARCH.tasks.forEach((t) => researchIdx.byId.set(t.id, t));
+
+  PALPARK.areas = palpark.areas || [];
+  PALPARK.species = palpark.species || [];
+  palparkIdx.areaByNat.clear();
+  palparkIdx.areaById.clear();
+  PALPARK.species.forEach((s) => palparkIdx.areaByNat.set(s.national_no, s.area));
+  PALPARK.areas.forEach((a) => palparkIdx.areaById.set(a.id, a));
 
   rebuildIndexes();
   return REF;
@@ -299,6 +323,14 @@ export function exportReferenceData() {
     dex_mappings: REF.dexMappings,
     image_sources: REF.imageSources,
   }, null, 4);
+}
+
+// Serialize the current in-memory Pal Park data (areas + their hand-tuned
+// `slots`, plus the species-to-area table) back to palpark_data.json's shape.
+// Slot positions are edited in place on PALPARK.areas by the dev-mode slot
+// editor (palpark.js) — this just snapshots whatever's there now.
+export function exportPalParkData() {
+  return JSON.stringify({ areas: PALPARK.areas, species: PALPARK.species }, null, 2);
 }
 
 // Berry sprite URL. The source workbook composed berry images as
