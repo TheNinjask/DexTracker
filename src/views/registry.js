@@ -1,8 +1,8 @@
 // OT registry editor (SPEC §4.4). The join table turning (OT,TID) into origin metadata.
-import { REF, findGame, findMark, gamesAlpha } from '../data.js';
+import { REF, findGame, findMark, gamesAlpha, NO_MARK } from '../data.js';
 import { resolveOriginById } from '../compute.js';
 import * as store from '../store.js';
-import { el, clear, icon, dataTable, alertDialog, confirmDialog } from '../dom.js';
+import { el, clear, icon, dataTable, modal, alertDialog, confirmDialog } from '../dom.js';
 
 // Row currently loaded into the form for editing (null = add mode).
 let editing = null;
@@ -12,7 +12,9 @@ export function render(root) {
   const wrap = el('div', { class: 'registry' });
   //wrap.appendChild(el('p', { class: 'muted' }, 'Every distinct trainer/source you\'ve caught from. A catch whose OT+TID isn\'t here shows origin N/A. The Origin icon and Mark default to the chosen game — override either by borrowing another game\'s.'));
 
-  wrap.appendChild(buildForm(root));
+  wrap.appendChild(el('div', { class: 'registry-head' }, [
+    el('button', { class: 'btn primary', onclick: () => { editing = null; openForm(root); } }, '＋ Add trainer'),
+  ]));
 
   const rows = store.state.ot_registry || [];
   const headers = ['OT', 'TID', 'Game', 'Origin', 'Mark', 'isMine', 'isGo', 'Profile', 'Description', ''];
@@ -29,7 +31,7 @@ export function render(root) {
       { c: 'muted small', v: r.profile || '' },
       { c: 'muted small', v: r.description || '' },
       el('td', { class: 'row-actions' }, [
-        el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = r; render(root); } }, '✎'),
+        el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = r; openForm(root); } }, '✎'),
         el('button', { class: 'btn tiny', title: 'Remove', onclick: async () => { if (await confirmDialog(`Remove ${r.ot}/${r.tid}?`)) { if (editing === r) editing = null; store.removeOtEntry(r.id); render(root); } } }, '✕'),
       ]),
     ];
@@ -68,6 +70,7 @@ function gameOptions(selected, placeholder) {
 function markOptions(selected, placeholder) {
   return el('select', { class: 'ctrl' }, [
     el('option', { value: '' }, placeholder),
+    el('option', { value: NO_MARK, selected: selected === NO_MARK ? '' : null }, '— mark: none —'),
     ...REF.marks.map((m) => el('option', { value: m.id, selected: m.id === selected ? '' : null }, m.id)),
   ]);
 }
@@ -76,7 +79,17 @@ function labeled(text, control) {
   return el('label', { class: 'field' }, [el('span', { class: 'field-label' }, text), control]);
 }
 
-function buildForm(root) {
+// Opens the add/edit form in a dialog — a row's edit action is one click away
+// no matter how far down the (often long) table it is, instead of writing into
+// a form pinned at the top that the user would have to scroll back up to reach.
+function openForm(root) {
+  const title = editing ? `Edit ${editing.ot}/${editing.tid}` : 'Add / update trainer';
+  const m = modal(title, [], () => { editing = null; });
+  m.box.classList.add('form-modal');
+  m.box.querySelector('.modal-body').appendChild(buildForm(root, m));
+}
+
+function buildForm(root, m) {
   const p = editing || {};
   const ot = el('input', { class: 'ctrl', placeholder: 'OT', value: p.ot || '' });
   const tid = el('input', { class: 'ctrl', placeholder: 'TID', value: p.tid || '' });
@@ -94,7 +107,8 @@ function buildForm(root) {
     clear(preview);
     const g = findGame(game.value);
     const ig = (iconGame.value && findGame(iconGame.value)) || g;
-    const mark = (markId.value && findMark(markId.value)) || (g ? findMark(g.mark_id) : null);
+    const mark = markId.value === NO_MARK ? null
+      : (markId.value && findMark(markId.value)) || (g ? findMark(g.mark_id) : null);
     preview.appendChild(el('span', { class: 'muted small' }, 'Effective: '));
     preview.appendChild(ig && ig.icon_url ? icon(ig.icon_url, 'origin-icon', ig.id) : el('span', { class: 'muted small' }, 'no icon '));
     preview.appendChild(mark && mark.icon_url ? icon(mark.icon_url, 'origin-icon', mark.id) : el('span', { class: 'muted small' }, ' no mark'));
@@ -110,12 +124,12 @@ function buildForm(root) {
       icon_game: iconGame.value || '', mark_id: markId.value || '',
     }, editing ? editing.id : null);
     editing = null;
+    m.close();
     render(root);
   } }, editing ? 'Save changes' : 'Save');
 
-  const card = el('div', { class: 'card add-form' }, [
+  const card = el('div', { class: 'add-form' }, [
     el('datalist', { id: GAME_LIST_ID }, gamesAlpha().map((g) => el('option', { value: g.id }))),
-    el('h3', {}, editing ? `Edit ${p.ot}/${p.tid}` : 'Add / update trainer'),
     el('div', { class: 'add-grid' }, [
       ot, tid, game,
       el('label', { class: 'toggle' }, [mine, el('span', {}, 'isMine')]),
@@ -126,7 +140,7 @@ function buildForm(root) {
     el('div', { class: 'form-foot' }, [
       preview,
       el('span', { class: 'spacer' }),
-      editing ? el('button', { class: 'btn', onclick: () => { editing = null; render(root); } }, 'Cancel') : null,
+      el('button', { class: 'btn', onclick: () => m.close() }, 'Cancel'),
       save,
     ]),
   ]);

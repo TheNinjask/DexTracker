@@ -125,6 +125,98 @@ function hostOf(url) {
   try { return new URL(url, location.href).hostname; } catch { return ''; }
 }
 
+// Icon composite for a pick tile (`.tool-pick-box`): 1 image fills the square as
+// today; 2 images split it into left/right halves (Challenges' existing paired-
+// release convention, e.g. Scarlet & Violet); 5 images divide it into 5 pie-slice
+// wedges sharing the square's center point, in the order given. Any other count
+// isn't supported yet — falls back to just the first image.
+// A slice only has to cover its own wedge, not the whole square — and a
+// wedge's own vertices sit much closer to its centroid than the square's
+// corners do to the square's center. For 5 equal-angle slices the farthest
+// any wedge vertex gets from that wedge's own centroid is ~36.3% (x) / ~35%
+// (y), so the image only needs to be ~72.6% of the box to pan that far
+// without a gap; 80% leaves a small safety margin above that minimum.
+const PENTA_ZOOM = 80;
+
+export function pickIcon(icons, title, imgClass = 'tool-pick-img') {
+  const list = Array.isArray(icons) ? icons : [icons];
+  const box = el('span', { class: 'tool-pick-box' });
+  if (list.length === 2) {
+    box.classList.add('dual');
+    box.appendChild(el('span', { class: 'dual-half' }, [icon(list[0], imgClass, title)]));
+    box.appendChild(el('span', { class: 'dual-half' }, [icon(list[1], imgClass, title)]));
+  } else if (list.length === 5) {
+    box.classList.add('penta');
+    list.forEach((src, i) => {
+      const points = pentaSlicePoints(i);
+      const clip = `polygon(${points.map(([x, y]) => `${x.toFixed(2)}% ${y.toFixed(2)}%`).join(', ')})`;
+      const slice = el('span', { class: 'penta-slice', style: `clip-path: ${clip}` });
+      // Recenter this slice's own image on the wedge's centroid rather than the
+      // square's shared center point — otherwise every slice would show only the
+      // sliver of its image nearest that one shared corner, cropping out
+      // whatever the image actually depicts. The image is oversized by PENTA_ZOOM
+      // (with a small safety margin beyond the minimum needed for 5 equal
+      // slices) so panning it to any wedge's centroid never exposes empty
+      // space at its edges.
+      const [cx, cy] = polygonCentroid(points);
+      const im = icon(src, imgClass, title);
+      const half = PENTA_ZOOM / 2;
+      im.style.width = `${PENTA_ZOOM}%`;
+      im.style.height = `${PENTA_ZOOM}%`;
+      im.style.left = `${(cx - half).toFixed(2)}%`;
+      im.style.top = `${(cy - half).toFixed(2)}%`;
+      slice.appendChild(im);
+      box.appendChild(slice);
+    });
+  } else {
+    box.appendChild(icon(list[0], imgClass, title));
+  }
+  return box;
+}
+
+// A point on a square's own boundary (0-100 in each axis) reached by a ray from
+// its center at `angleDeg`, using the conic-gradient convention (0° = top edge
+// midpoint, increasing clockwise) — so wedge order visually matches array order.
+function squareBoundaryPoint(angleDeg) {
+  const rad = (angleDeg * Math.PI) / 180;
+  const dx = Math.sin(rad), dy = -Math.cos(rad);
+  const tx = dx === 0 ? Infinity : (dx > 0 ? 50 / dx : -50 / dx);
+  const ty = dy === 0 ? Infinity : (dy > 0 ? 50 / dy : -50 / dy);
+  const t = Math.min(tx, ty);
+  return [50 + t * dx, 50 + t * dy];
+}
+const SQUARE_CORNER_ANGLES = [45, 135, 225, 315]; // top-right, bottom-right, bottom-left, top-left
+
+// Vertex list for wedge `i` of 5 equal-angle slices of a square, each a "pie
+// slice" from the center — a slice whose angular span crosses a square corner
+// needs that corner as an extra vertex, or its edge would cut straight across
+// the corner instead of following the square's actual boundary.
+function pentaSlicePoints(i) {
+  const step = 360 / 5;
+  const a0 = i * step, a1 = (i + 1) * step;
+  const points = [[50, 50], squareBoundaryPoint(a0)];
+  SQUARE_CORNER_ANGLES.forEach((c) => { if (c > a0 && c < a1) points.push(squareBoundaryPoint(c)); });
+  points.push(squareBoundaryPoint(a1));
+  return points;
+}
+
+// True area centroid of a polygon (shoelace formula) — used to recenter a
+// slice's image on the wedge's own visual middle rather than its vertex mean,
+// which would skew toward the shared center point.
+function polygonCentroid(points) {
+  let area = 0, cx = 0, cy = 0;
+  for (let i = 0; i < points.length; i++) {
+    const [x0, y0] = points[i], [x1, y1] = points[(i + 1) % points.length];
+    const cross = x0 * y1 - x1 * y0;
+    area += cross;
+    cx += (x0 + x1) * cross;
+    cy += (y0 + y1) * cross;
+  }
+  area *= 0.5;
+  if (Math.abs(area) < 1e-6) return [50, 50];
+  return [cx / (6 * area), cy / (6 * area)];
+}
+
 // UI-pref persistence (separate from the savefile; not user content).
 const PREF_KEY = 'dextracker.ui.v1';
 export function getPrefs() {
