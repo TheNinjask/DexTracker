@@ -48,10 +48,13 @@ export const challengeIdx = { byId: new Map() };
 export const researchIdx = { gameById: new Map(), byId: new Map() };
 
 // Pal Park Pokéfinder data (Gen 4 HG/SS "PalPark" tool): every transferable
-// Gen 1-3 species (#1-386) belongs to exactly one of 5 areas. Its own file/
-// singleton — same reasoning as TOOLS/HYPERSPACE above.
+// Gen 1-3 species (#1-386) belongs to exactly one of 5 areas; each area also
+// carries its own `slots` — {x,y} placement points (% of the whole map
+// image) hand-tuned per area in palpark_data.json, so a picked Pokémon's
+// on-map position is configured data, not computed from its area's rect.
+// Its own file/singleton — same reasoning as TOOLS/HYPERSPACE above.
 export const PALPARK = { areas: [], species: [] };
-export const palparkIdx = { areaByNat: new Map() };
+export const palparkIdx = { areaByNat: new Map(), areaById: new Map() };
 
 // Resolve a game by id, tolerating case differences between user-entered
 // registry game names (e.g. "Home/GO") and reference ids ("Home/Go").
@@ -160,7 +163,9 @@ export async function loadReferenceData() {
   PALPARK.areas = palpark.areas || [];
   PALPARK.species = palpark.species || [];
   palparkIdx.areaByNat.clear();
+  palparkIdx.areaById.clear();
   PALPARK.species.forEach((s) => palparkIdx.areaByNat.set(s.national_no, s.area));
+  PALPARK.areas.forEach((a) => palparkIdx.areaById.set(a.id, a));
 
   rebuildIndexes();
   return REF;

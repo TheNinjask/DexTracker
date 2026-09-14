@@ -7,21 +7,13 @@ import { el, clear, icon } from '../dom.js';
 
 const MAX_SELECTED = 6;
 
-// Reference regions (fraction of the map image's width/height) an area's icons
-// are placed within. Areas aren't equal in on-screen walkable size (Forest is a
-// narrow path, Field/Pond/Ocean are large open regions) — icons still wrap and
-// grow the zone past this box rather than shrink to fit, since forcing every
-// pick into a fixed tiny box would make them unreadable.
-const ZONE_RECT = {
-  forest: { left: 16, top: 19, width: 35, height: 7 },
-  pond: { left: 68, top: 18, width: 18, height: 10 },
-  mountain: { left: 48, top: 35, width: 28, height: 12 },
-  field: { left: 10, top: 50, width: 28, height: 27 },
-  ocean: { left: 56, top: 55, width: 28, height: 29 },
-};
-
+// Each area's on-map icon positions are hand-configured data, not computed —
+// palpark_data.json's areas each carry a `slots` list of {x,y} points (% of
+// the whole map image). The Nth Pokémon picked for an area goes to its Nth
+// slot; picking more than the area has slots for reuses (and nudges, so nothing
+// perfectly overlaps and every icon stays individually clickable) the last one.
 function areaName(areaId) {
-  const a = PALPARK.areas.find((x) => x.id === areaId);
+  const a = palparkIdx.areaById.get(areaId);
   return a ? a.name : areaId;
 }
 
@@ -76,7 +68,7 @@ let searchInputEl = null;
 let suggestionsHost = null;
 let selectedHost = null;
 let countEl = null;
-let zoneHosts = null; // areaId -> container
+let monsHost = null; // holds the individually positioned on-map icons
 
 function ensureSearch() {
   if (searchInputEl) return;
@@ -132,15 +124,36 @@ function refreshSelected() {
   });
 }
 
+// A small deterministic nudge (% of map) for picks beyond an area's defined
+// slot count, so they fan out instead of stacking exactly on top of the last
+// slot and hiding each other — still expected to be rare (each area should
+// normally define up to 6 slots, since a single area can hold all 6 picks).
+const SLOT_OVERFLOW_NUDGE = 1.5;
+
 function refreshMap() {
-  Object.keys(ZONE_RECT).forEach((areaId) => {
-    const host = zoneHosts[areaId];
-    clear(host);
-    selected.filter((nat) => palparkIdx.areaByNat.get(nat) === areaId).forEach((nat) => {
+  clear(monsHost);
+  const byArea = new Map();
+  selected.forEach((nat) => {
+    const areaId = palparkIdx.areaByNat.get(nat);
+    if (!byArea.has(areaId)) byArea.set(areaId, []);
+    byArea.get(areaId).push(nat);
+  });
+  byArea.forEach((nats, areaId) => {
+    const area = palparkIdx.areaById.get(areaId);
+    const slots = (area && area.slots) || [];
+    nats.forEach((nat, i) => {
+      if (!slots.length) return;
+      const overflow = Math.max(0, i - (slots.length - 1));
+      const slot = slots[Math.min(i, slots.length - 1)];
+      const x = slot.x + overflow * SLOT_OVERFLOW_NUDGE;
+      const y = slot.y + overflow * SLOT_OVERFLOW_NUDGE;
       const m = monInfo(nat);
-      const btn = el('button', { class: 'pp-zone-mon', title: `Remove ${m.name}`, onclick: () => removeSelected(nat) },
-        icon(m.sprite, 'pp-mon-img', m.name));
-      host.appendChild(btn);
+      const btn = el('button', {
+        class: 'pp-zone-mon', title: `Remove ${m.name}`,
+        style: `left:${x}%; top:${y}%;`,
+        onclick: () => removeSelected(nat),
+      }, icon(m.sprite, 'pp-mon-img', m.name));
+      monsHost.appendChild(btn);
     });
   });
 }
@@ -163,16 +176,8 @@ function buildMap() {
   const frame = el('div', { class: 'pp-map-frame' });
   const map = el('div', { class: 'pp-map' });
   map.appendChild(el('img', { class: 'pp-map-img', src: `${base}icons/palpark-map.png`, alt: 'Pal Park overworld map' }));
-  zoneHosts = {};
-  Object.entries(ZONE_RECT).forEach(([areaId, r]) => {
-    const zone = el('div', {
-      class: 'pp-zone', title: areaName(areaId),
-      style: `left:${r.left}%; top:${r.top}%; width:${r.width}%; height:${r.height}%;`,
-    });
-    zoneHosts[areaId] = el('div', { class: 'pp-zone-mons' });
-    zone.appendChild(zoneHosts[areaId]);
-    map.appendChild(zone);
-  });
+  monsHost = el('div', { class: 'pp-map-mons' });
+  map.appendChild(monsHost);
   frame.appendChild(map);
   return frame;
 }
