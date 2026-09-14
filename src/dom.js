@@ -158,6 +158,51 @@ export function modal(title, bodyNodes, onClose) {
   return { close, box };
 }
 
+// Custom replacements for window.alert/confirm — same modal() styling as the rest
+// of the app instead of an unstyled native browser dialog. Both are Promise-based
+// since a modal can't block synchronously; callers await them.
+export function alertDialog(message, title = 'Notice') {
+  return new Promise((resolve) => {
+    const m = modal(title, [
+      el('p', { style: 'white-space: pre-line' }, message),
+      el('div', { class: 'modal-actions' }, [
+        el('button', { class: 'btn primary', onclick: () => m.close() }, 'OK'),
+      ]),
+    ], resolve);
+  });
+}
+
+export function confirmDialog(message, title = 'Confirm') {
+  return new Promise((resolve) => {
+    const m = modal(title, [
+      el('p', { style: 'white-space: pre-line' }, message),
+      el('div', { class: 'modal-actions' }, [
+        el('button', { class: 'btn', onclick: () => { resolve(false); m.close(); } }, 'Cancel'),
+        el('button', { class: 'btn primary', onclick: () => { resolve(true); m.close(); } }, 'OK'),
+      ]),
+    ], () => resolve(false));
+  });
+}
+
+// Replacement for window.prompt() — resolves the typed string on OK, null on
+// Cancel/dismiss (same contract as the native version).
+export function promptDialog(message, defaultValue = '', title = 'Input') {
+  return new Promise((resolve) => {
+    const input = el('input', { class: 'ctrl wide', value: defaultValue });
+    const submit = () => { resolve(input.value); m.close(); };
+    const m = modal(title, [
+      el('p', { style: 'white-space: pre-line' }, message),
+      input,
+      el('div', { class: 'modal-actions' }, [
+        el('button', { class: 'btn', onclick: () => { resolve(null); m.close(); } }, 'Cancel'),
+        el('button', { class: 'btn primary', onclick: submit }, 'OK'),
+      ]),
+    ], () => resolve(null));
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+    setTimeout(() => input.focus(), 0);
+  });
+}
+
 // Trigger a client-side download of a text/JSON document (savefile export, dev
 // reference-data export). Revokes the object URL after the click settles.
 export function downloadJson(filename, text) {

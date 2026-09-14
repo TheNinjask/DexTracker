@@ -3,7 +3,7 @@
 import { REF, spriteUrl, speciesName, findGame, gamesAlpha } from '../data.js';
 import * as store from '../store.js';
 import { resolveOriginById } from '../compute.js';
-import { el, clear, icon, modal } from '../dom.js';
+import { el, clear, icon, modal, alertDialog, confirmDialog } from '../dom.js';
 
 // Form context: null = add a brand-new team; { type:'edit', row } edits a mon;
 // { type:'add', team } adds a mon to an existing team.
@@ -72,7 +72,7 @@ export function render(root) {
           el('button', { class: 'btn tiny', title: 'Move earlier', disabled: mi === 0 || null, onclick: () => { store.swapHofEntries(m, t.members[mi - 1]); render(root); } }, '◀'),
           el('button', { class: 'btn tiny', title: 'Move later', disabled: mi === t.members.length - 1 || null, onclick: () => { store.swapHofEntries(m, t.members[mi + 1]); render(root); } }, '▶'),
           el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { formCtx = { type: 'edit', row: m }; render(root); } }, '✎'),
-          el('button', { class: 'btn tiny', title: 'Remove', onclick: () => { if (confirm(`Remove ${m.nickname || m.species} from ${t.game}?`)) { if (formCtx && formCtx.row === m) formCtx = null; store.removeHofEntry(m); render(root); } } }, '✕'),
+          el('button', { class: 'btn tiny', title: 'Remove', onclick: async () => { if (await confirmDialog(`Remove ${m.nickname || m.species} from ${t.game}?`)) { if (formCtx && formCtx.row === m) formCtx = null; store.removeHofEntry(m); render(root); } } }, '✕'),
         ]),
         el('img', { class: 'hof-img', loading: 'lazy', src: spriteUrl('home', m.shiny ? 'shiny' : 'normal', m.national_no, m.form_code || ''), alt: m.species }),
         el('div', { class: 'hof-name' }, [
@@ -144,11 +144,11 @@ function buildForm(root) {
 
   const save = el('button', { class: 'btn primary', onclick: () => {
     const key = padNat(nat.value);
-    if (!key) { alert('A national number is required.'); return; }
-    if (!game.value.trim()) { alert('A game is required.'); return; }
+    if (!key) { alertDialog('A national number is required.'); return; }
+    if (!game.value.trim()) { alertDialog('A game is required.'); return; }
     if (addTeam) {
       const count = (store.state.hall_of_fame || []).filter((r) => (r.team_id || `g:${r.game || 'Unknown'}`) === addTeam.team_id).length;
-      if (count >= 6) { alert('A team can hold at most 6 Pokémon.'); return; }
+      if (count >= 6) { alertDialog('A team can hold at most 6 Pokémon.'); return; }
     }
     const species = speciesName(key);
     const formCode = formSel.value;
@@ -187,7 +187,7 @@ function buildForm(root) {
           `${c.ot} / ${c.tid}${c.game ? ' · ' + c.game : ''}`)));
       return;
     }
-    alert(`OT "${otVal}" / TID "${tidVal}" isn't in your trainer registry.\nAdd it in the Registry tab first.`);
+    alertDialog(`OT "${otVal}" / TID "${tidVal}" isn't in your trainer registry.\nAdd it in the Registry tab first.`);
   } }, editing ? 'Save changes' : 'Add to Hall of Fame');
 
   const heading = editing ? `Edit ${p.species || ''}`

@@ -2,7 +2,7 @@
 import { REF, idx } from '../data.js';
 import * as store from '../store.js';
 import { buildDexEntries, entrySlot, entryOwned, entrySprite, resolveOriginById } from '../compute.js';
-import { el, clear, getPrefs, setPref, icon, modal } from '../dom.js';
+import { el, clear, getPrefs, setPref, icon, modal, alertDialog } from '../dom.js';
 
 const OT_LIST_ID = 'box-ot-list';
 const TID_LIST_ID = 'box-tid-list';
@@ -500,7 +500,7 @@ function buildDetail(root, e) {
             `${c.ot} / ${c.tid}${c.game ? ' · ' + c.game : ''}`)));
         return;
       }
-      alert(`OT "${ot}" / TID "${tid}" isn't in your trainer registry.\nAdd it in the Registry tab first.`);
+      alertDialog(`OT "${ot}" / TID "${tid}" isn't in your trainer registry.\nAdd it in the Registry tab first.`);
     } }, 'Save'),
     owned ? el('button', { class: 'btn', onclick: () => finish(null) }, 'Clear') : null,
     e.formCount > 0 ? el('button', { class: 'btn', title: `View this species' ${e.formCount} alternate form${e.formCount > 1 ? 's' : ''}`,

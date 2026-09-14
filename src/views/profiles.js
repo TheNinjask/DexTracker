@@ -1,7 +1,7 @@
 // Switch profile / save manager (SPEC §4.6 / §8). Credentials masked by default (§10.2).
 import { gamesAlpha } from '../data.js';
 import * as store from '../store.js';
-import { el, clear, dataTable } from '../dom.js';
+import { el, clear, dataTable, alertDialog, confirmDialog } from '../dom.js';
 
 let reveal = false;
 // Row currently loaded into the form for editing (null = add mode).
@@ -38,7 +38,7 @@ export function render(root) {
     { c: 'muted small', v: p.info || '' },
     el('td', { class: 'row-actions' }, [
       el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = p; render(root); } }, '✎'),
-      el('button', { class: 'btn tiny', title: 'Remove', onclick: () => { if (confirm(`Remove profile ${p.profile || ''}${p.game ? ' / ' + p.game : ''}?`)) { if (editing === p) editing = null; store.removeProfile(p); render(root); } } }, '✕'),
+      el('button', { class: 'btn tiny', title: 'Remove', onclick: async () => { if (await confirmDialog(`Remove profile ${p.profile || ''}${p.game ? ' / ' + p.game : ''}?`)) { if (editing === p) editing = null; store.removeProfile(p); render(root); } } }, '✕'),
     ]),
   ]);
   wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
@@ -54,7 +54,7 @@ function buildForm(root) {
   const info = el('input', { class: 'ctrl wide', placeholder: 'Info', value: p.info || '' });
 
   const save = el('button', { class: 'btn primary', onclick: () => {
-    if (!profile.value.trim()) { alert('A profile name is required.'); return; }
+    if (!profile.value.trim()) { alertDialog('A profile name is required.'); return; }
     const fields = {
       profile: profile.value.trim(),
       game: game.value.trim(),
