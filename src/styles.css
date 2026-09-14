@@ -245,8 +245,6 @@ select.ctrl { border-radius: 999px; }
 .badge.shiny { color: #bd8606; border-color: var(--shiny); background: #fff7e3; }
 .badge.go { color: var(--accent-deep); border-color: #8ed9d2; background: #e3f6f4; }
 .badge.mine { color: var(--owned); border-color: #9bd9bb; background: #e8f7ef; }
-.welcome { background: #ffffffd9; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
-
 /* Box view */
 .controls { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 14px; }
 .field { display: flex; flex-direction: row; align-items: center; gap: 8px; }
