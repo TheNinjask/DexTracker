@@ -15,6 +15,11 @@
                 "tools/gen4/Diamond_EN_boxart.jpg",
                 "tools/gen4/HeartGold_EN_boxart.jpg"
             ]
+        },
+        {
+            "id": "pla",
+            "name": "Pokémon Legends: Arceus",
+            "icon_url": "tools/pla/Legends_Arceus_Icon.jpg"
         }
     ],
     "tools": [
@@ -38,6 +43,13 @@
             "name": "PalPark - Pokéfinder",
             "icon_url": "tools/gen4/palpark/palpark-map.png",
             "view": "palpark"
+        },
+        {
+            "id": "pokedex-research",
+            "game_id": "pla",
+            "name": "Hisui Pokédex Research",
+            "icon_url": "tools/pla/pokedex-research/LA_Pokedex.png",
+            "view": "pla-research"
         }
     ]
 }

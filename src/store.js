@@ -35,7 +35,7 @@ export function emptySave() {
     cooking_recipes: [],
     challenges_completed: [],
     research_mons_completed: [],
-    ui: {},
+    pla_research_counts: {},
   };
 }
 
@@ -204,7 +204,7 @@ function normalize(obj) {
     cooking_recipes: obj.cooking_recipes || [],
     challenges_completed: obj.challenges_completed || [],
     research_mons_completed: obj.research_mons_completed || [],
-    ui: obj.ui || {},
+    pla_research_counts: obj.pla_research_counts || {},
   };
 }
 
@@ -413,5 +413,25 @@ export function setResearchMonDone(taskId, idx, done) {
   if (done === index.monsDone.has(k)) return;
   if (done) { state.research_mons_completed.push(k); index.monsDone.add(k); }
   else { state.research_mons_completed = state.research_mons_completed.filter((x) => x !== k); index.monsDone.delete(k); }
+  commit();
+}
+
+// ---- PLA Hisuian Pokédex Research Level counts (own tracker, keyed by dex
+// regional_no + task category + label, distinct from the HOME research tasks
+// above). category alone isn't unique — a species can have several tasks in
+// the same category (e.g. Rowlet has three separate "usedmoves" tasks, one
+// each for Leafage/Roost/Aerial Ace), so label disambiguates them (verified
+// unique per species across the scraped dataset). Each task tracks one raw
+// count (e.g. "times caught"), same as the in-game Pokédex — a tier is
+// complete once that count reaches its threshold amount, computed by the
+// caller (src/views/pla_research.js), not stored here. ----
+export function plaTaskKey(regionalNo, category, label) { return `${regionalNo}::${category}::${label}`; }
+export function getPlaTaskCount(regionalNo, category, label) { return state.pla_research_counts[plaTaskKey(regionalNo, category, label)] || 0; }
+export function setPlaTaskCount(regionalNo, category, label, count) {
+  const k = plaTaskKey(regionalNo, category, label);
+  const next = Math.max(0, Math.round(count) || 0);
+  if (next === (state.pla_research_counts[k] || 0)) return;
+  if (next === 0) delete state.pla_research_counts[k];
+  else state.pla_research_counts[k] = next;
   commit();
 }
