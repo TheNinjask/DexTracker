@@ -36,7 +36,6 @@ export function emptySave() {
     challenges_completed: [],
     research_mons_completed: [],
     pla_research_counts: {},
-    ui: {},
   };
 }
 
@@ -206,7 +205,6 @@ function normalize(obj) {
     challenges_completed: obj.challenges_completed || [],
     research_mons_completed: obj.research_mons_completed || [],
     pla_research_counts: obj.pla_research_counts || {},
-    ui: obj.ui || {},
   };
 }
 
