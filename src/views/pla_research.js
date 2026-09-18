@@ -69,17 +69,27 @@ function buildView() {
   wrap.appendChild(main);
   wrap.appendChild(list);
 
-  fillMain(main);
-  buildListPanel(list, main);
+  // ctx carries the two refresh entry points across the ledger/list split so
+  // either side can trigger the other: a tier change (ledger) can move a
+  // species in or out of the active filter (list), and picking a species
+  // (list) rebuilds the ledger (main). refreshList is filled in right after
+  // buildListPanel returns it — by the time anything actually calls
+  // ctx.refreshList() (a later click), it's long since been assigned.
+  const ctx = { refreshMain: () => fillMain(clear(main), ctx), refreshList: () => {} };
+  ctx.refreshList = buildListPanel(list, ctx);
+  ctx.refreshMain();
   return wrap;
 }
 
 // ---- Right: species list (search + filter + portrait/name rows, Hisui dex
-// order). Only the rows themselves are rebuilt on every filter/search change
-// — the filter buttons and the search <input> stay put, so typing a query
-// never drops focus out of the box mid-keystroke. ----
+// order). Only the rows themselves are rebuilt on every filter/search/tier
+// change — the filter buttons and the search <input> stay put, so typing a
+// query never drops focus out of the box mid-keystroke. Returns refreshRows
+// so a ledger-side tier change (which can move a species across a filter
+// boundary, e.g. into "Complete!") can trigger the same full re-filter
+// rather than just patching one row's class in place. ----
 
-function buildListPanel(list, main) {
+function buildListPanel(list, ctx) {
   const rows = el('div', { class: 'pla-list-rows' });
   const refreshRows = () => {
     clear(rows);
@@ -91,7 +101,7 @@ function buildListPanel(list, main) {
       const status = statusOf(progress);
       if (filter !== 'all' && filter !== status) return;
       anyVisible = true;
-      rows.appendChild(listRow(s, status, main));
+      rows.appendChild(listRow(s, status, ctx));
     });
     if (!anyVisible) rows.appendChild(el('p', { class: 'pla-empty' }, 'No species match.'));
   };
@@ -115,11 +125,12 @@ function buildListPanel(list, main) {
   list.appendChild(searchInput);
   list.appendChild(rows);
   refreshRows();
+  return refreshRows;
 }
 
-function listRow(species, status, main) {
-  const src = spriteUrl('home', 'icon', species.national_no, species.form_code);
-  const fallback = species.form_code ? spriteUrl('home', 'icon', species.national_no, '') : null;
+function listRow(species, status, ctx) {
+  const src = spriteUrl('LA', 'icon', species.national_no, species.form_code);
+  const fallback = species.form_code ? spriteUrl('LA', 'icon', species.national_no, '') : null;
   const selected = species.regional_no === selectedNo;
   const row = el('button', {
     class: 'pla-list-row pla-status-' + status + (selected ? ' selected' : ''),
@@ -134,14 +145,14 @@ function listRow(species, status, main) {
     if (prevSelected) prevSelected.classList.remove('selected');
     row.classList.add('selected');
     selectedNo = species.regional_no;
-    fillMain(clear(main));
+    ctx.refreshMain();
   });
   return row;
 }
 
 // ---- Left: research-task ledger for the selected species ----
 
-function fillMain(main) {
+function fillMain(main, ctx) {
   const species = PLA_RESEARCH.species.find((s) => s.regional_no === selectedNo);
   if (!species) { main.appendChild(el('p', { class: 'pla-empty' }, 'No species selected.')); return; }
 
@@ -149,7 +160,7 @@ function fillMain(main) {
   main.appendChild(el('div', { class: 'pla-ribbon-tear' }));
 
   const sheet = el('div', { class: 'pla-sheet' });
-  species.tasks.forEach((t) => sheet.appendChild(taskRow(species, t, main)));
+  species.tasks.forEach((t) => sheet.appendChild(taskRow(species, t, ctx)));
   main.appendChild(sheet);
 
   main.appendChild(levelFooter(species));
@@ -158,14 +169,16 @@ function fillMain(main) {
 // The count (e.g. "times caught") is the single source of truth — tiers below
 // it are read-only indicators, not independent toggles, same as the in-game
 // Pokédex: bumping the count past a threshold ticks it automatically.
-function taskRow(species, task, main) {
+function taskRow(species, task, ctx) {
   const maxAmount = task.tiers[task.tiers.length - 1];
   const count = store.getPlaTaskCount(species.regional_no, task.category, task.label);
   const setCount = (next) => {
     store.setPlaTaskCount(species.regional_no, task.category, task.label, Math.max(0, Math.min(maxAmount, next)));
-    // Re-render just the ledger (this species' rows + footer badge) — cheap,
-    // it's a handful of text rows, not a re-fetch of every list portrait icon.
-    fillMain(clear(main));
+    ctx.refreshMain();
+    // A tier crossing can move this species across a filter boundary (e.g.
+    // into "Complete!"), so the list needs a real re-filter, not just a
+    // class swap on whatever row happened to already be on screen.
+    ctx.refreshList();
   };
 
   const minus = el('button', { class: 'pla-count-btn', disabled: count <= 0 ? '' : null, onclick: () => setCount(count - 1) }, '–');
@@ -176,13 +189,21 @@ function taskRow(species, task, main) {
     el('span', { class: 'pla-task-icon' }, task.boosted ? '»' : '›'),
     el('span', { class: 'pla-task-label' }, task.label),
     counter,
-    el('span', { class: 'pla-tier-pills' }, task.tiers.map((amount) => tierPill(count, amount))),
+    el('span', { class: 'pla-tier-pills' }, task.tiers.map((amount) => tierPill(count, amount, setCount))),
   ]);
 }
 
-function tierPill(count, amount) {
+// QoL shortcut: clicking a checkpoint jumps the count straight to its
+// threshold — completed or not, since the count is the single source of
+// truth either way (clicking an already-done checkpoint rewinds to it,
+// same as typing a lower number would).
+function tierPill(count, amount, setCount) {
   const done = count >= amount;
-  return el('span', { class: 'pla-tier-pill' + (done ? ' done' : '') }, done ? '✓' : String(amount));
+  return el('button', {
+    class: 'pla-tier-pill' + (done ? ' done' : ''),
+    title: `Set to ${amount}`,
+    onclick: () => setCount(amount),
+  }, done ? '✓' : String(amount));
 }
 
 function levelFooter(species) {

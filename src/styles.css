@@ -888,11 +888,7 @@ select.ctrl { border-radius: 999px; }
   background-size: 12px 12px; background-repeat: repeat-x;
 }
 
-.pla-sheet {
-  padding: 4px 16px 8px;
-  /* Faint ruled-ledger lines, purely decorative. */
-  background-image: repeating-linear-gradient(to bottom, transparent 0 37px, var(--pla-paper2) 37px 38px);
-}
+.pla-sheet { padding: 4px 16px 8px; }
 .pla-task-row {
   display: flex; align-items: center; gap: 10px; padding: 8px 0;
   border-bottom: 1px solid var(--pla-paper2);
@@ -904,8 +900,12 @@ select.ctrl { border-radius: 999px; }
 
 /* The count is the single input (matches the in-game Pokédex's "times done"
    counter) — the tier pills to its right are read-only indicators, ticked
-   automatically once the count reaches their threshold. */
-.pla-count-ctrl { flex: none; display: flex; align-items: center; gap: 6px; }
+   automatically once the count reaches their threshold. Both the counter and
+   the pill strip get a fixed column width (not just fit-content) so they
+   line up across rows regardless of how many tiers a given task has (1-5) —
+   otherwise a short row's narrower pill strip would let the counter drift
+   right into where a longer row's counter sits further left. */
+.pla-count-ctrl { flex: none; width: 74px; display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
 .pla-count-btn {
   width: 20px; height: 20px; padding: 0; border-radius: 50%; border: 1px solid var(--pla-line);
   background: #ffffff70; color: var(--pla-ribbon); font-size: 13px; font-weight: 800; line-height: 1;
@@ -916,12 +916,15 @@ select.ctrl { border-radius: 999px; }
 .pla-count-btn:disabled { opacity: .35; cursor: default; }
 .pla-count-value { min-width: 22px; text-align: center; font-size: 13px; font-weight: 800; color: var(--pla-ink); font-variant-numeric: tabular-nums; }
 
-.pla-tier-pills { flex: none; display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+.pla-tier-pills { flex: none; width: 150px; display: flex; gap: 5px; justify-content: flex-end; }
 .pla-tier-pill {
   display: inline-flex; align-items: center; justify-content: center;
-  min-width: 24px; height: 24px; padding: 0 6px; border-radius: 999px; border: 1px solid var(--pla-line);
-  background: #ffffff70; color: var(--pla-muted); font-size: 11px; font-weight: 800; font-variant-numeric: tabular-nums;
+  width: 26px; height: 26px; padding: 0; border-radius: 50%; border: 1px solid var(--pla-line);
+  background: #ffffff70; color: var(--pla-muted); font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums;
+  cursor: pointer; transition: background .12s, color .12s, border-color .12s, transform .04s;
 }
+.pla-tier-pill:hover { border-color: var(--pla-red); }
+.pla-tier-pill:active { transform: scale(0.92); }
 .pla-tier-pill.done { background: var(--pla-red); border-color: var(--pla-red); color: #fff; }
 
 .pla-footer {
