@@ -23,6 +23,14 @@
   --grad: linear-gradient(135deg, #20b8a6, #169c8f);
   --shadow: 0 1px 2px #1f5e4a14, 0 6px 18px #1f5e4a12;
   --shadow-sm: 0 1px 2px #1f5e4a14;
+
+  /* Hisui Pokédex Research (PLA tool) theme — a cream/parchment "field
+     journal" look matching the actual in-game Hisuian Pokédex screen (navy
+     ribbon header, ruled-paper task ledger, pink-highlighted selected row). */
+  --pla-paper: #efe1bd; --pla-paper2: #e2cfa0;
+  --pla-ink: #3b2f1e; --pla-muted: #8a7355; --pla-line: #cdb989;
+  --pla-ribbon: #22355c; --pla-ribbon-text: #f3ead0;
+  --pla-red: #b7392c; --pla-gold: #c8960c; --pla-select: #f3c9c6;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
@@ -852,3 +860,133 @@ select.ctrl { border-radius: 999px; }
 .sync-link { word-break: break-all; }
 .sync-status { font-size: 12px; }
 .sync-status.ok { color: #1f9763; font-weight: 700; }
+
+/* Hisui Pokédex Research (PLA tool) — modeled on the actual in-game Hisuian
+   Pokédex screen: a cream/parchment "journal" look (not the app's usual light
+   HOME-green look), a navy ribbon header, and a two-pane master-detail layout
+   (species list on the right drives a research-task ledger on the left),
+   scoped entirely under .pla-dex so nothing here leaks into any other tab.
+   No external font: the app ships zero web fonts on purpose (PWA offline
+   reliability), so this uses the system font stack throughout. */
+.pla-dex { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
+
+.pla-main {
+  flex: 2 1 380px; min-width: 0;
+  background: var(--pla-paper);
+  border: 1px solid var(--pla-line); border-radius: 14px; overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.pla-ribbon { background: var(--pla-ribbon); padding: 10px 16px; }
+.pla-ribbon h3 { margin: 0; color: var(--pla-ribbon-text); font-size: 15px; letter-spacing: .01em; }
+/* A cheap torn-paper transition from the ribbon's navy into the parchment
+   below it: two diagonal gradients tiled into a sawtooth strip. */
+.pla-ribbon-tear {
+  height: 8px;
+  background:
+    linear-gradient(135deg, var(--pla-ribbon) 50%, transparent 50.5%) 0 0,
+    linear-gradient(45deg, var(--pla-ribbon) 50%, transparent 50.5%) 0 0;
+  background-size: 12px 12px; background-repeat: repeat-x;
+}
+
+.pla-sheet { padding: 4px 16px 8px; }
+.pla-task-row {
+  display: flex; align-items: center; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--pla-paper2);
+}
+.pla-task-row:last-child { border-bottom: none; }
+.pla-task-icon { flex: none; width: 16px; text-align: center; font-weight: 800; color: var(--pla-muted); }
+.pla-task-row.boosted .pla-task-icon { color: var(--pla-red); }
+.pla-task-label { flex: 1; min-width: 0; font-size: 13px; color: var(--pla-ink); }
+
+/* The count is the single input (matches the in-game Pokédex's "times done"
+   counter) — the tier pills to its right are read-only indicators, ticked
+   automatically once the count reaches their threshold. Both the counter and
+   the pill strip get a fixed column width (not just fit-content) so they
+   line up across rows regardless of how many tiers a given task has (1-5) —
+   otherwise a short row's narrower pill strip would let the counter drift
+   right into where a longer row's counter sits further left. */
+.pla-count-ctrl { flex: none; width: 74px; display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+.pla-count-btn {
+  width: 20px; height: 20px; padding: 0; border-radius: 50%; border: 1px solid var(--pla-line);
+  background: #ffffff70; color: var(--pla-ribbon); font-size: 13px; font-weight: 800; line-height: 1;
+  cursor: pointer; transition: background .12s, transform .04s;
+}
+.pla-count-btn:hover:not(:disabled) { background: #ffffffb0; }
+.pla-count-btn:active:not(:disabled) { transform: scale(0.9); }
+.pla-count-btn:disabled { opacity: .35; cursor: default; }
+.pla-count-value { min-width: 22px; text-align: center; font-size: 13px; font-weight: 800; color: var(--pla-ink); font-variant-numeric: tabular-nums; }
+
+.pla-tier-pills { flex: none; width: 150px; display: flex; gap: 5px; justify-content: flex-end; }
+.pla-tier-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; padding: 0; border-radius: 50%; border: 1px solid var(--pla-line);
+  background: #ffffff70; color: var(--pla-muted); font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums;
+  cursor: pointer; transition: background .12s, color .12s, border-color .12s, transform .04s;
+}
+.pla-tier-pill:hover { border-color: var(--pla-red); }
+.pla-tier-pill:active { transform: scale(0.92); }
+.pla-tier-pill.done { background: var(--pla-red); border-color: var(--pla-red); color: #fff; }
+
+.pla-footer {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 10px 16px; background: #ffffff55; border-top: 1px solid var(--pla-line);
+}
+.pla-footer-label { font-size: 12px; color: var(--pla-muted); font-weight: 700; }
+.pla-footer-badge {
+  padding: 4px 14px; border-radius: 999px; font-size: 13px; font-weight: 800;
+  background: #ffffffa0; border: 1px solid var(--pla-line); color: var(--pla-muted);
+}
+.pla-footer-badge.pla-status-in-progress { color: var(--pla-ribbon); border-color: var(--pla-ribbon); }
+.pla-footer-badge.pla-status-complete { color: #9a6a00; border-color: var(--pla-gold); background: #fff3d6; }
+.pla-footer-badge.pla-status-perfect { color: #fff; border-color: var(--pla-red); background: var(--pla-red); }
+
+/* Right: scrollable species list, Hisui dex order. */
+.pla-list-panel {
+  flex: 1 1 240px; min-width: 220px; max-width: 320px;
+  background: var(--pla-paper); border: 1px solid var(--pla-line); border-radius: 14px;
+  padding: 10px; box-shadow: var(--shadow);
+}
+.pla-filter { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+.pla-filter-btn {
+  padding: 4px 10px; border-radius: 999px; border: 1px solid var(--pla-line);
+  background: #ffffff70; color: var(--pla-muted); font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: background .12s, color .12s, border-color .12s;
+}
+.pla-filter-btn:hover { background: #ffffffb0; }
+.pla-filter-btn.active { background: var(--pla-ribbon); border-color: var(--pla-ribbon); color: var(--pla-ribbon-text); }
+
+.pla-search {
+  display: block; width: 100%; box-sizing: border-box; margin-bottom: 10px;
+  padding: 6px 10px; border-radius: 999px; border: 1px solid var(--pla-line);
+  background: #ffffff70; color: var(--pla-ink); font-size: 12px;
+}
+.pla-search::placeholder { color: var(--pla-muted); }
+.pla-search:focus { outline: none; background: #ffffffb0; border-color: var(--pla-ribbon); }
+
+.pla-empty { color: var(--pla-muted); font-size: 13px; padding: 8px 2px; }
+
+.pla-list-rows {
+  display: flex; flex-direction: column; gap: 3px; max-height: 620px; overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin; scrollbar-color: var(--pla-muted) var(--pla-paper2);
+}
+.pla-list-rows::-webkit-scrollbar { width: 9px; }
+.pla-list-rows::-webkit-scrollbar-track { background: var(--pla-paper2); border-radius: 999px; }
+.pla-list-rows::-webkit-scrollbar-thumb { background: var(--pla-muted); border-radius: 999px; border: 2px solid var(--pla-paper2); }
+.pla-list-rows::-webkit-scrollbar-thumb:hover { background: var(--pla-ribbon); }
+.pla-list-row {
+  display: flex; align-items: center; gap: 8px; padding: 5px 10px; width: 100%; box-sizing: border-box;
+  background: none; border: 1px solid transparent; border-radius: 999px; cursor: pointer; text-align: left;
+  border-left: 3px solid transparent; transition: background .1s, border-color .1s;
+}
+.pla-list-row:hover { background: #ffffff60; }
+.pla-list-row.selected { background: var(--pla-select); border-color: #e3a6a3; }
+.pla-list-row.pla-status-in-progress { border-left-color: var(--pla-ribbon); }
+.pla-list-row.pla-status-complete { border-left-color: var(--pla-gold); }
+.pla-list-row.pla-status-perfect { border-left-color: var(--pla-red); }
+.pla-list-portrait {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; background: #ffffffb0;
+  border: 1px solid var(--pla-line); display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.pla-list-portrait-img { width: 26px; height: 26px; object-fit: contain; }
+.pla-list-name { font-size: 12px; font-weight: 700; color: var(--pla-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

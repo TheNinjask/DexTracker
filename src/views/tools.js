@@ -6,9 +6,10 @@ import { el, clear, pickIcon, assetUrl } from '../dom.js';
 import * as cookingView from './cooking.js';
 import * as hyperspaceView from './hyperspace.js';
 import * as palparkView from './palpark.js';
+import * as plaResearchView from './pla_research.js';
 
 // Maps a tool's `view` key (tools_data.json) to its renderer.
-const TOOL_VIEWS = { cooking: cookingView.render, hyperspace: hyperspaceView.render, palpark: palparkView.render };
+const TOOL_VIEWS = { cooking: cookingView.render, hyperspace: hyperspaceView.render, palpark: palparkView.render, 'pla-research': plaResearchView.render };
 
 let gameId = null;
 let toolId = null;

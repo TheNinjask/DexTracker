@@ -47,6 +47,13 @@ export const RESEARCH = { games: [], tasks: [] };
 export const challengeIdx = { byId: new Map() };
 export const researchIdx = { gameById: new Map(), byId: new Map() };
 
+// Pokémon Legends: Arceus's own Hisuian Pokédex Research Level system (per-
+// species 0-10 level built from task tiers) — unrelated to RESEARCH above
+// (which is Pokémon HOME's per-game overworld request tasks). Its own file/
+// singleton — same reasoning as TOOLS/HYPERSPACE above.
+export const PLA_RESEARCH = { categories: [], species: [] };
+export const plaResearchIdx = { byRegionalNo: new Map(), categoryById: new Map() };
+
 // Pal Park Pokéfinder data (Gen 4 HG/SS "PalPark" tool): every transferable
 // Gen 1-3 species (#1-386) belongs to exactly one of 5 areas; each area also
 // carries its own `slots` — {x,y} placement points (% of the whole map
@@ -106,7 +113,7 @@ export async function loadReferenceData() {
   // and '/<repo>/' in the GitHub Pages build. Cooking (berry) and Tools data each ship
   // as their own file since they're separate domains from the dex/species reference data.
   const base = import.meta.env.BASE_URL;
-  const [refRes, cookingRes, toolsRes, hyperspaceRes, challengeRes, researchRes, palparkRes] = await Promise.all([
+  const [refRes, cookingRes, toolsRes, hyperspaceRes, challengeRes, researchRes, palparkRes, plaResearchRes] = await Promise.all([
     fetch(`${base}data/reference_data.json`),
     fetch(`${base}data/cooking_data.json`),
     fetch(`${base}data/tools_data.json`),
@@ -114,6 +121,7 @@ export async function loadReferenceData() {
     fetch(`${base}data/challenge_data.json`),
     fetch(`${base}data/reasearch_task_data.json`),
     fetch(`${base}data/palpark_data.json`),
+    fetch(`${base}data/pla_research_data.json`),
   ]);
   if (!refRes.ok) throw new Error('Failed to load reference_data.json: ' + refRes.status);
   if (!cookingRes.ok) throw new Error('Failed to load cooking_data.json: ' + cookingRes.status);
@@ -122,6 +130,7 @@ export async function loadReferenceData() {
   if (!challengeRes.ok) throw new Error('Failed to load challenge_data.json: ' + challengeRes.status);
   if (!researchRes.ok) throw new Error('Failed to load reasearch_task_data.json: ' + researchRes.status);
   if (!palparkRes.ok) throw new Error('Failed to load palpark_data.json: ' + palparkRes.status);
+  if (!plaResearchRes.ok) throw new Error('Failed to load pla_research_data.json: ' + plaResearchRes.status);
   const data = await refRes.json();
   const cooking = await cookingRes.json();
   const tools = await toolsRes.json();
@@ -129,6 +138,7 @@ export async function loadReferenceData() {
   const challenge = await challengeRes.json();
   const research = await researchRes.json();
   const palpark = await palparkRes.json();
+  const plaResearch = await plaResearchRes.json();
   REF.meta = data.meta;
   REF.species = data.species || [];
   REF.forms = data.forms || [];
@@ -159,6 +169,13 @@ export async function loadReferenceData() {
   researchIdx.byId.clear();
   RESEARCH.games.forEach((g) => researchIdx.gameById.set(g.id, g));
   RESEARCH.tasks.forEach((t) => researchIdx.byId.set(t.id, t));
+
+  PLA_RESEARCH.categories = plaResearch.categories || [];
+  PLA_RESEARCH.species = plaResearch.species || [];
+  plaResearchIdx.byRegionalNo.clear();
+  plaResearchIdx.categoryById.clear();
+  PLA_RESEARCH.species.forEach((s) => plaResearchIdx.byRegionalNo.set(s.regional_no, s));
+  PLA_RESEARCH.categories.forEach((c) => plaResearchIdx.categoryById.set(c.id, c));
 
   PALPARK.areas = palpark.areas || [];
   PALPARK.species = palpark.species || [];

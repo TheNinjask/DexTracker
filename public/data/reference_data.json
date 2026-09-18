@@ -24359,6 +24359,10 @@
             "shiny": {
                 "prefix": "https://serebii.net/Shiny/Legends/",
                 "suffix": ".png"
+            },
+            "icon": {
+                "prefix": "https://www.serebii.net/legendsarceus/pokemon/icon/",
+                "suffix": ".png"
             }
         },
         "SWSH": {
