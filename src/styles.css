@@ -870,12 +870,39 @@ select.ctrl { border-radius: 999px; }
    reliability), so this uses the system font stack throughout. */
 .pla-dex { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
 
+.pla-main-col { flex: 2 1 380px; min-width: 0; display: flex; flex-direction: column; }
 .pla-main {
-  flex: 2 1 380px; min-width: 0;
   background: var(--pla-paper);
   border: 1px solid var(--pla-line); border-radius: 14px; overflow: hidden;
   box-shadow: var(--shadow);
 }
+/* Open-species tabs: sits flush on top of the ledger card, sharing its
+   border/radius so the two read as one connected unit — but as a sibling
+   element, not a child appended inside .pla-main, so it isn't clipped by
+   that card's own corner-rounding or wiped by a ledger-only rebuild.
+   Collapses to nothing when no tabs are open. */
+.pla-tabs {
+  display: flex; gap: 3px; flex-wrap: wrap; align-items: flex-end;
+  padding: 0 8px; margin: 0 2px;
+}
+.pla-tabs:empty { display: none; padding: 0; margin: 0; }
+.pla-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px; border: 1px solid var(--pla-line); border-bottom: none;
+  border-radius: 8px 8px 0 0; background: #ffffff70; color: var(--pla-muted);
+  font-size: 12px; font-weight: 700; cursor: pointer; max-width: 170px;
+  position: relative; top: 1px; /* overlaps the strip's own bottom edge so the active tab fuses with .pla-main below */
+}
+.pla-tab:hover { background: #ffffffa0; }
+.pla-tab.active { background: var(--pla-paper); color: var(--pla-ink); }
+.pla-tab-icon { flex: none; width: 18px; height: 18px; object-fit: contain; }
+.pla-tab-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pla-tab-close {
+  flex: none; width: 16px; height: 16px; border-radius: 50%; line-height: 16px;
+  text-align: center; font-size: 12px; color: var(--pla-muted);
+}
+.pla-tab-close:hover { background: var(--pla-red); color: #fff; }
+
 .pla-ribbon { background: var(--pla-ribbon); padding: 10px 16px; }
 .pla-ribbon h3 { margin: 0; color: var(--pla-ribbon-text); font-size: 15px; letter-spacing: .01em; }
 /* A cheap torn-paper transition from the ribbon's navy into the parchment
@@ -895,7 +922,10 @@ select.ctrl { border-radius: 999px; }
 }
 .pla-task-row:last-child { border-bottom: none; }
 .pla-task-icon { flex: none; width: 16px; text-align: center; font-weight: 800; color: var(--pla-muted); }
-.pla-task-row.boosted .pla-task-icon { color: var(--pla-red); }
+/* "»" rotated into a double-chevron-up — a single reliably-colorable glyph
+   (unlike the emoji-range "double up triangle" chars, which ignore `color`
+   and render in their own fixed hue on most platforms). */
+.pla-task-row.boosted .pla-task-icon { color: var(--pla-red); display: inline-block; transform: rotate(-90deg); }
 .pla-task-label { flex: 1; min-width: 0; font-size: 13px; color: var(--pla-ink); }
 
 /* The count is the single input (matches the in-game Pokédex's "times done"
@@ -946,6 +976,7 @@ select.ctrl { border-radius: 999px; }
   background: var(--pla-paper); border: 1px solid var(--pla-line); border-radius: 14px;
   padding: 10px; box-shadow: var(--shadow);
 }
+.pla-mode-toggle { display: flex; gap: 5px; margin-bottom: 8px; }
 .pla-filter { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
 .pla-filter-btn {
   padding: 4px 10px; border-radius: 999px; border: 1px solid var(--pla-line);
