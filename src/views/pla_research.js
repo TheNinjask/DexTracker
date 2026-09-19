@@ -291,7 +291,7 @@ function taskRow(species, task, ctx) {
   const counter = el('span', { class: 'pla-count-ctrl' }, [minus, el('span', { class: 'pla-count-value' }, String(count)), plus]);
 
   return el('div', { class: 'pla-task-row' + (task.boosted ? ' boosted' : '') }, [
-    el('span', { class: 'pla-task-icon' }, task.boosted ? '»' : '›'),
+    el('span', { class: 'pla-task-icon' }, task.boosted ? '»' : ''),
     el('span', { class: 'pla-task-label' }, task.label),
     counter,
     el('span', { class: 'pla-tier-pills' }, task.tiers.map((amount) => tierPill(count, amount, setCount))),

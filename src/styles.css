@@ -922,7 +922,10 @@ select.ctrl { border-radius: 999px; }
 }
 .pla-task-row:last-child { border-bottom: none; }
 .pla-task-icon { flex: none; width: 16px; text-align: center; font-weight: 800; color: var(--pla-muted); }
-.pla-task-row.boosted .pla-task-icon { color: var(--pla-red); }
+/* "»" rotated into a double-chevron-up — a single reliably-colorable glyph
+   (unlike the emoji-range "double up triangle" chars, which ignore `color`
+   and render in their own fixed hue on most platforms). */
+.pla-task-row.boosted .pla-task-icon { color: var(--pla-red); display: inline-block; transform: rotate(-90deg); }
 .pla-task-label { flex: 1; min-width: 0; font-size: 13px; color: var(--pla-ink); }
 
 /* The count is the single input (matches the in-game Pokédex's "times done"
