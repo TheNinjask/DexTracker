@@ -8,7 +8,7 @@
 // snapshot of reference data it actually needs, as a literal constant.
 
 const LS_KEY = 'dextracker.savefile.v1';
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 // Pure, dependency-free id generator (no reference-data or app-logic coupling) —
 // safe to use identically from both live code and migrations.
@@ -177,6 +177,24 @@ function migrateV2toV3(data) {
   };
 }
 
+// v3 -> v4: reference_data.json gave FireRed/LeafGreen a shared "FRLG" mark
+// (game.mark_id went from null to 'FRLG' — see the a1d49d7 reference-data
+// update). Any ot_registry row still deferring to its game's default mark
+// (mark_id unset) for one of those two games rendered no mark before that
+// change — pin it to the explicit "no mark" sentinel ('none', compute.js's
+// NO_MARK, baked in literally per this file's no-live-reference-data rule)
+// so it keeps looking the same instead of suddenly picking up the new mark.
+function migrateV3toV4(data) {
+  return {
+    ...data,
+    ot_registry: (data.ot_registry || []).map((r) => {
+      if (r.mark_id) return r; // already has its own explicit override
+      if (r.game !== 'FireRed' && r.game !== 'LeafGreen') return r;
+      return { ...r, mark_id: 'none' };
+    }),
+  };
+}
+
 // Version-gated migration entry point. `obj.meta.schema_version` missing entirely
 // means pre-versioning data — treated as v1. Chains forward to SCHEMA_VERSION so a
 // save several versions behind still ends up fully current in one call.
@@ -185,6 +203,7 @@ export function updateSaveFile(obj) {
   let data = obj;
   if (fromVersion < 2) data = migrateV1toV2(data);
   if (fromVersion < 3) data = migrateV2toV3(data);
+  if (fromVersion < 4) data = migrateV3toV4(data);
   return { data, fromVersion, updated: fromVersion < SCHEMA_VERSION };
 }
 
