@@ -12445,13 +12445,13 @@
         },
         {
             "id": "LeafGreen",
-            "icon_url": "https://cdn2.steamgriddb.com/icon_thumb/e736598ba2c84d7313c8614de041cae3.png",
-            "mark_id": null
+            "icon_url": "https://archives.bulbagarden.net/media/upload/d/dc/HOME_LeafGreen_icon.png",
+            "mark_id": "FRLG"
         },
         {
             "id": "FireRed",
-            "icon_url": "https://cdn2.steamgriddb.com/icon_thumb/2fbbc6323c4882fbac23831adefc628a.png",
-            "mark_id": null
+            "icon_url": "https://archives.bulbagarden.net/media/upload/1/1f/HOME_FireRed_icon.png",
+            "mark_id": "FRLG"
         },
         {
             "id": "Sapphire",
@@ -12520,11 +12520,11 @@
         },
         {
             "id": "GS",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/thumb/a/a4/GB_icon_VIII.png/36px-GB_icon_VIII.png"
+            "icon_url": "https://archives.bulbagarden.net/media/upload/a/a4/GB_icon_VIII.png"
         },
         {
             "id": "LA",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/thumb/d/dc/Arceus_mark.png/51px-Arceus_mark.png"
+            "icon_url": "https://archives.bulbagarden.net/media/upload/d/dc/Arceus_mark.png"
         },
         {
             "id": "LGPE",
@@ -12540,7 +12540,7 @@
         },
         {
             "id": "RBY",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/thumb/a/a4/GB_icon_VIII.png/36px-GB_icon_VIII.png"
+            "icon_url": "https://archives.bulbagarden.net/media/upload/a/a4/GB_icon_VIII.png"
         },
         {
             "id": "SM",
@@ -12548,7 +12548,7 @@
         },
         {
             "id": "SV",
-            "icon_url": "https://archives.bulbagarden.net/media/upload/thumb/8/89/Paldea_icon.png/38px-Paldea_icon.png"
+            "icon_url": "https://archives.bulbagarden.net/media/upload/8/89/Paldea_icon.png"
         },
         {
             "id": "SWSH",
@@ -12561,6 +12561,14 @@
         {
             "id": "XY",
             "icon_url": "https://archives.bulbagarden.net/media/upload/1/1b/Blue_pentagon_VIII.png"
+        },
+        {
+            "id": "RSE",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/8/8b/GBA_icon.png"
+        },
+        {
+            "id": "FRLG",
+            "icon_url": "https://archives.bulbagarden.net/media/upload/8/8b/GBA_icon.png"
         }
     ],
     "dexes": [
