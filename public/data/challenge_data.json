@@ -4562,6 +4562,71 @@
                     "reward_url": "https://serebii.net/pokemonhome/sticker/th/wonderbox.png"
                 }
             ]
+        },
+        {
+            "id": "pokemon:deposit-caterpie-weedle-metapod-kakuna-and-pikachu-from-pokemon-firered-or-pokemon-leafgreen-for-nintendo-switch",
+            "section": "pokemon",
+            "title": "Deposit Caterpie, Weedle, Metapod, Kakuna, and Pikachu from Pokémon FireRed or Pokémon LeafGreen for Nintendo Switch!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "viridianforest",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/viridianforest.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-chansey-and-tauros-from-pokemon-firered-or-pokemon-leafgreen-for-nintendo-switch",
+            "section": "pokemon",
+            "title": "Deposit Chansey and Tauros from Pokémon FireRed or Pokémon LeafGreen for Nintendo Switch!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "safarizone",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/safarizone.jpg"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-lapras-from-pokemon-firered-or-pokemon-leafgreen-for-nintendo-switch",
+            "section": "pokemon",
+            "title": "Deposit Lapras from Pokémon FireRed or Pokémon LeafGreen for Nintendo Switch!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "lapras",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/lapras.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:deposit-porygon-from-pokemon-firered-or-pokemon-leafgreenn-for-nintendo-switch",
+            "section": "pokemon",
+            "title": "Deposit Porygon from Pokémon FireRed or Pokémon LeafGreenn for Nintendo Switch!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "sticker",
+                    "reward_id": "porygon",
+                    "reward_url": "https://serebii.net/pokemonhome/sticker/th/porygon.png"
+                }
+            ]
+        },
+        {
+            "id": "pokemon:fill-in-your-kanto-region-pokedex-gba-in-pokemon-firered-or-pokemon-leafgreen-for-nintendo-switch",
+            "section": "pokemon",
+            "title": "Fill in your Kanto region Pokédex (GBA) in Pokémon FireRed or Pokémon LeafGreen for Nintendo Switch!",
+            "tiers": [
+                {
+                    "goal": null,
+                    "reward_type": "wallpaper",
+                    "reward_id": "frlg",
+                    "reward_url": "https://serebii.net/pokemonhome/wallpaper/th/frlg.jpg"
+                }
+            ]
         }
     ]
 }
