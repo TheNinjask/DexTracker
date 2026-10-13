@@ -1,6 +1,6 @@
 {
   "name": "dextracker",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Personal Pokémon living-dex collection tracker (PWA).",
   "type": "module",
   "scripts": {
