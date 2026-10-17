@@ -182,6 +182,25 @@ export function pickIcon(icons, title, imgClass = 'tool-pick-img') {
   return box;
 }
 
+// Breadcrumb trail shared by every drill-down section (Tools, Challenges &
+// Research): `steps` is an ordered array of { label, onSelect? } — every step
+// but the last is normally clickable ("go back to here"); a step with no
+// onSelect renders as plain (non-interactive) text, used both for the final
+// "you are here" step and for a lone root step with nowhere to go back to.
+// Always returned as its own self-contained bar (not nested inside whatever
+// card the screen below it happens to render) so it looks identical at every
+// depth, including the very first picker screen.
+export function breadcrumbs(root, render, steps) {
+  const nodes = [];
+  steps.forEach((s, i) => {
+    if (i) nodes.push(el('span', { class: 'crumb-sep' }, '›'));
+    nodes.push(s.onSelect
+      ? el('button', { class: 'crumb-btn', onclick: () => { s.onSelect(); render(root); } }, s.label)
+      : el('span', { class: 'crumb-current' }, s.label));
+  });
+  return el('div', { class: 'tool-crumbs' }, nodes);
+}
+
 // A point on a square's own boundary (0-100 in each axis) reached by a ray from
 // its center at `angleDeg`, using the conic-gradient convention (0° = top edge
 // midpoint, increasing clockwise) — so wedge order visually matches array order.

@@ -420,9 +420,24 @@ select.ctrl { border-radius: 999px; }
 .tool-pick:active .tool-pick-box { transform: translateY(1px); }
 .tool-pick-img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
 .tool-pick-label { font-size: 13px; font-weight: 600; text-align: center; color: var(--text); }
-.tool-crumbs { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; font-size: 13px; }
-.crumb-btn { background: none; border: none; padding: 0; color: var(--accent-deep); font-weight: 600; font-size: 13px; cursor: pointer; }
-.crumb-btn:hover { text-decoration: underline; }
+/* Its own self-contained bar (background/border/radius/shadow matching
+   .card's language) rather than plain floating text, so it reads the same
+   whether the screen below it is a picker grid or a tool's own content —
+   never nested inside that screen's card, so its look never depends on
+   what that screen happens to wrap itself in. */
+.tool-crumbs {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; margin-bottom: 10px;
+  background: var(--card); backdrop-filter: blur(8px);
+  border: 1px solid var(--border); border-radius: 12px;
+  font-size: 13px; box-shadow: var(--shadow-sm);
+}
+.crumb-btn {
+  background: none; border: none; padding: 3px 5px; margin: -3px -5px;
+  border-radius: 6px; color: var(--accent-deep); font-weight: 600; font-size: 13px; cursor: pointer;
+  transition: background .12s;
+}
+.crumb-btn:hover { background: #00000008; text-decoration: underline; }
 .crumb-sep { color: var(--muted); }
 .crumb-current { color: var(--muted); }
 .tool-view-body { margin-top: 4px; }

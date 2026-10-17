@@ -6,7 +6,7 @@
 // Serebii's own per-game icon set, so they match the rest of the app.
 import { CHALLENGES, RESEARCH, researchIdx, spriteUrl } from '../data.js';
 import * as store from '../store.js';
-import { el, clear, icon, pct, modal, pickIcon, assetUrl } from '../dom.js';
+import { el, clear, icon, pct, modal, pickIcon, assetUrl, breadcrumbs } from '../dom.js';
 
 let mode = null; // null = picker, 'home' = Challenges, else = a Research Tasks game id
 let challengeFilter = 'all'; // 'all' | 'done' | 'undone' — kept separate per view
@@ -14,9 +14,25 @@ let researchFilter = 'all';
 
 export function render(root) {
   clear(root);
-  if (!mode) { root.appendChild(buildPicker(root)); return; }
-  if (mode === 'home') { root.appendChild(buildChallenges(root)); return; }
-  root.appendChild(buildResearch(root, mode));
+  // The crumb trail is its own bar above whatever card the screen below it
+  // renders (never nested inside that card), so it reads the same at every
+  // depth it appears at. It's hidden at the root picker itself: with
+  // nothing to go back to, a nav bar there is just dead chrome.
+  const wrap = el('div', { class: 'tool-view' });
+  if (mode) wrap.appendChild(breadcrumbs(root, render, crumbSteps()));
+  const body = el('div', { class: 'tool-view-body' });
+  if (!mode) body.appendChild(buildPicker(root));
+  else if (mode === 'home') body.appendChild(buildChallenges(root));
+  else body.appendChild(buildResearch(root, mode));
+  wrap.appendChild(body);
+  root.appendChild(wrap);
+}
+
+function crumbSteps() {
+  const steps = [{ label: 'Challenges & Research', onSelect: () => { mode = null; } }];
+  if (mode === 'home') steps.push({ label: CHALLENGES.meta ? CHALLENGES.meta.name : 'Challenges' });
+  else steps.push({ label: researchIdx.gameById.get(mode)?.name || mode });
+  return steps;
 }
 
 function pickButton(root, name, icons, onSelect) {
@@ -35,18 +51,6 @@ function buildPicker(root) {
   RESEARCH.games.forEach((g) => tiles.push(pickButton(root, g.name, g.icons, () => { mode = g.id; })));
   card.appendChild(el('div', { class: 'tool-pick-grid' }, tiles));
   return card;
-}
-
-// Breadcrumb trail; every step but the last is a clickable "go back to here".
-function buildCrumbs(root, steps) {
-  const nodes = [];
-  steps.forEach((s, i) => {
-    if (i) nodes.push(el('span', { class: 'crumb-sep' }, '›'));
-    nodes.push(s.onSelect
-      ? el('button', { class: 'crumb-btn', onclick: () => { s.onSelect(); render(root); } }, s.label)
-      : el('span', { class: 'crumb-current' }, s.label));
-  });
-  return el('div', { class: 'tool-crumbs' }, nodes);
 }
 
 function progressText(done, total) { return `${done} / ${total} completed (${pct(done, total)})`; }
@@ -71,12 +75,7 @@ function filterBar(current, onChange) {
 // a fresh load behind whatever the previous click's render already queued,
 // via dom.js's icon() concurrency gate — a backlog that only grows.
 function buildChallenges(root) {
-  const wrap = el('div', { class: 'tool-view' });
-  wrap.appendChild(buildCrumbs(root, [
-    { label: 'Challenges & Research', onSelect: () => { mode = null; } },
-    { label: CHALLENGES.meta ? CHALLENGES.meta.name : 'Challenges' },
-  ]));
-  const body = el('div', { class: 'tool-view-body' });
+  const body = el('div', {});
 
   const totalProgress = el('div', { class: 'chal-progress' });
   body.appendChild(totalProgress);
@@ -118,8 +117,7 @@ function buildChallenges(root) {
   updateTotal();
   if (!anyVisible) body.appendChild(el('p', { class: 'muted small' }, 'No challenges match this filter.'));
 
-  wrap.appendChild(body);
-  return wrap;
+  return body;
 }
 
 // The reward art stays visible regardless of done state — the dedicated
@@ -200,16 +198,10 @@ function openChallengeModal(c, badge, onToggle) {
 function taskIsDone(t) { return t.pokemon.every((_, i) => store.isResearchMonDone(t.id, i)); }
 
 function buildResearch(root, gameId) {
-  const game = researchIdx.gameById.get(gameId);
   const tasks = RESEARCH.tasks.filter((t) => t.game === gameId).sort((a, b) => a.no - b.no);
   let done = tasks.filter(taskIsDone).length;
 
-  const wrap = el('div', { class: 'tool-view' });
-  wrap.appendChild(buildCrumbs(root, [
-    { label: 'Challenges & Research', onSelect: () => { mode = null; } },
-    { label: game ? game.name : gameId },
-  ]));
-  const body = el('div', { class: 'tool-view-body' });
+  const body = el('div', {});
   const progressEl = el('div', { class: 'chal-progress' });
   const updateProgress = () => { progressEl.textContent = progressText(done, tasks.length); };
   updateProgress();
@@ -222,8 +214,7 @@ function buildResearch(root, gameId) {
   } else {
     body.appendChild(el('p', { class: 'muted small' }, 'No tasks match this filter.'));
   }
-  wrap.appendChild(body);
-  return wrap;
+  return body;
 }
 
 function taskRow(t, onToggle) {
