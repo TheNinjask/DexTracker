@@ -34,6 +34,11 @@ const editing = { species: null, forms: null, dexes: null, mappings: null, games
 let mappingDex = null; // selected dex id for the mappings editor
 let srcName = null;     // selected source name for the sprite-source editor
 let sampleNo = '025';   // national # used for sprite-source preview thumbnails
+// Live (not-yet-saved) variant/prefix/suffix text, captured from the DOM right
+// before a Sample # keystroke forces a re-render — otherwise that re-render
+// would rebuild the variant form from editing.sources (the last *saved*
+// state) and silently wipe out whatever was still being typed into it.
+let pendingVariant = null;
 // CSS selector of an input to refocus after a keystroke-triggered re-render
 // (otherwise typing into the filter / sample box loses focus per character).
 let refocusSel = null;
@@ -568,7 +573,7 @@ function renderSources(wrap, root) {
   const names = Object.keys(REF.imageSources);
   if (!srcName || !names.includes(srcName)) srcName = names[0] || null;
 
-  const picker = el('select', { class: 'ctrl', onchange: (e) => { srcName = e.target.value; editing.sources = null; render(root); } },
+  const picker = el('select', { class: 'ctrl', onchange: (e) => { srcName = e.target.value; editing.sources = null; pendingVariant = null; render(root); } },
     names.map((n) => el('option', { value: n, selected: n === srcName ? '' : null }, n)));
   const newName = el('input', { class: 'ctrl', placeholder: 'New source name' });
   wrap.appendChild(el('div', { class: 'card dev-mapping-head' }, [
@@ -583,12 +588,28 @@ function renderSources(wrap, root) {
     srcName ? el('button', { class: 'btn tiny', title: 'Delete source', onclick: async () => {
       const used = REF.dexes.filter((d) => d.sprite_source === srcName).map((d) => d.id);
       if (await confirmDialog(`Delete sprite source "${srcName}"?` + (used.length ? `\nDexes still using it: ${used.join(', ')}` : ''))) {
-        removeImageSource(srcName); srcName = null; editing.sources = null; render(root);
+        removeImageSource(srcName); srcName = null; editing.sources = null; pendingVariant = null; render(root);
       }
     } }, '✕ delete') : null,
     el('span', { class: 'field-label' }, 'Sample #'),
     el('input', { class: 'ctrl dev-sample-input', value: sampleNo, placeholder: '025', title: 'National # used for preview thumbnails',
-      oninput: (e) => { sampleNo = e.target.value; refocusSel = '.dev-sample-input'; render(root); } }),
+      oninput: (e) => {
+        sampleNo = e.target.value;
+        // This re-render would otherwise rebuild the variant form from
+        // editing.sources (last *saved* state) and wipe out an in-progress
+        // edit — capture the live field values first so it picks up right
+        // where the user left off instead.
+        const vEl = root.querySelector('#dev-variant-variant');
+        if (vEl) {
+          pendingVariant = {
+            variant: vEl.value,
+            prefix: root.querySelector('#dev-variant-prefix').value,
+            suffix: root.querySelector('#dev-variant-suffix').value,
+          };
+        }
+        refocusSel = '.dev-sample-input';
+        render(root);
+      } }),
     el('span', { class: 'spacer' }),
     newName,
     el('button', { class: 'btn', onclick: () => {
@@ -616,8 +637,8 @@ function renderSources(wrap, root) {
     { c: 'mono small', v: tpl.suffix || '' },
     el('td', {}, url ? el('img', { class: 'hof-img preview', src: url, alt: '', title: `#${pad3(sampleNo)} sample` }) : el('span', { class: 'muted' }, '—')),
     rowActions(
-      () => { editing.sources = { variant: v, ...tpl }; render(root); },
-      async () => { if (await confirmDialog(`Remove variant "${v}" from ${srcName}?`)) { if (editing.sources && editing.sources.variant === v) editing.sources = null; removeImageVariant(srcName, v); render(root); } },
+      () => { editing.sources = { variant: v, ...tpl }; pendingVariant = null; render(root); },
+      async () => { if (await confirmDialog(`Remove variant "${v}" from ${srcName}?`)) { if (editing.sources && editing.sources.variant === v) { editing.sources = null; pendingVariant = null; } removeImageVariant(srcName, v); render(root); } },
     ),
     ];
   });
@@ -625,10 +646,13 @@ function renderSources(wrap, root) {
 }
 
 function buildVariantForm(root) {
-  const p = editing.sources || {};
-  const variant = el('input', { class: 'ctrl', placeholder: 'Variant (e.g. normal)', value: p.variant || '' });
-  const prefix = el('input', { class: 'ctrl wide', placeholder: 'URL prefix', value: p.prefix || '' });
-  const suffix = el('input', { class: 'ctrl', placeholder: 'URL suffix (e.g. .png)', value: p.suffix || '' });
+  // pendingVariant (live unsaved text, captured across a Sample#-triggered
+  // re-render) takes priority over editing.sources (the last *saved* state)
+  // so the fields pick up where the user left off instead of reverting.
+  const p = pendingVariant || editing.sources || {};
+  const variant = el('input', { id: 'dev-variant-variant', class: 'ctrl', placeholder: 'Variant (e.g. normal)', value: p.variant || '' });
+  const prefix = el('input', { id: 'dev-variant-prefix', class: 'ctrl wide', placeholder: 'URL prefix', value: p.prefix || '' });
+  const suffix = el('input', { id: 'dev-variant-suffix', class: 'ctrl', placeholder: 'URL suffix (e.g. .png)', value: p.suffix || '' });
 
   const preview = el('span', { class: 'origin-preview' });
   const refresh = () => {
@@ -648,13 +672,14 @@ function buildVariantForm(root) {
     if (!variant.value.trim()) { alertDialog('A variant name is required.'); return; }
     setImageVariant(srcName, variant.value.trim(), prefix.value.trim(), suffix.value.trim());
     editing.sources = null;
+    pendingVariant = null;
     render(root);
   } }, editing.sources ? 'Save changes' : 'Add variant');
 
   const card = formCard(
     editing.sources ? `Edit ${srcName} / ${p.variant || ''}` : `Add variant to ${srcName}`,
     [variant, prefix, suffix],
-    save, () => { editing.sources = null; render(root); }, !!editing.sources, preview,
+    save, () => { editing.sources = null; pendingVariant = null; render(root); }, !!editing.sources, preview,
   );
   refresh();
   return card;
