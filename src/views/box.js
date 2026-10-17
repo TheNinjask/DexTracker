@@ -97,31 +97,16 @@ function paginate() {
     return pages.length ? { pages, labels } : packSequential([]);
   }
 
-  const numbered = entries.filter((e) => !Number.isNaN(numOf(e, mode)));
-  const unnumbered = entries.filter((e) => Number.isNaN(numOf(e, mode)));
-  if (numbered.length === 0) return packSequential(unnumbered);
-
-  const maxN = Math.max(...numbered.map((e) => numOf(e, mode)));
-  const pageCount = Math.ceil(maxN / 30);
-  const pages = [], labels = [];
-  for (let p = 0; p < pageCount; p++) { pages.push(new Array(30).fill(null)); labels.push(`Box ${p + 1}`); }
-  numbered.forEach((e) => {
-    const i = numOf(e, mode) - 1;
-    pages[Math.floor(i / 30)][i % 30] = e;
-  });
-  // trailing unnumbered entries fill remaining/extra boxes sequentially
-  if (unnumbered.length) {
-    let pi = pages.length - 1, free = pages[pi].filter((c) => c === null).length;
-    unnumbered.forEach((e) => {
-      let placed = false;
-      for (let p = 0; p < pages.length && !placed; p++) {
-        const slot = pages[p].indexOf(null);
-        if (slot >= 0) { pages[p][slot] = e; placed = true; }
-      }
-      if (!placed) { const cells = new Array(30).fill(null); cells[0] = e; pages.push(cells); labels.push(`Box ${pages.length}`); }
-    });
-  }
-  return { pages, labels };
+  // Sort by the dex's own numbering (unnumbered entries, if any, sort last)
+  // and pack boxes densely — every has_regional_no dex's numbering happens to
+  // be fully contiguous already, so this looks identical to placing each
+  // entry at its absolute number minus one. But a sparse dex (e.g. "SwSh-Not
+  // In Dex") has no numbering of its own and falls back to raw national_no,
+  // which jumps around wildly — placing entries at that absolute position
+  // used to leave huge empty gaps between them instead of just listing them
+  // in national dex order.
+  const list = [...entries].sort((a, b) => (numOf(a, mode) || 1e9) - (numOf(b, mode) || 1e9));
+  return packSequential(list);
 }
 
 function rebuild() {
