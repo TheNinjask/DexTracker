@@ -236,7 +236,7 @@ select.ctrl { border-radius: 999px; }
 .about { max-width: 640px; }
 .about-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .about-brand { display: flex; align-items: center; gap: 12px; }
-.about-logo { color: var(--accent2); font-size: 38px; line-height: 1; }
+.about-logo { width: 38px; height: 38px; display: block; }
 .about-head h2 { margin: 0; font-size: 20px; }
 .about-head p { margin: 2px 0 0; }
 .about-version { background: var(--grad); color: #fff; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 999px; box-shadow: var(--shadow-sm); }
@@ -355,6 +355,7 @@ select.ctrl { border-radius: 999px; }
    align-items defaults to stretch, so every card in a grid row automatically
    matches the tallest card in that row (e.g. one with an extra field) rather
    than each sizing to its own content. */
+.table-wrap { margin-bottom: 14px; }
 .table-wrap .data-table {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 8px;
@@ -380,6 +381,17 @@ select.ctrl { border-radius: 999px; }
 }
 .table-wrap .data-table td.row-actions { justify-content: flex-end; }
 .table-wrap .data-table td.row-actions::before { content: none; }
+/* An injected full-width row (e.g. Profiles' inline edit form) spans every
+   column of the card grid and sheds the per-row card chrome — the form's own
+   .add-form card supplies that instead. */
+.table-wrap .data-table tr.data-table-form-row {
+  grid-column: 1 / -1; background: none; border: none; padding: 0; box-shadow: none;
+}
+/* Profiles: row actions stay hidden until hover, same as Hall of Fame's
+   per-mon action cluster (.hof-mon-actions) — one hover-reveal convention
+   for every per-item edit/delete control, not just some of them. */
+.profiles .table-wrap .data-table td.row-actions { opacity: 0; transition: opacity .12s; }
+.profiles .table-wrap .data-table tr:hover td.row-actions { opacity: 1; }
 /* Keep an icon and its "↳ game" override note together on the value (right) side. */
 .asset-val { display: inline-flex; align-items: center; gap: 4px; }
 .src-icon { width: 20px; height: 20px; object-fit: contain; vertical-align: middle; }
