@@ -24436,6 +24436,12 @@
                 "prefix": "https://www.serebii.net/Shiny/FRLG/",
                 "suffix": ".png"
             }
+        },
+        "XD": {
+            "normal": {
+                "prefix": "https://www.serebii.net/xd/pokemon/",
+                "suffix": ".png"
+            }
         }
     }
 }
