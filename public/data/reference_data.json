@@ -24522,6 +24522,54 @@
                 "prefix": "https://www.serebii.net/Shiny/HGSS/",
                 "suffix": ".png"
             }
+        },
+        "Y": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/yellow/",
+                "suffix": ".png"
+            }
+        },
+        "RB": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/rb/",
+                "suffix": ".png"
+            }
+        },
+        "Green": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/green/",
+                "suffix": ".png"
+            }
+        },
+        "G": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/gold/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/Gold/",
+                "suffix": ".png"
+            }
+        },
+        "S": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/silver/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/Silver/",
+                "suffix": ".png"
+            }
+        },
+        "C": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/crystal/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/Crystal/",
+                "suffix": ".png"
+            }
         }
     }
 }
