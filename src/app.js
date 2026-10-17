@@ -4,7 +4,7 @@ import { loadReferenceData } from './data.js';
 import { preloadIcons } from './preload.js';
 import * as store from './store.js';
 import { computeStats } from './compute.js';
-import { el, clear, getPrefs, setPref, downloadJson, modal, alertDialog, confirmDialog } from './dom.js';
+import { el, clear, getPrefs, setPref, downloadJson, modal, alertDialog, confirmDialog, assetUrl } from './dom.js';
 import { startHost, startJoin, STATUS_TEXT, parseSyncId } from './sync.js';
 import * as boxView from './views/box.js';
 import * as statsView from './views/stats.js';
@@ -79,7 +79,10 @@ function buildChrome() {
   const app = document.getElementById('app');
   clear(app);
 
-  const brand = () => el('div', { class: 'brand' }, [el('span', { class: 'logo' }, '◓'), el('span', {}, 'DexTracker')]);
+  const brand = () => el('div', { class: 'brand' }, [
+    el('img', { class: 'logo', src: assetUrl('icons/icon-mark.svg'), alt: '', width: 24, height: 24 }),
+    el('span', {}, 'DexTracker'),
+  ]);
   const hamburgerBtn = () => el('button', { class: 'hamburger-btn', title: 'Toggle menu', onclick: toggleSidebar }, [
     el('span', { class: 'hamburger-bar' }), el('span', { class: 'hamburger-bar' }), el('span', { class: 'hamburger-bar' }),
   ]);

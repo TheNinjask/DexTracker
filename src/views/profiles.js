@@ -21,10 +21,9 @@ export function render(root) {
     ]),
   ]));
 
-  wrap.appendChild(buildForm(root));
-
   if (!rows.length) {
-    wrap.appendChild(el('p', { class: 'muted' }, 'No Switch profiles yet. Add one above.'));
+    wrap.appendChild(el('p', { class: 'muted' }, 'No Switch profiles yet. Add one below.'));
+    wrap.appendChild(buildForm(root));
     root.appendChild(wrap);
     return;
   }
@@ -41,7 +40,21 @@ export function render(root) {
       el('button', { class: 'btn tiny', title: 'Remove', onclick: async () => { if (await confirmDialog(`Remove profile ${p.profile || ''}${p.game ? ' / ' + p.game : ''}?`)) { if (editing === p) editing = null; store.removeProfile(p); render(root); } } }, '✕'),
     ]),
   ]);
-  wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
+  const table = dataTable(headers, body);
+
+  // Editing an existing profile: the form appears inline right after that
+  // profile's row — the same "form follows its context" placement Hall of
+  // Fame uses — instead of jumping your attention to a fixed spot regardless
+  // of which row you clicked.
+  const editIdx = editing ? rows.indexOf(editing) : -1;
+  if (editIdx >= 0) table.children[editIdx + 1].after(el('tr', { class: 'data-table-form-row' }, [buildForm(root)]));
+
+  wrap.appendChild(el('div', { class: 'table-wrap' }, table));
+
+  // Adding a brand-new profile (not editing one) — the form sits at the
+  // bottom, matching Hall of Fame's "new team" form position.
+  if (!editing) wrap.appendChild(buildForm(root));
+
   root.appendChild(wrap);
 }
 
