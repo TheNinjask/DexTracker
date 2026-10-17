@@ -107,7 +107,7 @@ body.tab-fill #content { flex: 1; min-height: 0; display: flex; }
    header's. */
 .header-top { display: flex; align-items: center; gap: 12px; min-width: 0; height: 34px; }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; letter-spacing: .01em; flex: 0 0 auto; }
-.brand .logo { color: var(--accent2); font-size: 24px; line-height: 1; }
+.brand .logo { width: 24px; height: 24px; display: block; }
 
 .hamburger-btn {
   flex: 0 0 auto; width: 34px; height: 34px; padding: 0; border-radius: 10px;
