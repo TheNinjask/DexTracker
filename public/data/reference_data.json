@@ -24436,6 +24436,92 @@
                 "prefix": "https://www.serebii.net/Shiny/FRLG/",
                 "suffix": ".png"
             }
+        },
+        "XD": {
+            "normal": {
+                "prefix": "https://www.serebii.net/xd/pokemon/",
+                "suffix": ".png"
+            }
+        },
+        "RS": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/rs/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/RuSa/",
+                "suffix": ".png"
+            }
+        },
+        "E": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/em/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/Em/",
+                "suffix": ".png"
+            }
+        },
+        "BW": {
+            "normal": {
+                "prefix": "https://www.serebii.net/blackwhite/pokemon/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/BW/",
+                "suffix": ".png"
+            }
+        },
+        "XY": {
+            "normal": {
+                "prefix": "https://www.serebii.net/xy/pokemon/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/XY/",
+                "suffix": ".png"
+            }
+        },
+        "SM": {
+            "normal": {
+                "prefix": "https://www.serebii.net/sunmoon/pokemon/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/SM/",
+                "suffix": ".png"
+            }
+        },
+        "DP": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/dp/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/DP/",
+                "suffix": ".png"
+            }
+        },
+        "Pt": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/pt/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/Pl/",
+                "suffix": ".png"
+            }
+        },
+        "HGSS": {
+            "normal": {
+                "prefix": "https://www.serebii.net/pokearth/sprites/hgss/",
+                "suffix": ".png"
+            },
+            "shiny": {
+                "prefix": "https://www.serebii.net/Shiny/HGSS/",
+                "suffix": ".png"
+            }
         }
     }
 }

@@ -30,6 +30,20 @@ function otCandidateRow(c) {
   ];
 }
 
+// A mon's sprite normally comes from HOME's own art (spriteUrl('home', shiny
+// ? 'shiny' : 'normal', ...)) — these two selects let a specific mon override
+// either half independently (e.g. show it in its LA-style art, or as an
+// 'icon' instead of full art), same "— default —" placeholder pattern
+// registry.js's gameOptions/markOptions use for per-row overrides. Falling
+// back to 'home'/undefined when unset keeps every existing HOF row rendering
+// exactly as before.
+function sourceOptions(selected) {
+  return el('select', { class: 'ctrl', title: 'Sprite source' }, [
+    el('option', { value: '' }, 'Sprite: HOME (default)'),
+    ...Object.keys(REF.imageSources).sort().map((s) => el('option', { value: s, selected: s === selected ? '' : null }, s)),
+  ]);
+}
+
 let teamSeq = 0;
 function newTeamId() { return `t_${Date.now().toString(36)}_${(teamSeq++).toString(36)}`; }
 
@@ -89,7 +103,7 @@ export function render(root) {
           el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { formCtx = { type: 'edit', row: m }; render(root); } }, '✎'),
           el('button', { class: 'btn tiny', title: 'Remove', onclick: async () => { if (await confirmDialog(`Remove ${m.nickname || m.species} from ${t.game}?`)) { if (formCtx && formCtx.row === m) formCtx = null; store.removeHofEntry(m); render(root); } } }, '✕'),
         ]),
-        el('img', { class: 'hof-img', loading: 'lazy', src: spriteUrl('home', m.shiny ? 'shiny' : 'normal', m.national_no, m.form_code || ''), alt: m.species }),
+        el('img', { class: 'hof-img', loading: 'lazy', src: spriteUrl(m.sprite_source || 'home', m.sprite_variant || (m.shiny ? 'shiny' : 'normal'), m.national_no, m.form_code || ''), alt: m.species }),
         el('div', { class: 'hof-name' }, [
           m.nickname || m.species,
           m.shiny ? el('span', { class: 'badge shiny' }, '✦') : null,
@@ -129,6 +143,8 @@ function buildForm(root) {
   const tid = el('input', { class: 'ctrl', placeholder: 'TID', value: (prefillOrigin && prefillOrigin.tid) || '' });
   const formSel = el('select', { class: 'ctrl', title: 'Form' });
   const shiny = el('input', { type: 'checkbox', checked: editing && editing.shiny ? '' : null });
+  const spriteSource = sourceOptions((editing && editing.sprite_source) || '');
+  const spriteVariant = el('select', { class: 'ctrl', title: 'Sprite variant' });
 
   // The available forms depend on the national number, so the dropdown is rebuilt
   // whenever it changes. The current selection is preserved if still valid.
@@ -142,20 +158,35 @@ function buildForm(root) {
     formSel.disabled = forms.length ? null : '';
   };
 
+  // Which variants show up depends on the chosen source — e.g. SWSH only has
+  // normal/shiny, not art/icon/box — so the list is rebuilt whenever the
+  // source changes, same dependent-dropdown pattern as rebuildForms above.
+  const rebuildVariants = (preferValue) => {
+    const variants = Object.keys(REF.imageSources[spriteSource.value || 'home'] || {});
+    const keep = preferValue != null ? preferValue : spriteVariant.value;
+    clear(spriteVariant);
+    spriteVariant.appendChild(el('option', { value: '' }, 'Variant: auto (Shiny toggle)'));
+    variants.forEach((v) => spriteVariant.appendChild(el('option', { value: v, selected: v === keep ? '' : null }, v)));
+  };
+
   // Live preview of the resolved species + sprite for the typed national number.
   const preview = el('span', { class: 'origin-preview' });
   const refresh = () => {
     rebuildForms();
+    rebuildVariants();
     clear(preview);
     const key = padNat(nat.value);
     const name = key ? speciesName(key) : '';
-    const variant = shiny.checked ? 'shiny' : 'normal';
-    if (key) preview.appendChild(el('img', { class: 'hof-img preview', src: spriteUrl('home', variant, key, formSel.value), alt: name }));
+    const source = spriteSource.value || 'home';
+    const variant = spriteVariant.value || (shiny.checked ? 'shiny' : 'normal');
+    if (key) preview.appendChild(el('img', { class: 'hof-img preview', src: spriteUrl(source, variant, key, formSel.value), alt: name }));
     preview.appendChild(el('span', { class: 'muted small' }, key ? `#${parseInt(key, 10)} ${name}` : 'Enter a national number'));
   };
   nat.addEventListener('input', refresh);
   formSel.addEventListener('change', refresh);
   shiny.addEventListener('change', refresh);
+  spriteSource.addEventListener('change', refresh);
+  spriteVariant.addEventListener('change', refresh);
 
   const save = el('button', { class: 'btn primary', onclick: async () => {
     const key = padNat(nat.value);
@@ -181,6 +212,8 @@ function buildForm(root) {
         form: formObj ? formObj.form : '',
         form_code: formCode,
         shiny: shiny.checked,
+        sprite_source: spriteSource.value || '',
+        sprite_variant: spriteVariant.value || '',
       };
       if (editing) {
         store.updateHofEntry(editing, fields);
@@ -214,6 +247,7 @@ function buildForm(root) {
     el('div', { class: 'add-grid' }, [
       game, nat, formSel, nickname, ot, tid,
       el('label', { class: 'toggle' }, [shiny, el('span', {}, '✦ Shiny')]),
+      spriteSource, spriteVariant,
     ]),
     el('div', { class: 'form-foot' }, [
       preview,
@@ -223,6 +257,7 @@ function buildForm(root) {
     ]),
   ]);
   rebuildForms(editing && editing.form_code ? editing.form_code : '');
+  rebuildVariants(editing && editing.sprite_variant ? editing.sprite_variant : '');
   refresh();
   return card;
 }

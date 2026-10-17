@@ -1,7 +1,7 @@
 // About / credits tab. Version comes from package.json (injected by Vite as
 // __APP_VERSION__); the rest of the content lives in public/data/about.json so
 // it can be edited without touching code, the same way reference_data.json is.
-import { el, clear } from '../dom.js';
+import { el, clear, assetUrl } from '../dom.js';
 
 // Vite replaces __APP_VERSION__ at build time with package.json's version.
 export const APP_VERSION = 'v' + __APP_VERSION__;
@@ -35,7 +35,7 @@ export function render(root) {
   // Header card: branding + version. Renders immediately (no data needed).
   wrap.appendChild(el('div', { class: 'card about-head' }, [
     el('div', { class: 'about-brand' }, [
-      el('span', { class: 'about-logo' }, '◓'),
+      el('img', { class: 'about-logo', src: assetUrl('icons/icon-mark.svg'), alt: '' }),
       el('div', {}, [
         el('h2', {}, 'DexTracker'),
         el('p', { class: 'muted', id: 'about-tagline' }, 'Personal Pokémon living-dex collection tracker.'),

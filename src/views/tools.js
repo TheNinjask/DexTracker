@@ -2,7 +2,7 @@
 // there's only Legends Z-A's Donut Maker, which is the existing cooking view
 // under a player-facing name — the module stays "cooking.js" internally.
 import { TOOLS, toolIdx } from '../data.js';
-import { el, clear, pickIcon, assetUrl } from '../dom.js';
+import { el, clear, pickIcon, assetUrl, breadcrumbs } from '../dom.js';
 import * as cookingView from './cooking.js';
 import * as hyperspaceView from './hyperspace.js';
 import * as palparkView from './palpark.js';
@@ -23,9 +23,29 @@ export function render(root) {
     if (!t || t.game_id !== gameId) toolId = null;
   }
 
-  if (!gameId) { root.appendChild(buildGameList(root)); return; }
-  if (!toolId) { root.appendChild(buildToolList(root)); return; }
-  root.appendChild(buildToolView(root));
+  // The crumb trail is its own bar, floated above whatever card the screen
+  // below it renders — never nested inside that card — so it looks
+  // identical at every depth it appears at. It's hidden at the root picker
+  // itself: with nothing to go back to, a nav bar there is just dead chrome.
+  const wrap = el('div', { class: 'tool-view' });
+  if (gameId) wrap.appendChild(breadcrumbs(root, render, crumbSteps()));
+  const body = el('div', { class: 'tool-view-body' });
+  if (!gameId) body.appendChild(buildGameList(root));
+  else if (!toolId) body.appendChild(buildToolList(root));
+  else body.appendChild(buildToolView(root));
+  wrap.appendChild(body);
+  root.appendChild(wrap);
+}
+
+function crumbSteps() {
+  const game = toolIdx.gameById.get(gameId);
+  const tool = toolId ? toolIdx.toolById.get(toolId) : null;
+  const steps = [
+    { label: 'Tools', onSelect: () => { gameId = null; toolId = null; } },
+    { label: game ? game.name : gameId, onSelect: toolId ? () => { toolId = null; } : undefined },
+  ];
+  if (toolId) steps.push({ label: tool ? tool.name : toolId });
+  return steps;
 }
 
 function pickButton(root, item, onSelect) {
@@ -50,13 +70,8 @@ function buildGameList(root) {
 }
 
 function buildToolList(root) {
-  const game = toolIdx.gameById.get(gameId);
   const tools = TOOLS.tools.filter((t) => t.game_id === gameId);
   const card = el('div', { class: 'card' });
-  card.appendChild(buildCrumbs(root, [
-    { label: 'Tools', onSelect: () => { gameId = null; } },
-    { label: game ? game.name : gameId },
-  ]));
   if (!tools.length) {
     card.appendChild(el('p', { class: 'muted' }, 'No tools for this game yet.'));
     return card;
@@ -67,30 +82,10 @@ function buildToolList(root) {
 }
 
 function buildToolView(root) {
-  const game = toolIdx.gameById.get(gameId);
   const tool = toolIdx.toolById.get(toolId);
-  const wrap = el('div', { class: 'tool-view' });
-  wrap.appendChild(buildCrumbs(root, [
-    { label: 'Tools', onSelect: () => { gameId = null; toolId = null; } },
-    { label: game ? game.name : gameId, onSelect: () => { toolId = null; } },
-    { label: tool ? tool.name : toolId },
-  ]));
-  const body = el('div', { class: 'tool-view-body' });
   const renderer = tool && TOOL_VIEWS[tool.view];
+  const body = el('div', {});
   if (renderer) renderer(body);
   else body.appendChild(el('p', { class: 'muted' }, 'This tool isn’t available yet.'));
-  wrap.appendChild(body);
-  return wrap;
-}
-
-// Breadcrumb trail; every step but the last is a clickable "go back to here".
-function buildCrumbs(root, steps) {
-  const nodes = [];
-  steps.forEach((s, i) => {
-    if (i) nodes.push(el('span', { class: 'crumb-sep' }, '›'));
-    nodes.push(s.onSelect
-      ? el('button', { class: 'crumb-btn', onclick: () => { s.onSelect(); render(root); } }, s.label)
-      : el('span', { class: 'crumb-current' }, s.label));
-  });
-  return el('div', { class: 'tool-crumbs' }, nodes);
+  return body;
 }
