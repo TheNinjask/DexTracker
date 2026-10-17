@@ -10,6 +10,10 @@ import { el, clear, icon, alertDialog, confirmDialog, selectDialog } from '../do
 let formCtx = null;
 
 const GAME_LIST_ID = 'hof-game-list';
+// Sentinel formSel value meaning "none of REF.forms' known forms for this
+// species — let me type my own form name + form_code instead." Reserved; no
+// real form_code may ever equal this (every real one starts with "-" or is "").
+const CUSTOM_FORM = '__custom__';
 
 // One row of the "pick a trainer" disambiguation dialog — OT/TID plus the row's
 // own effective game + mark imagery, same resolution resolveOriginById uses
@@ -146,8 +150,30 @@ function buildForm(root) {
   const spriteSource = sourceOptions((editing && editing.sprite_source) || '');
   const spriteVariant = el('select', { class: 'ctrl', title: 'Sprite variant' });
 
+  // A row's form_code was saved against a known REF.forms entry unless it's
+  // set but no such entry exists for this species — e.g. an event/exclusive
+  // form not yet catalogued in reference data. That's what "custom" means.
+  const existingFormObj = editing && editing.form_code
+    ? REF.forms.find((f) => f.national_no === editing.national_no && f.form_code === editing.form_code) : null;
+  const isCustomForm = !!(editing && editing.form_code && !existingFormObj);
+  const customName = el('input', { class: 'ctrl', placeholder: 'Custom form name (e.g. Alolan)', value: isCustomForm ? (editing.form || '') : '' });
+  const customCode = el('input', { class: 'ctrl', placeholder: 'Custom form code (e.g. -alola)', value: isCustomForm ? (editing.form_code || '') : '' });
+  // display:contents so these two flow as ordinary .add-grid siblings when
+  // shown, rather than nesting their own box — toggled off entirely (not
+  // just visually hidden) so a hidden custom-code input can never silently
+  // override the real selected form on save.
+  const customRow = el('div', { style: 'display:contents' }, [customName, customCode]);
+  const syncCustomVisibility = () => { customRow.style.display = formSel.value === CUSTOM_FORM ? 'contents' : 'none'; };
+
+  // The effective form_code: the typed custom one when "— custom form —" is
+  // selected, otherwise whatever the dropdown itself holds.
+  const effectiveFormCode = () => (formSel.value === CUSTOM_FORM ? customCode.value.trim() : formSel.value);
+
   // The available forms depend on the national number, so the dropdown is rebuilt
   // whenever it changes. The current selection is preserved if still valid.
+  // Always includes "Base form" and "— custom form —" regardless of whether
+  // this species has any catalogued forms, so a custom entry is never blocked
+  // by reference data simply not knowing about a form yet.
   const rebuildForms = (preferCode) => {
     const key = padNat(nat.value);
     const forms = key ? REF.forms.filter((f) => f.national_no === key) : [];
@@ -155,7 +181,7 @@ function buildForm(root) {
     clear(formSel);
     formSel.appendChild(el('option', { value: '' }, 'Base form'));
     forms.forEach((f) => formSel.appendChild(el('option', { value: f.form_code, selected: f.form_code === keep ? '' : null }, f.form)));
-    formSel.disabled = forms.length ? null : '';
+    formSel.appendChild(el('option', { value: CUSTOM_FORM, selected: keep === CUSTOM_FORM ? '' : null }, '— custom form —'));
   };
 
   // Which variants show up depends on the chosen source — e.g. SWSH only has
@@ -174,12 +200,13 @@ function buildForm(root) {
   const refresh = () => {
     rebuildForms();
     rebuildVariants();
+    syncCustomVisibility();
     clear(preview);
     const key = padNat(nat.value);
     const name = key ? speciesName(key) : '';
     const source = spriteSource.value || 'home';
     const variant = spriteVariant.value || (shiny.checked ? 'shiny' : 'normal');
-    if (key) preview.appendChild(el('img', { class: 'hof-img preview', src: spriteUrl(source, variant, key, formSel.value), alt: name }));
+    if (key) preview.appendChild(el('img', { class: 'hof-img preview', src: spriteUrl(source, variant, key, effectiveFormCode()), alt: name }));
     preview.appendChild(el('span', { class: 'muted small' }, key ? `#${parseInt(key, 10)} ${name}` : 'Enter a national number'));
   };
   nat.addEventListener('input', refresh);
@@ -187,6 +214,8 @@ function buildForm(root) {
   shiny.addEventListener('change', refresh);
   spriteSource.addEventListener('change', refresh);
   spriteVariant.addEventListener('change', refresh);
+  customName.addEventListener('input', refresh);
+  customCode.addEventListener('input', refresh);
 
   const save = el('button', { class: 'btn primary', onclick: async () => {
     const key = padNat(nat.value);
@@ -196,9 +225,11 @@ function buildForm(root) {
       const count = (store.state.hall_of_fame || []).filter((r) => (r.team_id || `g:${r.game || 'Unknown'}`) === addTeam.team_id).length;
       if (count >= 6) { alertDialog('A team can hold at most 6 Pokémon.'); return; }
     }
+    if (formSel.value === CUSTOM_FORM && !customCode.value.trim()) { alertDialog('Enter a custom form code (or pick an existing form / Base form).'); return; }
     const species = speciesName(key);
-    const formCode = formSel.value;
-    const formObj = formCode ? REF.forms.find((f) => f.national_no === key && f.form_code === formCode) : null;
+    const isCustom = formSel.value === CUSTOM_FORM;
+    const formCode = effectiveFormCode();
+    const formObj = !isCustom && formCode ? REF.forms.find((f) => f.national_no === key && f.form_code === formCode) : null;
     // Ownership only ever links to an existing OT Registry entry — same
     // match/disambiguate/block flow as the Box detail panel.
     const finish = (otId) => {
@@ -209,7 +240,7 @@ function buildForm(root) {
         species,
         nickname: nickname.value.trim() || null,
         ot_id: otId,
-        form: formObj ? formObj.form : '',
+        form: isCustom ? customName.value.trim() : (formObj ? formObj.form : ''),
         form_code: formCode,
         shiny: shiny.checked,
         sprite_source: spriteSource.value || '',
@@ -248,6 +279,7 @@ function buildForm(root) {
       game, nat, formSel, nickname, ot, tid,
       el('label', { class: 'toggle' }, [shiny, el('span', {}, '✦ Shiny')]),
       spriteSource, spriteVariant,
+      customRow,
     ]),
     el('div', { class: 'form-foot' }, [
       preview,
@@ -256,7 +288,7 @@ function buildForm(root) {
       save,
     ]),
   ]);
-  rebuildForms(editing && editing.form_code ? editing.form_code : '');
+  rebuildForms(isCustomForm ? CUSTOM_FORM : (editing && editing.form_code ? editing.form_code : ''));
   rebuildVariants(editing && editing.sprite_variant ? editing.sprite_variant : '');
   refresh();
   return card;
