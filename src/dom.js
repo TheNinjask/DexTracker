@@ -18,6 +18,39 @@ export function el(tag, attrs = {}, children = []) {
 }
 export function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
 
+// Minimal touch-swipe detector. The final left/right decision only happens on
+// touchend, same as before. touchmove is only used to pre-empt the browser's
+// own edge-swipe "go back/forward in history" gesture (Chrome/Android,
+// Safari): once a move clearly reads as horizontal rather than vertical, it
+// calls preventDefault for the rest of that touch so the browser's own
+// gesture can't steal it — but only then, so an ordinary vertical scroll
+// (undecided or clearly vertical) is never touched.
+export function attachSwipe(node, onLeft, onRight) {
+  let startX = 0, startY = 0, tracking = false, horizontal = false;
+  node.addEventListener('touchstart', (e) => {
+    const t = e.touches[0];
+    startX = t.clientX; startY = t.clientY; tracking = true; horizontal = false;
+  }, { passive: true });
+  node.addEventListener('touchmove', (e) => {
+    if (!tracking) return;
+    const t = e.touches[0];
+    const dx = t.clientX - startX, dy = t.clientY - startY;
+    if (!horizontal) {
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return; // too small to tell yet
+      horizontal = Math.abs(dx) > Math.abs(dy) * 1.5;
+    }
+    if (horizontal) e.preventDefault();
+  }, { passive: false });
+  node.addEventListener('touchend', (e) => {
+    if (!tracking) return;
+    tracking = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX, dy = t.clientY - startY;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    if (dx < 0) onLeft(); else onRight();
+  }, { passive: true });
+}
+
 // Build a .data-table and stamp each <td> with data-label from its column header
 // so the CSS can reflow rows into stacked cards on narrow screens. Cells may be:
 //   - a string/number/node  -> wrapped in a plain <td>
