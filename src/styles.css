@@ -381,12 +381,6 @@ select.ctrl { border-radius: 999px; }
 }
 .table-wrap .data-table td.row-actions { justify-content: flex-end; }
 .table-wrap .data-table td.row-actions::before { content: none; }
-/* An injected full-width row (e.g. Profiles' inline edit form) spans every
-   column of the card grid and sheds the per-row card chrome — the form's own
-   .add-form card supplies that instead. */
-.table-wrap .data-table tr.data-table-form-row {
-  grid-column: 1 / -1; background: none; border: none; padding: 0; box-shadow: none;
-}
 /* Profiles: row actions stay hidden until hover, same as Hall of Fame's
    per-mon action cluster (.hof-mon-actions) — one hover-reveal convention
    for every per-item edit/delete control, not just some of them. */
@@ -847,6 +841,7 @@ select.ctrl { border-radius: 999px; }
 .override-note { white-space: nowrap; }
 .row-actions { display: flex; gap: 4px; }
 .registry-head { margin-bottom: 10px; }
+.hof-head { margin-bottom: 10px; }
 .profiles-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 .add-form { background: var(--card2); }
 

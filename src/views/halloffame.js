@@ -3,7 +3,7 @@
 import { REF, spriteUrl, speciesName, findGame, gamesAlpha } from '../data.js';
 import * as store from '../store.js';
 import { resolveOriginById } from '../compute.js';
-import { el, clear, icon, alertDialog, confirmDialog, selectDialog } from '../dom.js';
+import { el, clear, icon, modal, alertDialog, confirmDialog, selectDialog } from '../dom.js';
 
 // Form context: null = add a brand-new team; { type:'edit', row } edits a mon;
 // { type:'add', team } adds a mon to an existing team.
@@ -73,15 +73,13 @@ export function render(root) {
   clear(root);
   const wrap = el('div', { class: 'hof' });
 
-  // The form follows its context: when editing a mon or adding to a team it
-  // appears right below that team; otherwise (new team) it sits at the bottom.
-  const formTeamId = formCtx && formCtx.type === 'add' ? formCtx.team.team_id
-    : formCtx && formCtx.type === 'edit' ? (formCtx.row.team_id || `g:${formCtx.row.game || 'Unknown'}`)
-    : null;
+  wrap.appendChild(el('div', { class: 'hof-head' }, [
+    el('button', { class: 'btn primary', onclick: () => { formCtx = null; openForm(root); } }, '＋ Add champion team'),
+  ]));
 
   const teams = groupTeams(store.state.hall_of_fame || []);
   if (!teams.length) {
-    wrap.appendChild(el('p', { class: 'muted' }, 'No Hall of Fame teams yet. Add your first champion team below.'));
+    wrap.appendChild(el('p', { class: 'muted' }, 'No Hall of Fame teams yet. Add your first champion team above.'));
   }
 
   teams.forEach((t) => {
@@ -95,7 +93,7 @@ export function render(root) {
       t.members.length >= 6
         ? el('span', { class: 'muted small', title: 'A team can hold at most 6 Pokémon' }, 'Full (6/6)')
         : el('button', { class: 'btn tiny', title: 'Add Pokémon to this team',
-            onclick: () => { formCtx = { type: 'add', team: t }; render(root); } }, '＋ Add'),
+            onclick: () => { formCtx = { type: 'add', team: t }; openForm(root); } }, '＋ Add'),
     ]));
     const team = el('div', { class: 'hof-roster' });
     t.members.forEach((m, mi) => {
@@ -104,7 +102,7 @@ export function render(root) {
         el('div', { class: 'hof-mon-actions' }, [
           el('button', { class: 'btn tiny', title: 'Move earlier', disabled: mi === 0 || null, onclick: () => { store.swapHofEntries(m, t.members[mi - 1]); render(root); } }, '◀'),
           el('button', { class: 'btn tiny', title: 'Move later', disabled: mi === t.members.length - 1 || null, onclick: () => { store.swapHofEntries(m, t.members[mi + 1]); render(root); } }, '▶'),
-          el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { formCtx = { type: 'edit', row: m }; render(root); } }, '✎'),
+          el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { formCtx = { type: 'edit', row: m }; openForm(root); } }, '✎'),
           el('button', { class: 'btn tiny', title: 'Remove', onclick: async () => { if (await confirmDialog(`Remove ${m.nickname || m.species} from ${t.game}?`)) { if (formCtx && formCtx.row === m) formCtx = null; store.removeHofEntry(m); render(root); } } }, '✕'),
         ]),
         el('img', { class: 'hof-img', loading: 'lazy', src: spriteUrl(m.sprite_source || 'home', m.sprite_variant || (m.shiny ? 'shiny' : 'normal'), m.national_no, m.form_code || ''), alt: m.species }),
@@ -119,16 +117,26 @@ export function render(root) {
     });
     card.appendChild(team);
     wrap.appendChild(card);
-    // Inline edit/add form right under the team it concerns.
-    if (formTeamId && t.team_id === formTeamId) wrap.appendChild(buildForm(root));
   });
 
-  // New-team form lives at the bottom.
-  if (!formTeamId) wrap.appendChild(buildForm(root));
   root.appendChild(wrap);
 }
 
-function buildForm(root) {
+// Opens the add/edit form in a dialog, same pattern as the OT Registry — a
+// row's edit action is one click away no matter how far down the table it
+// is, instead of an inline form pinned to a fixed spot.
+function openForm(root) {
+  const editing = formCtx && formCtx.type === 'edit' ? formCtx.row : null;
+  const addTeam = formCtx && formCtx.type === 'add' ? formCtx.team : null;
+  const title = editing ? `Edit ${editing.nickname || editing.species || ''}`
+    : addTeam ? `Add to ${addTeam.game || 'team'}`
+    : 'Add champion team';
+  const m = modal(title, [], () => { formCtx = null; });
+  m.box.classList.add('form-modal');
+  m.box.querySelector('.modal-body').appendChild(buildForm(root, m));
+}
+
+function buildForm(root, m) {
   const editing = formCtx && formCtx.type === 'edit' ? formCtx.row : null;
   const addTeam = formCtx && formCtx.type === 'add' ? formCtx.team : null;
   // Prefill from the edited row, or from the team we're adding to.
@@ -254,6 +262,7 @@ function buildForm(root) {
         store.addHofEntry(fields);
       }
       formCtx = null;
+      m.close();
       render(root);
     };
     const otVal = ot.value.trim(), tidVal = tid.value.trim();
@@ -268,13 +277,8 @@ function buildForm(root) {
     alertDialog(`OT "${otVal}" / TID "${tidVal}" isn't in your trainer registry.\nAdd it in the Registry tab first.`);
   } }, editing ? 'Save changes' : 'Add to Hall of Fame');
 
-  const heading = editing ? `Edit ${p.species || ''}`
-    : addTeam ? `Add to ${addTeam.game || 'team'}`
-    : 'Add champion team';
-
-  const card = el('div', { class: 'card add-form' }, [
+  const card = el('div', { class: 'add-form' }, [
     el('datalist', { id: GAME_LIST_ID }, gamesAlpha().map((g) => el('option', { value: g.id }))),
-    el('h3', {}, heading),
     el('div', { class: 'add-grid' }, [
       game, nat, formSel, nickname, ot, tid,
       el('label', { class: 'toggle' }, [shiny, el('span', {}, '✦ Shiny')]),
@@ -284,7 +288,7 @@ function buildForm(root) {
     el('div', { class: 'form-foot' }, [
       preview,
       el('span', { class: 'spacer' }),
-      formCtx ? el('button', { class: 'btn', onclick: () => { formCtx = null; render(root); } }, 'Cancel') : null,
+      el('button', { class: 'btn', onclick: () => m.close() }, 'Cancel'),
       save,
     ]),
   ]);
