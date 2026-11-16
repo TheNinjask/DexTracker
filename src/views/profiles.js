@@ -1,7 +1,7 @@
 // Switch profile / save manager (SPEC §4.6 / §8). Credentials masked by default (§10.2).
 import { gamesAlpha } from '../data.js';
 import * as store from '../store.js';
-import { el, clear, dataTable, alertDialog, confirmDialog } from '../dom.js';
+import { el, clear, dataTable, modal, alertDialog, confirmDialog } from '../dom.js';
 
 let reveal = false;
 // Row currently loaded into the form for editing (null = add mode).
@@ -19,11 +19,11 @@ export function render(root) {
       el('input', { type: 'checkbox', checked: reveal || null, onchange: (e) => { reveal = e.target.checked; render(root); } }),
       el('span', {}, 'Reveal credentials'),
     ]),
+    el('button', { class: 'btn primary', onclick: () => { editing = null; openForm(root); } }, '＋ Add profile'),
   ]));
 
   if (!rows.length) {
-    wrap.appendChild(el('p', { class: 'muted' }, 'No Switch profiles yet. Add one below.'));
-    wrap.appendChild(buildForm(root));
+    wrap.appendChild(el('p', { class: 'muted' }, 'No Switch profiles yet. Add one above.'));
     root.appendChild(wrap);
     return;
   }
@@ -36,29 +36,26 @@ export function render(root) {
     el('td', { class: 'mono' }, p.password ? (reveal ? p.password : '••••••••') : el('span', { class: 'muted' }, '—')),
     { c: 'muted small', v: p.info || '' },
     el('td', { class: 'row-actions' }, [
-      el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = p; render(root); } }, '✎'),
+      el('button', { class: 'btn tiny', title: 'Edit', onclick: () => { editing = p; openForm(root); } }, '✎'),
       el('button', { class: 'btn tiny', title: 'Remove', onclick: async () => { if (await confirmDialog(`Remove profile ${p.profile || ''}${p.game ? ' / ' + p.game : ''}?`)) { if (editing === p) editing = null; store.removeProfile(p); render(root); } } }, '✕'),
     ]),
   ]);
-  const table = dataTable(headers, body);
-
-  // Editing an existing profile: the form appears inline right after that
-  // profile's row — the same "form follows its context" placement Hall of
-  // Fame uses — instead of jumping your attention to a fixed spot regardless
-  // of which row you clicked.
-  const editIdx = editing ? rows.indexOf(editing) : -1;
-  if (editIdx >= 0) table.children[editIdx + 1].after(el('tr', { class: 'data-table-form-row' }, [buildForm(root)]));
-
-  wrap.appendChild(el('div', { class: 'table-wrap' }, table));
-
-  // Adding a brand-new profile (not editing one) — the form sits at the
-  // bottom, matching Hall of Fame's "new team" form position.
-  if (!editing) wrap.appendChild(buildForm(root));
+  wrap.appendChild(el('div', { class: 'table-wrap' }, dataTable(headers, body)));
 
   root.appendChild(wrap);
 }
 
-function buildForm(root) {
+// Opens the add/edit form in a dialog, same pattern as the OT Registry — a
+// row's edit action is one click away no matter how far down the table it
+// is, instead of an inline form pinned to a fixed spot.
+function openForm(root) {
+  const title = editing ? `Edit ${editing.profile || ''}${editing.game ? ' / ' + editing.game : ''}` : 'Add profile';
+  const m = modal(title, [], () => { editing = null; });
+  m.box.classList.add('form-modal');
+  m.box.querySelector('.modal-body').appendChild(buildForm(root, m));
+}
+
+function buildForm(root, m) {
   const p = editing || {};
   const profile = el('input', { class: 'ctrl', placeholder: 'Profile', value: p.profile || '' });
   const game = el('input', { class: 'ctrl', placeholder: 'Game', value: p.game || '', list: GAME_LIST_ID });
@@ -78,18 +75,18 @@ function buildForm(root) {
     if (editing) store.updateProfile(editing, fields);
     else store.addProfile(fields);
     editing = null;
+    m.close();
     render(root);
   } }, editing ? 'Save changes' : 'Add profile');
 
-  const card = el('div', { class: 'card add-form' }, [
+  const card = el('div', { class: 'add-form' }, [
     el('datalist', { id: GAME_LIST_ID }, gamesAlpha().map((g) => el('option', { value: g.id }))),
-    el('h3', {}, editing ? `Edit ${p.profile || ''}${p.game ? ' / ' + p.game : ''}` : 'Add profile'),
     el('div', { class: 'add-grid' }, [
       profile, game, email, password, info,
     ]),
     el('div', { class: 'form-foot' }, [
       el('span', { class: 'spacer' }),
-      editing ? el('button', { class: 'btn', onclick: () => { editing = null; render(root); } }, 'Cancel') : null,
+      el('button', { class: 'btn', onclick: () => m.close() }, 'Cancel'),
       save,
     ]),
   ]);

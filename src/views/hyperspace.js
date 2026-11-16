@@ -2,7 +2,7 @@
 // portal pool list (hyperspace_wild_zone.json) by star rating, type, and any
 // Pokémon the player has spotted, to narrow down which zone they're looking at.
 import { REF, idx, HYPERSPACE, spriteUrl, pad4 } from '../data.js';
-import { el, clear, icon } from '../dom.js';
+import { el, clear, icon, attachSwipe } from '../dom.js';
 
 let starFilter = null; // 1-5, or null = any
 let typeFilter = null; // type name, or null = any
@@ -287,7 +287,12 @@ function buildResults() {
     return card;
   }
   const pageItems = matches.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
-  card.appendChild(el('div', { class: 'hwz-zones' }, pageItems.map((z) => zoneCard(z))));
+  const zones = el('div', { class: 'hwz-zones' }, pageItems.map((z) => zoneCard(z)));
+  // Same swipe convention as Box View's grid: left = next page, right = previous.
+  if (totalPages > 1) attachSwipe(zones,
+    () => { if (page < totalPages - 1) { page++; renderResults(); } },
+    () => { if (page > 0) { page--; renderResults(); } });
+  card.appendChild(zones);
   return card;
 }
 

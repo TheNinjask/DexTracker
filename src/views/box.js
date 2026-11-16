@@ -2,7 +2,7 @@
 import { REF, idx, findGame } from '../data.js';
 import * as store from '../store.js';
 import { buildDexEntries, entrySlot, entryOwned, entrySprite, resolveOriginById } from '../compute.js';
-import { el, clear, getPrefs, setPref, icon, alertDialog, selectDialog } from '../dom.js';
+import { el, clear, getPrefs, setPref, icon, alertDialog, selectDialog, attachSwipe } from '../dom.js';
 
 // One row of the "pick a trainer" disambiguation dialog — OT/TID plus the row's
 // own effective game + mark imagery, same resolution resolveOriginById uses
@@ -343,6 +343,13 @@ function buildGrid(root) {
     grid.appendChild(buildCell(root, e, i));
   }
   wrap.appendChild(grid);
+  // Swipe left/right over the grid itself steps pages the same as the ‹/›
+  // buttons — same direction convention as a carousel (left = next, right =
+  // previous). Bounds-checked here too since there's no "disabled" concept
+  // for a gesture.
+  attachSwipe(grid,
+    () => { if (vs.page < paged.pages.length - 1) { vs.page++; refresh(root); } },
+    () => { if (vs.page > 0) { vs.page--; refresh(root); } });
   return wrap;
 }
 
@@ -400,13 +407,18 @@ function buildSidebar(root) {
     let idx = missing.findIndex((e) => keyOf(e) === vs.selectedKey);
     if (idx < 0) idx = 0;
     const n = missing[idx];
-    ntcBox.appendChild(el('div', { class: 'ntc-row', onclick: () => jumpTo(root, n) }, [
+    const ntcRow = el('div', { class: 'ntc-row', onclick: () => jumpTo(root, n) }, [
       el('img', { class: 'ntc-img', src: entrySprite(n, spriteVariant()), alt: n.name }),
       el('div', {}, [
         el('div', { class: 'ntc-name' }, n.name),
         el('div', { class: 'muted' }, '#' + parseInt(n.national_no, 10)),
       ]),
-    ]));
+    ]);
+    // Same swipe convention as the box grid: left = next, right = previous.
+    attachSwipe(ntcRow,
+      () => { if (idx < missing.length - 1) jumpTo(root, missing[idx + 1]); },
+      () => { if (idx > 0) jumpTo(root, missing[idx - 1]); });
+    ntcBox.appendChild(ntcRow);
     ntcBox.appendChild(el('div', { class: 'ntc-nav' }, [
       el('button', { class: 'pgbtn', disabled: idx === 0 || null, onclick: () => jumpTo(root, missing[idx - 1]) }, '‹'),
       el('span', { class: 'muted' }, `${idx + 1} of ${missing.length} missing · ${total} total`),
