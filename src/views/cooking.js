@@ -1,7 +1,7 @@
 // Legends Z-A cooking planner (SPEC §9). Berry pantry + recipe builder + saved recipes.
 import { REF, idx, berrySpriteUrl } from '../data.js';
 import * as store from '../store.js';
-import { el, clear, icon, confirmDialog, promptDialog } from '../dom.js';
+import { el, clear, icon, confirmDialog, promptDialog, attachSwipe } from '../dom.js';
 
 // Berry sprite thumbnail. Goes through icon() so its concurrency gate paces the
 // 66-image burst the pantry mounts (Serebii rate-limits bursts like Bulbagarden).
@@ -92,6 +92,15 @@ function buildBuilder(root) {
   const maker = el('div', { class: 'cook-maker' + (showGraph ? ' show-graph' : '') });
   maker.appendChild(buildPicker(root, t));
   maker.appendChild(buildOrder(t));
+  // On narrow screens (CSS shows one panel at a time) swipe left/right swaps
+  // table <-> graph, same effect as the ◧/◨ toggle button. Table reads first,
+  // graph second, so a left swipe (content "advancing") reveals the graph and
+  // a right swipe ("going back") reveals the table — standard carousel
+  // direction. Harmless above the breakpoint too: both panels already show
+  // there, so toggling `showGraph` just flips which CSS class is set without
+  // changing anything visible.
+  attachSwipe(maker, () => { if (!showGraph) { showGraph = true; rerender(root); } },
+                      () => { if (showGraph) { showGraph = false; rerender(root); } });
   card.appendChild(maker);
   card.appendChild(el('p', { class: 'muted small' }, 'Flavour Score is the sum of the five flavour totals (matching the in-game card); the ★ rating is an estimate — the real Score→Stars and cooking-time formulas aren’t in the source workbook.'));
   return card;
