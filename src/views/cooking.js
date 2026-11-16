@@ -292,6 +292,6 @@ function buildPantry() {
       el('td', {}, String(b.calories || 0)),
     ]));
   });
-  card.appendChild(table);
+  card.appendChild(el('div', { class: 'table-scroll' }, table));
   return card;
 }

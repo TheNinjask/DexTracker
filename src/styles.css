@@ -345,6 +345,11 @@ select.ctrl { border-radius: 999px; }
 .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* Tables */
+/* A plain (non-.table-wrap) table wider than its card just scrolls within its
+   own bounds on narrow screens, instead of forcing the whole page to scroll
+   sideways (the table's natural content width otherwise blows out .card/#app,
+   which have no width cap of their own). */
+.table-scroll { overflow-x: auto; max-width: 100%; }
 .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .data-table th { text-align: left; color: var(--accent-deep); font-weight: 700; border-bottom: 2px solid #ffffffcc; padding: 6px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; }
 .data-table td { padding: 7px 8px; border-bottom: 1px solid var(--border-soft); vertical-align: middle; }
